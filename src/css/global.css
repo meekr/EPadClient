@@ -1,0 +1,65 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "components.*";
+
+@font-face {
+	src:url("../assets/Microsoft Yahei.ttf");
+	fontFamily: myFontFamily;
+	advancedAntiAliasing: true;
+}
+
+@font-face {
+	src:url("../assets/Microsoft Yahei.ttf");
+	fontFamily: myFontFamily2;
+	advancedAntiAliasing: true;
+	embedAsCFF:false;
+}
+
+s|Application {
+	color:#666666;
+	fontFamily:myFontFamily;
+	fontWeight:normal;
+}
+
+mx|Text {
+	fontFamily:myFontFamily2;
+}
+
+mx|Alert {
+	fontFamily:myFontFamily2;
+}
+
+s|TextInput {
+	borderVisible:false;
+	fontSize:12;
+	paddingLeft:0;
+	paddingRight:0;
+	paddingTop:0;
+	paddingBottom:0;
+}
+
+s|Label {
+	fontSize:12px;
+}
+
+components|HomePage s|Label {
+	fontSize:17pt;
+}
+
+#leftTabBar s|Label {
+	color:#EEEEEE;
+	fontSize:12pt;
+	fontWeight:normal;
+}
+
+s|Label.whiteTitle {
+	color:#FFFFFF;
+	cursor:hand;
+	fontSize:14pt;
+	textAlign:center;
+}
+
+.linkText {
+	textDecoration:underline;
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="694" height="61">
+	
+	<fx:Script>
+		<![CDATA[
+			import events.MenuBarSelectedIndexChangedEvent;
+			private var _currentIndex:int = -1;
+			
+			protected function menuItemClickHandler(index:int):void
+			{
+				if (_currentIndex != index)
+				{
+					var event:MenuBarSelectedIndexChangedEvent = new MenuBarSelectedIndexChangedEvent();
+					event.oldIndex = _currentIndex;
+					event.newIndex = index;
+					
+					_currentIndex = index;
+					dispatchEvent(event);
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Metadata>
+		[Event(name="menuBarSelectedIndexChangedEvent", type="events.MenuBarSelectedIndexChangedEvent")]
+	</fx:Metadata>
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:Image source="@Embed(source='assets/menu-bar-bg.png')" width="100%" height="100%"/>
+	<s:Image left="146" top="30" source="@Embed(source='assets/menu-bar-item-home.png')" width="47" height="20" click="menuItemClickHandler(0)"/>
+	<s:Image left="266" top="30" source="@Embed(source='assets/menu-bar-item-store.png')" width="84" height="20" click="menuItemClickHandler(1)"/>
+	<s:Image left="415" top="30" source="@Embed(source='assets/menu-bar-item-account.png')" width="83" height="20" click="menuItemClickHandler(2)"/>
+	<s:Image left="556" top="30" source="@Embed(source='assets/menu-bar-item-help.png')" width="84" height="20" click="menuItemClickHandler(3)"/>
+</s:Group>

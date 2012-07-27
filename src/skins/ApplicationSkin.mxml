@@ -26,7 +26,7 @@
     <s:Rect id="content_bg" left="1" right="1" top="27" bottom="1"
 			bottomLeftRadiusX="10" bottomLeftRadiusY="10" bottomRightRadiusX="10" bottomRightRadiusY="10">
         <s:fill>
-			<s:BitmapFill source="@Embed(source='assets/home-bg.jpg')" fillMode="scale" alpha="1"/>
+			<s:BitmapFill source="@Embed(source='assets/app-bg.jpg')" fillMode="scale" alpha="1"/>
         </s:fill>
     </s:Rect>
 	<s:HGroup left="1" right="1" top="1" height="26" gap="-5">
