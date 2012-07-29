@@ -2,12 +2,16 @@ package classes
 {
 	import classes.Constants;
 	
+	import events.LoginEvent;
+	
+	import flash.events.EventDispatcher;
+	
 	import mx.controls.Alert;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 	
 	[Bindable]
-	public class User
+	public class User extends EventDispatcher
 	{
 		public var username:String = "NONE";
 		public var password:String;
@@ -36,14 +40,20 @@ package classes
 		private function resultListener(event:ResultEvent):void {
 			var json:String = String(event.result);
 			var obj:Object = JSON.parse(json);
+			
+			var evt:LoginEvent = new LoginEvent();
 			if (obj.state == "valid") {
 				this.loggedIn = true;
 				this.token = obj.data.token;
 				this.hcode = obj.data.user.hcode;
+				
+				evt.success = true;
 			}
 			else {
 				this.loggedIn = false;
+				evt.error = "failed";
 			}
+			dispatchEvent(evt);
 		}
 	}
 }

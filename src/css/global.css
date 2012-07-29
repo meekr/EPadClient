@@ -22,6 +22,7 @@ s|Application {
 	fontWeight:normal;
 }
 
+/*
 mx|Text {
 	fontFamily:myFontFamily2;
 }
@@ -29,6 +30,7 @@ mx|Text {
 mx|Alert {
 	fontFamily:myFontFamily2;
 }
+*/
 
 s|TextInput {
 	borderVisible:false;
@@ -43,14 +45,11 @@ s|Label {
 	fontSize:12px;
 }
 
-components|HomePage s|Label {
-	fontSize:17pt;
-}
-
-#leftTabBar s|Label {
-	color:#EEEEEE;
-	fontSize:12pt;
-	fontWeight:normal;
+#homeMenuBar s|Label {
+	color:#FFFFFF;
+	fontSize:15;
+	textAlign:center;
+	verticalAlign:middle;
 }
 
 s|Label.whiteTitle {

@@ -11,30 +11,57 @@
 		<![CDATA[
 			import classes.UIController;
 			
+			import events.LoginEvent;
 			import events.MenuBarSelectedIndexChangedEvent;
 			
 			import mx.events.FlexEvent;
 			
 			protected function application1_initializeHandler(event:FlexEvent):void
 			{
+				UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
+			}
+			
+			protected function loginHandler(event:LoginEvent):void
+			{
+				if (event.success)
+				{
+					trace('logged in...');
+				}
+				else
+				{
+					trace('fale: '+event.error);
+				}
 			}
 			
 			protected function menuBar_menuBarSelectedIndexChangedEventHandler(event:MenuBarSelectedIndexChangedEvent):void
 			{
-				trace('new index='+event.newIndex);
+				viewStack.selectedIndex = event.newIndex;
 			}
 			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 	</fx:Declarations>
+	<fx:Style source="css/global.css"/>
 	<s:Group width="100%" height="100%">
 		<s:Label left="0" right="10" top="10" height="30" textAlign="right" text="Welcome, {UIController.instance.user.username}"/>
 		<s:Image left="51" top="15" source="@Embed(source='assets/logo.png')" width="193" height="71"/>
 		<components:MenuBar id="menuBar" right="20" top="21" menuBarSelectedIndexChangedEvent="menuBar_menuBarSelectedIndexChangedEventHandler(event)"/>
 		
-		<s:Group id="contentArea" left="8" top="90" right="8" bottom="8">
-			<components:HomePage width="100%" height="100%"/>
-		</s:Group>
+		<mx:ViewStack id="viewStack" left="10" top="100" right="10" bottom="28">
+			<s:NavigatorContent width="100%" height="100%">
+				<components:HomePage width="100%" height="100%" visible="false" includeInLayout="false"/>
+				<components:HomeContainer width="100%" height="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%">
+				<s:Label text="store"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%">
+				<s:Label text="account"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%">
+				<s:Label text="help"/>
+			</s:NavigatorContent>
+		</mx:ViewStack>
 	</s:Group>
 </s:Application>

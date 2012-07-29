@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="components.*"
+		 xmlns:classes="classes.*"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import classes.UIController;
+			
+			protected function btnSubmit_clickHandler(event:MouseEvent):void
+			{
+				var account:SharedObject = SharedObject.getLocal("account");
+				account.data.username = username.text;
+				account.data.password = password.text;
+				account.flush();
+				
+				UIController.instance.user.login(username.text, password.text);
+			}
+		]]>
+	</fx:Script>
+	
 	<fx:Declarations>
 	</fx:Declarations>
 	<s:Rect left="115" top="55" width="808" height="408">
@@ -9,18 +29,31 @@
 			<s:BitmapFill source="@Embed(source='assets/home-bg.png')" fillMode="scale"/>
 		</s:fill>
 	</s:Rect>
-	<s:VGroup left="130" top="120" width="380" height="180">
+	<s:VGroup left="155" top="135" width="380" height="180" gap="10">
 		<s:HGroup>
-			<s:Label width="80" text="用户名："/>
-			<s:TextInput width="200"/>
+			<s:Label text="用户名" width="60" height="28" fontSize="15" verticalAlign="middle"/>
+			<components:KPTextInput id="username"
+									color="#ffffff"
+									text=""
+									skinClass="skins.KPTextInputSkin"
+									width="188" height="28"
+									contentBackgroundColor="#63e8fb"
+									/>
 		</s:HGroup>
 		<s:HGroup>
-			<s:Label width="80" text="密  码："/>
-			<s:TextInput width="200"/>
+			<s:Label text="密  码" width="60" height="28" fontSize="15" verticalAlign="middle"/>
+			<components:KPTextInput id="password"
+									color="#ffffff"
+									text=""
+									displayAsPassword="true"
+									skinClass="skins.KPTextInputSkin"
+									width="188" height="28"
+									contentBackgroundColor="#63e8fb"
+									/>
 		</s:HGroup>
 		<s:HGroup>
-			<s:Label width="80" text=""/>
-			<s:Button label="提交"/>
+			<s:Label width="60" text=""/>
+			<components:KPButton id="btnSubmit" text="登  录" width="108" height="32" fontSize="14" click="btnSubmit_clickHandler(event)"/>
 		</s:HGroup>
 	</s:VGroup>
 </s:Group>
