@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*"
+		 >
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			[Bindable]
+			private var selectedLocalIndex:Number = 0;
+			
+			[Bindable]
+			private var selectedDeviceIndex:Number = 0;
+			
+			protected function checkAll_changeHandler(event:Event):void
+			{
+				if (checkAll.selected)
+				{
+					
+				}
+				else
+				{
+					
+				}
+			}
+			
+			protected function changeLocalIndex(index:Number):void
+			{
+				if (index != selectedLocalIndex)
+				{
+					selectedLocalIndex = index;
+				}
+			}
+			
+			protected function changeDeviceIndex(index:Number):void
+			{
+				if (index != selectedDeviceIndex)
+				{
+					selectedDeviceIndex = index;
+				}
+			}
+			
+			protected function btnSync_clickHandler(event:MouseEvent):void
+			{
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+
+	<!-- background layer -->
+	<s:Rect left="0" top="0" right="390" bottom="0" radiusX="8">
+		<s:fill>
+			<s:BitmapFill source="@Embed(source='assets/local-area-top-bg.png')" fillMode="repeat"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect left="0" top="40" right="390" bottom="0" radiusX="8" topLeftRadiusX="0" topRightRadiusX="0">
+		<s:fill>
+			<s:BitmapFill source="@Embed(source='assets/white-dot.png')" fillMode="repeat"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect top="0" right="0" bottom="0" width="357">
+		<s:fill>
+			<s:BitmapFill source="@Embed(source='assets/e-pad-bg.png')" fillMode="scale"/>
+		</s:fill>
+	</s:Rect>
+	<s:Image top="150" right="368" source="@Embed(source='assets/area-arrow-right.png')" width="26" height="98"/>
+	
+	<!-- content area -->
+	<!-- left -->
+	<s:Image left="{81+selectedLocalIndex*48}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
+		<s:filters>
+			<s:DropShadowFilter distance="2" angle="270" blurY="1" alpha="0.1"/>
+		</s:filters>
+	</s:Image>
+	<s:HGroup left="0" top="11" right="390" height="28" gap="17">
+		<s:Spacer width="5"/>
+		<s:Label text="本地" height="100%" fontSize="17" color="#000000"/>
+		<s:Spacer width="5"/>
+		<s:Label text="全 部" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(0)"/>
+		<s:Label text="应 用" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(1)"/>
+		<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(2)"/>
+		<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(3)"/>
+		<s:Label text="电子书" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(4)"/>
+		<s:Spacer width="100%"/>
+		<s:CheckBox id="checkAll" top="0" skinClass="skins.MyCheckBox" change="checkAll_changeHandler(event)"/>
+		<s:Spacer width="20"/>
+	</s:HGroup>
+	<s:List id="lstLocal" left="0" top="40" right="390" bottom="40"
+			skinClass="skins.MyListSkin" borderColor="#FFFFFF">
+	</s:List>
+	<s:Label backgroundColor="#e9e9e9" height="2" left="0" right="390" bottom="40"/>
+	<s:HGroup left="0" bottom="0" right="390" height="38" verticalAlign="middle">
+		<s:Spacer width="100%"/>
+		<components:KPButton id="btnSync"
+							 left="8" bottom="0"
+							 backgroundColor="#72af0a"
+							 text="同步到设备" width="120" height="28" fontSize="13" click="btnSync_clickHandler(event)"/>
+		<s:Spacer width="100%"/>
+	</s:HGroup>
+	
+	<!-- right -->
+	<s:Image right="{180-122*selectedDeviceIndex}" top="10" source="@Embed(source='assets/device-bar-bg.png')" width="129" height="41">
+		<s:filters>
+			<s:DropShadowFilter distance="1" angle="270" blurY="1" alpha="0.02"/>
+		</s:filters>
+	</s:Image>
+	<s:Image right="206" top="10" source="@Embed(source='assets/device-title-pad.png')" width="68" height="40" click="changeDeviceIndex(0)"/>
+	<s:Image right="83" top="10" source="@Embed(source='assets/device-title-card.png')" width="74" height="40" click="changeDeviceIndex(1)"/>
+	<s:Rect top="43" right="21" bottom="42" radiusX="8" width="316">
+		<s:fill>
+			<s:SolidColor color="#fbe8cd"/>
+		</s:fill>
+	</s:Rect>
+	<s:List id="lstDevice" top="50" right="33" bottom="47" width="302"
+			skinClass="skins.MyListSkin" borderColor="#fbe8cd">
+	</s:List>
+	<s:HGroup right="21" bottom="17" width="316">
+		<s:Label text="剩余空间: 4G"/>
+		<s:Spacer width="10"/>
+		<components:ProgressBar width="100%"/>
+	</s:HGroup>
+</s:Group>

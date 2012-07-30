@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:Rect width="100%" height="100%" radiusX="8" topLeftRadiusX="0">
+		<s:fill>
+			<s:SolidColor color="#ffffff"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect left="10" top="10" right="10" bottom="10" radiusX="0">
+		<s:fill>
+			<s:SolidColor color="#7d7d7d"/>
+		</s:fill>
+	</s:Rect>
+</s:Group>

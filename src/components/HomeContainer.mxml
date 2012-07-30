@@ -28,6 +28,7 @@
 						lbl.setStyle("color", "#fb8941");
 				}
 				selectedTabIndex = index;
+				viewStack.selectedIndex = index;
 			}
 			
 		]]>
@@ -54,20 +55,16 @@
 	</s:VGroup>
 	<mx:ViewStack id="viewStack" left="152" top="10" right="10" bottom="10">
 		<s:NavigatorContent width="100%" height="100%">
-			<s:Rect width="100%" height="100%" radiusX="8" topLeftRadiusX="0">
-				<s:fill>
-					<s:SolidColor color="#ffffff"/>
-				</s:fill>
-			</s:Rect>
+			<components:PromotionPage width="100%" height="100%"/>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%">
-			<s:Label text="store"/>
+			<components:DownloadManager width="100%" height="100%"/>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%">
-			<s:Label text="account"/>
+			<components:MediaManager width="100%" height="100%"/>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%">
-			<s:Label text="help"/>
+			<components:UpgradePage width="100%" height="100%"/>
 		</s:NavigatorContent>
 	</mx:ViewStack>
 	<s:Image left="5" bottom="35" source="@Embed(source='assets/e-pad.png')" width="127" height="91"/>

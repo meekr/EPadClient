@@ -37,7 +37,6 @@
 			{
 				viewStack.selectedIndex = event.newIndex;
 			}
-			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
