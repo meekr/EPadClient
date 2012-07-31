@@ -6,26 +6,29 @@
 			   xmlns:classes="classes.*"
 			   minWidth="978" minHeight="608"
 			   skinClass="skins.ApplicationSkin"
-			   initialize="application1_initializeHandler(event)">
+			   creationComplete="application_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import caurina.transitions.Tweener;
+			
 			import classes.UIController;
 			
 			import events.LoginEvent;
 			import events.MenuBarSelectedIndexChangedEvent;
 			
+			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
-			
-			protected function application1_initializeHandler(event:FlexEvent):void
-			{
-				UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
-			}
 			
 			protected function loginHandler(event:LoginEvent):void
 			{
 				if (event.success)
 				{
-					trace('logged in...');
+					IVisualElementContainer(homeContainer.parent).swapElementsAt(0, 1);
+					homeContainer.height = homePage.measuredHeight-10;
+					homeContainer.top = -homeContainer.height;
+					homeContainer.alpha = 1;
+					Tweener.addTween(homePage, {alpha:0, time:1});
+					Tweener.addTween(homeContainer, {top:0, time:1});
 				}
 				else
 				{
@@ -37,6 +40,12 @@
 			{
 				viewStack.selectedIndex = event.newIndex;
 			}
+			
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{
+				UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -49,8 +58,10 @@
 		
 		<mx:ViewStack id="viewStack" left="10" top="100" right="10" bottom="28">
 			<s:NavigatorContent width="100%" height="100%">
-				<components:HomePage width="100%" height="100%" visible="false" includeInLayout="false"/>
-				<components:HomeContainer width="100%" height="100%"/>
+				<s:Group width="100%" height="100%" clipAndEnableScrolling="true">
+					<components:HomeContainer id="homeContainer" width="100%" height="100%" alpha="0"/>
+					<components:HomePage id="homePage" width="100%" height="100%" visible="true" includeInLayout="true"/>
+				</s:Group>
 			</s:NavigatorContent>
 			<s:NavigatorContent width="100%" height="100%">
 				<s:Label text="store"/>

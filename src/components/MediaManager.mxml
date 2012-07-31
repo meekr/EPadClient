@@ -14,6 +14,7 @@
 			
 			protected function checkAll_changeHandler(event:Event):void
 			{
+				/*
 				if (checkAll.selected)
 				{
 					
@@ -22,6 +23,7 @@
 				{
 					
 				}
+				*/
 			}
 			
 			protected function changeLocalIndex(index:Number):void
@@ -68,117 +70,123 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	
-	<!-- background layer -->
-	<s:Rect left="0" top="0" right="418" bottom="0" radiusX="8">
-		<s:fill>
-			<s:BitmapFill source="@Embed(source='assets/local-area-top-bg.png')" fillMode="repeat"/>
-		</s:fill>
-	</s:Rect>
-	<s:Rect top="0" right="0" bottom="0" width="357">
-		<s:fill>
-			<s:BitmapFill source="@Embed(source='assets/e-pad-bg.png')" fillMode="scale"/>
-		</s:fill>
-	</s:Rect>
-	
-	<!-- content area -->
 	<!-- left -->
-	<s:Image left="{81+selectedLocalIndex*48}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
-		<s:filters>
-			<s:DropShadowFilter distance="2" angle="270" blurY="1" alpha="0.1"/>
-		</s:filters>
-	</s:Image>
-	<s:Rect left="0" top="40" right="418" bottom="0" radiusX="8" topLeftRadiusX="0" topRightRadiusX="0">
-		<s:fill>
-			<s:BitmapFill source="@Embed(source='assets/white-dot.png')" fillMode="repeat"/>
-		</s:fill>
-	</s:Rect>
-	<s:HGroup left="0" top="11" right="418" height="28" gap="17">
-		<s:Spacer width="5"/>
-		<s:Label text="本地" height="100%" fontSize="17" color="#000000"/>
-		<s:Spacer width="5"/>
-		<s:Label text="图 片" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(0)"/>
-		<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(1)"/>
-		<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(2)"/>
-		<s:Spacer width="100%"/>
-		<s:CheckBox id="checkAll" top="0" skinClass="skins.MyCheckBox" change="checkAll_changeHandler(event)"/>
-		<s:Spacer width="20"/>
-	</s:HGroup>
-	<s:HGroup left="0" top="50" right="418" height="66" paddingLeft="10" paddingRight="10" gap="10">
-		<s:Image source="@Embed(source='assets/computer.png')" width="65" height="50"/>
-		<s:VGroup gap="5" width="100%">
-			<s:Label text="浏览我的电脑" fontSize="13" color="#b8b8b8"/>
-			<s:HGroup gap="10" width="100%">
-				<s:TextArea id="localPath" width="100%" height="25" enabled="false" alpha="0.5"/>
-				<components:KPButton id="btnBrowser"
-									 backgroundColor="#72af0a"
-									 text="浏览" width="80" height="25" fontSize="13" click="btnBrowser_clickHandler(event)"/>
-			</s:HGroup>
-		</s:VGroup>
-	</s:HGroup>
-	<s:HGroup left="0" top="106" right="418" height="1">
-		<s:Spacer width="100%"/>
-		<s:Image left="0" source="@Embed(source='assets/gradient-line.png')" width="380" height="1"/>
-		<s:Spacer width="100%"/>
-	</s:HGroup>
-	<s:List id="lstLocal" left="0" top="107" right="418" bottom="8"
-			skinClass="skins.MyListSkin" borderColor="#FFFFFF">
-	</s:List>
-	<s:Rect top="110" right="373" width="48" height="100" topRightRadiusX="8" bottomRightRadiusX="8">
-		<s:fill>
-			<s:SolidColor color="#FFFFFF"/>
-		</s:fill>
-	</s:Rect>
-	<components:KPButton id="btnTransfer2Device"
-						 top="116" right="379"
-						 backgroundColor="#75b508"
-						 width="36" height="88">
-	</components:KPButton>
-	<s:Image source="@Embed(source='assets/white-arrow-right.png')" width="17" height="29" right="388" top="148"/>
+	<s:Group left="0" top="0" right="418" bottom="0">
+		<!-- background -->
+		<s:Rect left="0" top="0" right="0" bottom="0" radiusX="8">
+			<s:fill>
+				<s:BitmapFill source="@Embed(source='assets/local-area-top-bg.png')" fillMode="repeat"/>
+			</s:fill>
+		</s:Rect>
+		
+		<!-- content -->
+		<s:Image left="{81+selectedLocalIndex*48}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
+			<s:filters>
+				<s:DropShadowFilter distance="2" angle="270" blurY="1" alpha="0.1"/>
+			</s:filters>
+		</s:Image>
+		<s:Rect left="0" top="40" right="0" bottom="0" radiusX="8" topLeftRadiusX="0" topRightRadiusX="0">
+			<s:fill>
+				<s:BitmapFill source="@Embed(source='assets/white-dot.png')" fillMode="repeat"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup left="0" top="11" right="0" height="28" gap="17">
+			<s:Spacer width="5"/>
+			<s:Label text="本地" height="100%" fontSize="17" color="#000000"/>
+			<s:Spacer width="5"/>
+			<s:Label text="图 片" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(0)"/>
+			<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(1)"/>
+			<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(2)"/>
+			<s:Spacer width="100%"/>
+			<s:CheckBox id="checkAll" top="0" skinClass="skins.MyCheckBox" change="checkAll_changeHandler(event)"/>
+			<s:Spacer width="100%"/>
+		</s:HGroup>
+		<s:HGroup left="0" top="50" right="0" height="66" paddingLeft="10" paddingRight="10" gap="10">
+			<s:Image source="@Embed(source='assets/computer.png')" width="65" height="50"/>
+			<s:VGroup gap="5" width="100%">
+				<s:Label text="浏览我的电脑" fontSize="13" color="#b8b8b8"/>
+				<s:HGroup gap="10" width="100%">
+					<s:TextArea id="localPath" width="100%" height="25" enabled="false" alpha="0.5"/>
+					<components:KPButton id="btnBrowser"
+										 backgroundColor="#72af0a"
+										 text="浏览" width="80" height="25" fontSize="13" click="btnBrowser_clickHandler(event)"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>
+		<s:Image left="0" top="106" right="0" source="@Embed(source='assets/gradient-line.png')" height="1"/>
+		<s:List id="lstLocal" left="0" top="107" right="0" bottom="8"
+				skinClass="skins.MyListSkin" borderColor="#FFFFFF">
+		</s:List>
+		<s:Rect top="110" right="-45" width="48" height="100" topRightRadiusX="8" bottomRightRadiusX="8">
+			<s:fill>
+				<s:SolidColor color="#FFFFFF"/>
+			</s:fill>
+		</s:Rect>
+		<components:KPButton id="btnTransfer2Device"
+							 top="116" right="-40"
+							 backgroundColor="#75b508"
+							 width="36" height="88">
+		</components:KPButton>
+		<s:Image source="@Embed(source='assets/white-arrow-right.png')" width="17" height="29" right="-30" top="148"/>
+	</s:Group>
 	
 	<!-- right -->
-	<s:Image right="{180-122*selectedDeviceIndex}" top="10" source="@Embed(source='assets/device-bar-bg.png')" width="129" height="41">
-		<s:filters>
-			<s:DropShadowFilter distance="1" angle="270" blurY="1" alpha="0.02"/>
-		</s:filters>
-	</s:Image>
-	<s:Image right="206" top="10" source="@Embed(source='assets/device-title-pad.png')" width="68" height="40" click="changeDeviceIndex(0)"/>
-	<s:Image right="83" top="10" source="@Embed(source='assets/device-title-card.png')" width="74" height="40" click="changeDeviceIndex(1)"/>
-	<s:Rect top="43" right="21" bottom="42" radiusX="8" width="316">
-		<s:fill>
-			<s:SolidColor color="#fbe8cd"/>
-		</s:fill>
-	</s:Rect>
-	<s:List id="lstDevice" top="50" right="33" bottom="81" width="302"
-			skinClass="skins.MyListSkin" borderColor="#fbe8cd">
-	</s:List>
-	<s:Label backgroundColor="#cccccc" height="1" right="21" bottom="80" width="316"/>
-	<s:HGroup right="21" bottom="47" width="302" height="33" verticalAlign="middle">
-		<s:Spacer width="100%"/>
-		<components:KPButton id="btnDeviceSelectAll"
-							 backgroundColor="#72af0a"
-							 verticalCenter="2"
-							 text="全选" width="80" height="25" fontSize="13" click="btnDeviceSelectAll_clickHandler(event)"/>
-		<components:KPButton id="btnDeviceDeleteSelected"
-							 backgroundColor="#fd4122"
-							 verticalCenter="2"
-							 text="删除" width="80" height="25" fontSize="13" click="btnDeviceDeleteSelected_clickHandler(event)"/>
-		<s:Spacer width="100%"/>
-	</s:HGroup>
-	<s:HGroup right="21" bottom="17" width="316">
-		<s:Label text="剩余空间: 4G"/>
-		<s:Spacer width="10"/>
-		<components:ProgressBar width="100%"/>
-	</s:HGroup>
-	<s:Rect top="234" right="354" width="48" height="100" topLeftRadiusX="8" bottomLeftRadiusX="8">
-		<s:fill>
-			<s:SolidColor color="#fcac6f"/>
-		</s:fill>
-	</s:Rect>
-	<components:KPButton id="btnTransfer2Local"
-						 top="240" right="360"
-						 backgroundColor="#07b1dc"
-						 width="36" height="88">
-	</components:KPButton>
-	<s:Image source="@Embed(source='assets/white-arrow-left.png')" width="17" height="29" right="370" top="274"/>
+	<s:Group top="0" right="0" bottom="0" width="357">
+		<!-- background -->
+		<s:Rect left="0" top="0" right="0" bottom="0">
+			<s:fill>
+				<s:BitmapFill source="@Embed(source='assets/e-pad-bg.png')" fillMode="scale"/>
+			</s:fill>
+		</s:Rect>
+		
+		<!-- content -->
+		<s:Image right="{180-122*selectedDeviceIndex}" top="10" source="@Embed(source='assets/device-bar-bg.png')" width="129" height="41">
+			<s:filters>
+				<s:DropShadowFilter distance="1" angle="270" blurY="1" alpha="0.02"/>
+			</s:filters>
+		</s:Image>
+		<s:Image right="206" top="10" source="@Embed(source='assets/device-title-pad.png')" width="68" height="40" click="changeDeviceIndex(0)"/>
+		<s:Image right="83" top="10" source="@Embed(source='assets/device-title-card.png')" width="74" height="40" click="changeDeviceIndex(1)"/>
+		<s:Group left="21" top="43" right="21" bottom="0">
+			<s:Rect left="0" top="0" right="0" bottom="42" radiusX="8">
+				<s:fill>
+					<s:SolidColor color="#fbe8cd"/>
+				</s:fill>
+			</s:Rect>
+			<s:List id="lstDevice" left="6" top="6" right="6" bottom="77"
+					skinClass="skins.MyListSkin" borderColor="#fbe8cd">
+			</s:List>
+			<s:Label backgroundColor="#cccccc" left="0" right="0" bottom="75" height="1"/>
+			<s:HGroup left="0" right="0" bottom="44" height="30" verticalAlign="middle">
+				<s:Spacer width="100%"/>
+				<components:KPButton id="btnDeviceSelectAll"
+									 backgroundColor="#72af0a"
+									 verticalCenter="2"
+									 text="全选" width="80" height="25" fontSize="13" click="btnDeviceSelectAll_clickHandler(event)"/>
+				<components:KPButton id="btnDeviceDeleteSelected"
+									 backgroundColor="#fd4122"
+									 verticalCenter="2"
+									 text="删除" width="80" height="25" fontSize="13" click="btnDeviceDeleteSelected_clickHandler(event)"/>
+				<s:Spacer width="100%"/>
+			</s:HGroup>
+			<s:HGroup left="0" right="0" bottom="17">
+				<s:Label text="剩余空间: 4G"/>
+				<s:Spacer width="10"/>
+				<components:ProgressBar width="100%"/>
+			</s:HGroup>
+		</s:Group>
+		
+		<s:Rect top="234" right="354" width="48" height="100" topLeftRadiusX="8" bottomLeftRadiusX="8">
+			<s:fill>
+				<s:SolidColor color="#fcac6f"/>
+			</s:fill>
+		</s:Rect>
+		<components:KPButton id="btnTransfer2Local"
+							 top="240" right="360"
+							 backgroundColor="#07b1dc"
+							 width="36" height="88">
+		</components:KPButton>
+		<s:Image source="@Embed(source='assets/white-arrow-left.png')" width="17" height="29" right="370" top="274"/>
+	</s:Group>
 	
 </s:Group>
