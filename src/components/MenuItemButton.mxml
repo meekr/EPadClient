@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 >
+	<fx:Declarations>
+		<fx:String id="label"></fx:String>
+		<fx:Number id="imageIndex">0</fx:Number>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.collections.ArrayCollection;
+			
+			[Embed(source="assets/menu-icon-home.png")]
+			private var image0:Class;
+			[Embed(source="assets/menu-icon-store.png")]
+			private var image1:Class;
+			[Embed(source="assets/menu-icon-account.png")]
+			private var image2:Class;
+			[Embed(source="assets/menu-icon-help.png")]
+			private var image3:Class;
+			
+			[Bindable]
+			protected var images:ArrayCollection = new ArrayCollection([image0, image1, image2, image3]);
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
+				addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
+				addEventListener(MouseEvent.MOUSE_UP, mouseUp);
+				addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
+			}
+			
+			private function mouseOver(event:MouseEvent):void
+			{
+				currentState = "over";
+				trace('over');
+			}
+			
+			private function mouseOut(event:MouseEvent):void
+			{
+				currentState = "up";
+				trace('up');
+			}
+			
+			private function mouseDown(event:MouseEvent):void
+			{
+				currentState = "down";
+				trace('down');
+			}
+			
+			private function mouseUp(event:MouseEvent):void
+			{
+				currentState = "over";
+			}
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" />
+		<s:State name="down" />
+		<s:State name="disabled" />
+	</s:states>
+	<s:layout>
+		<s:HorizontalLayout gap="6"/>
+	</s:layout>
+	<s:Image source="{images.getItemAt(imageIndex)}" width="42" height="42"
+			 top.down="2">
+		<s:filters>
+			<s:DropShadowFilter
+				alpha="0" alpha.over="0.38"
+				angle="90" distance="2" blurY="3"/>
+		</s:filters>
+	</s:Image>
+	<s:Label text="{label}"
+			 fontSize="18" color="#FFFFFF"
+			 height="33" height.down="36"
+			 textAlign="left" verticalAlign="bottom">
+		<s:filters>
+			<s:DropShadowFilter
+				alpha="0" alpha.over="0.38"
+				angle="90" distance="2" blurY="3"/>
+		</s:filters>
+	</s:Label>
+</s:Group>

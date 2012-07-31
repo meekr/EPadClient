@@ -2,8 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="694" height="61">
-	
+		 width="694" height="61" xmlns:components="components.*">
 	<fx:Script>
 		<![CDATA[
 			import events.MenuBarSelectedIndexChangedEvent;
@@ -28,9 +27,15 @@
 	</fx:Metadata>
 	<fx:Declarations>
 	</fx:Declarations>
-	<s:Image source="@Embed(source='assets/menu-bar-bg.png')" width="100%" height="100%"/>
-	<s:Image left="146" top="30" source="@Embed(source='assets/menu-bar-item-home.png')" width="47" height="20" click="menuItemClickHandler(0)"/>
-	<s:Image left="266" top="30" source="@Embed(source='assets/menu-bar-item-store.png')" width="84" height="20" click="menuItemClickHandler(1)"/>
-	<s:Image left="415" top="30" source="@Embed(source='assets/menu-bar-item-account.png')" width="83" height="20" click="menuItemClickHandler(2)"/>
-	<s:Image left="556" top="30" source="@Embed(source='assets/menu-bar-item-help.png')" width="84" height="20" click="menuItemClickHandler(3)"/>
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:BitmapFill source="@Embed(source='assets/menu-bar-bg.png')" fillMode="scale"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup left="104" top="16" right="0" bottom="0" gap="18">
+		<components:MenuItemButton label="首 页" imageIndex="0" click="menuItemClickHandler(0)"/>
+		<components:MenuItemButton label="应用商店" imageIndex="1" click="menuItemClickHandler(1)"/>
+		<components:MenuItemButton label="我的账户" imageIndex="2" click="menuItemClickHandler(2)"/>
+		<components:MenuItemButton label="帮助中心" imageIndex="3" click="menuItemClickHandler(3)"/>
+	</s:HGroup>
 </s:Group>
