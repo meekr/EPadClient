@@ -64,7 +64,7 @@
 				</s:Group>
 			</s:NavigatorContent>
 			<s:NavigatorContent width="100%" height="100%">
-				<s:Label text="store"/>
+				<components:StorePage width="100%" height="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent width="100%" height="100%">
 				<s:Label text="account"/>

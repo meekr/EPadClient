@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import classes.StoreItem;
+			
+			private var _storeItem:classes.StoreItem;
+			
+			[Bindable]
+			public function get storeItem():classes.StoreItem
+			{
+				return _storeItem;
+			}
+			
+			public function set storeItem(value:classes.StoreItem):void
+			{
+				_storeItem = value;
+				icon.source = value.iconUrl;
+			}
+			
+			protected function btnBuy_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest("http://store.taobao.com/shop/view_shop.htm?user_number_id=881657015"));
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout gap="15"/>
+	</s:layout>
+	<s:Image id="icon" source="@Embed(source='assets/icon-placeholder.png')" width="75" height="75" scaleMode="stretch"/>
+	<s:VGroup>
+		<s:Label text="{storeItem.name}" fontSize="15" color="#666666"/>
+		<s:Label text="分类：{storeItem.category}"/>
+		<s:Spacer height="6"/>
+		<components:KPButton id="btnBuy" text="限时免费" width="80" height="22" click="btnBuy_clickHandler(event)"/>
+	</s:VGroup>
+</s:Group>

@@ -3,6 +3,8 @@ package classes
 	import classes.Constants;
 	import classes.Utils;
 	
+	import events.StoreItemsLoadedEvent;
+	
 	import flash.events.EventDispatcher;
 	import flash.external.*;
 	import flash.utils.Dictionary;
@@ -73,6 +75,7 @@ package classes
 			
 			if (page)
 				params.push("page="+page);
+			params.push("size=6");
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
 			trace("STORE LIST URL: "+url);
 			
@@ -91,20 +94,23 @@ package classes
 			
 			itemsOnStore.removeAll();
 			for (var i:int=0; i<obj.products.length; i++) {
-				var item:AppItem = new AppItem();
+				var item:StoreItem = new StoreItem();
 				item.id = obj.products[i].id;
 				item.name = obj.products[i].name;
-				item.description = obj.products[i].plain + "\n\n适合年龄：" + obj.products[i].age;
-				item.type = AppItemType.STORE;
 				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				itemsOnStore.addItem(item);
 				
 				// sync status with device
 				if (itemsOnDeviceHash[item.name])
-					item.storeItemText = "已购买";
+					item.purchased = true;
 			}
 			this.retrievingStoreList = false;
+			
+			var evt:StoreItemsLoadedEvent = new StoreItemsLoadedEvent();
+			evt.items = itemsOnStore;
+			evt.numPages = parseInt(obj.pagination.total);
+			dispatchEvent(evt);
 		}
 		
 		public function getDeviceProductListAll():void
