@@ -5,7 +5,13 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import classes.AppItem;
+			import classes.DataController;
+			import classes.Download;
+			import classes.UIController;
+			
 			import mx.events.FlexEvent;
+			
 			[Bindable]
 			private var selectedLocalIndex:Number = 0;
 			
@@ -14,14 +20,10 @@
 			
 			protected function checkAll_changeHandler(event:Event):void
 			{
-				/*if (checkAll.selected)
+				for each (var item:AppItem in DataController.instance.itemsOnPc)
 				{
-					
+					item.selected = checkAll.selected;
 				}
-				else
-				{
-					
-				}*/
 			}
 			
 			protected function changeLocalIndex(index:Number):void
@@ -48,6 +50,8 @@
 	
 	<fx:Declarations>
 	</fx:Declarations>
+	
+	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="deviceProgressBar.rcPercentage.percentWidth"/>
 
 	<s:Image top="150" right="368" source="@Embed(source='assets/area-arrow-right.png')" width="26" height="98"/>
 	
@@ -85,7 +89,12 @@
 			<s:Spacer width="100%"/>
 		</s:HGroup>
 		<s:List id="lstLocal" left="0" top="40" right="0" bottom="40"
-				skinClass="skins.MyListSkin" borderColor="#FFFFFF">
+				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
+				dataProvider="{DataController.instance.itemsOnPc}"
+				itemRenderer="renderers.AppListItemRenderer">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" gap="10"/>
+			</s:layout>
 		</s:List>
 		<s:Label backgroundColor="#e9e9e9" height="2" left="0" right="0" bottom="40"/>
 		<s:HGroup left="0" bottom="0" right="0" height="38" verticalAlign="middle">
@@ -124,9 +133,9 @@
 				skinClass="skins.MyListSkin" borderColor="#fbe8cd">
 		</s:List>
 		<s:HGroup right="21" bottom="17" width="316">
-			<s:Label text="剩余空间: 4G"/>
+			<s:Label text="{UIController.instance.deviceDisk.volumeStatus}"/>
 			<s:Spacer width="10"/>
-			<components:ProgressBar width="100%"/>
+			<components:ProgressBar id="deviceProgressBar" width="100%" visible="{UIController.instance.deviceDisk.connected}" includeInLayout="{UIController.instance.deviceDisk.connected}"/>
 		</s:HGroup>
 	</s:Group>
 </s:Group>

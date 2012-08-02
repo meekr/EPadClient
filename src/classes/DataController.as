@@ -47,6 +47,8 @@ package classes
 			itemsOnStore = new ArrayCollection();
 			
 			itemsOnDeviceHash = new Object();
+			
+			setTimeout(getPcProductList, 1);
 		}
 		
 		public static function get instance():DataController

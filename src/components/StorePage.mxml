@@ -50,7 +50,7 @@
 			private function storeItemsLoaded(event:StoreItemsLoadedEvent):void
 			{
 				totalPageCount = event.numPages;
-				var w:Number = 280;
+				var w:Number = 250;
 				for (var i:int=0; i<event.items.length; i++)
 				{
 					var item:components.StoreItem = new components.StoreItem();

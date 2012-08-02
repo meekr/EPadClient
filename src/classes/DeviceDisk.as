@@ -25,9 +25,9 @@ package classes
 		public function get volumeStatus():String
 		{
 			if (_connected)
-				return "已用"+used+"M，还有"+(total-used)+"M可用空间";
+				return "剩余空间："+(total-used)+"M";
 			else
-				return "您的设备未连接，可用空间未知";
+				return "设备未连接";
 		}
 		
 		[Bindable("volumeStatusChanged")]

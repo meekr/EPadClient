@@ -17,15 +17,10 @@
 			
 			protected function btnSubmit_clickHandler(event:MouseEvent):void
 			{
-				var evt:LoginEvent = new LoginEvent();
-				evt.success = true;
-				UIController.instance.user.dispatchEvent(evt);
-				
 				var account:SharedObject = SharedObject.getLocal("account");
 				account.data.username = username.text;
 				account.data.password = password.text;
 				account.flush();
-				return;
 				
 				UIController.instance.user.login(username.text, password.text);
 			}

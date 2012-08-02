@@ -5,7 +5,11 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import classes.UIController;
+			
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			
 			[Bindable]
 			private var selectedLocalIndex:Number = 0;
 			
@@ -46,10 +50,15 @@
 			{
 			}
 			
-			protected function btnBrowser_clickHandler(event:MouseEvent):void
+			protected function btnBrowse_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				CONFIG::ON_PC {
+					var ret:String = ExternalInterface.call("F2C_getLocalMediaPath", "");
+					if (ret && ret.length>0)
+					{
+						localPath.text = ret;
+					}
+				}
 			}
 			
 			protected function btnDeviceDeleteSelected_clickHandler(event:MouseEvent):void
@@ -69,6 +78,8 @@
 	
 	<fx:Declarations>
 	</fx:Declarations>
+	
+	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="deviceProgressBar.rcPercentage.percentWidth"/>
 	
 	<!-- left -->
 	<s:Group left="0" top="0" right="418" bottom="0">
@@ -107,9 +118,9 @@
 				<s:Label text="浏览我的电脑" fontSize="13" color="#b8b8b8"/>
 				<s:HGroup gap="10" width="100%">
 					<s:TextArea id="localPath" width="100%" height="25" enabled="false" alpha="0.5"/>
-					<components:KPButton id="btnBrowser"
+					<components:KPButton id="btnBrowse"
 										 backgroundColor="#72af0a"
-										 text="浏览" width="80" height="25" fontSize="13" click="btnBrowser_clickHandler(event)"/>
+										 text="浏览" width="80" height="25" fontSize="13" click="btnBrowse_clickHandler(event)"/>
 				</s:HGroup>
 			</s:VGroup>
 		</s:HGroup>
@@ -170,9 +181,9 @@
 				<s:Spacer width="100%"/>
 			</s:HGroup>
 			<s:HGroup left="0" right="0" bottom="17">
-				<s:Label text="剩余空间: 4G"/>
+				<s:Label text="{UIController.instance.deviceDisk.volumeStatus}"/>
 				<s:Spacer width="10"/>
-				<components:ProgressBar width="100%"/>
+				<components:ProgressBar id="deviceProgressBar" width="100%" visible="{UIController.instance.deviceDisk.connected}" includeInLayout="{UIController.instance.deviceDisk.connected}"/>
 			</s:HGroup>
 		</s:Group>
 		

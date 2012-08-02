@@ -2,7 +2,10 @@ package classes
 {
 	import classes.DownloadStatus;
 	
+	import events.DownloadCompleteEvent;
+	
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.ProgressEvent;
 	import flash.external.*;
 	import flash.net.FileReference;
@@ -17,7 +20,7 @@ package classes
 	import mx.utils.Base64Encoder;
 	
 	[Bindable]
-	public class Download
+	public class Download extends EventDispatcher
 	{
 		public var appName:String;
 		public var percentage:Number;
@@ -48,10 +51,10 @@ package classes
 		{
 			var service:HTTPService = new HTTPService();
 			service.url = npkUrl;
+			trace(npkUrl);
 			service.method = "POST";
 			service.resultFormat = "text";
 			service.addEventListener(ResultEvent.RESULT, resultListener);
-			service.showBusyCursor = true;
 			service.send(this);
 		}
 		
@@ -118,6 +121,9 @@ package classes
 			
 			UIController.instance.completeDownload(this);
 			UIController.instance.addPcItem(appName);
+			
+			var evt:DownloadCompleteEvent = new DownloadCompleteEvent();
+			dispatchEvent(evt);
 		}
 		
 		private function pngCompleteHandler(event:Event):void

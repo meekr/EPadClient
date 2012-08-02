@@ -147,21 +147,16 @@ package classes
 			}
 		}
 		
-		public function addAppToDownload(app:AppItem):Boolean
+		public function addStoreItemToDownload(item:StoreItem):Download
 		{
-			for each(var d:Download in DataController.instance.itemsDownloading) {
-				if (d.appName == app.name)
-					return false;
-			}
-			
-			var item:Download = new Download();
-			item.appName = app.name;
-			item.npkUrl = app.npkUrl;
-			item.iconUrl = app.iconUrl;
-			DataController.instance.itemsDownloading.addItem(item);
+			var download:Download = new Download();
+			download.appName = item.name;
+			download.npkUrl = item.npkUrl;
+			download.iconUrl = item.iconUrl;
+			DataController.instance.itemsDownloading.addItem(download);
 			//setTimeout(item.startDownload, 100);
-			item.startDownload();
-			return true;
+			download.startDownload();
+			return download;
 		}
 		
 		public function deleteAppFromDevice(app:AppItem):Boolean

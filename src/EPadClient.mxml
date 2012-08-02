@@ -43,9 +43,22 @@
 			
 			protected function application_creationCompleteHandler(event:FlexEvent):void
 			{
+				fscommand("loaded");
+				
+				UIController.instance.externalAddCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 				UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
 			}
 			
+			private function FL_setDeviceConnection(args:String):void
+			{
+				UIController.instance.deviceDisk.connected = (args=="1");
+				
+				if (UIController.instance.deviceDisk.connected) {
+					CONFIG::ON_PC {
+						UIController.instance.firmwareVersion = ExternalInterface.call("F2C_getFirmwareVersion", "AAAA");
+					}
+				}
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -55,6 +68,7 @@
 		<s:Label left="0" right="10" top="10" height="30" textAlign="right" text="Welcome, {UIController.instance.user.username}"/>
 		<s:Image left="51" top="15" source="@Embed(source='assets/logo.png')" width="193" height="71"/>
 		<components:MenuBar id="menuBar" right="20" top="21" menuBarSelectedIndexChangedEvent="menuBar_menuBarSelectedIndexChangedEventHandler(event)"/>
+		<!--<s:TextArea left="0" top="0" width="400" height="20" text="{UIController.instance.user.token}"/>-->
 		
 		<mx:ViewStack id="viewStack" left="10" top="100" right="10" bottom="28">
 			<s:NavigatorContent width="100%" height="100%">

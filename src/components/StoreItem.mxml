@@ -6,36 +6,111 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import classes.Download;
 			import classes.StoreItem;
+			import classes.UIController;
+			import classes.Constants;
+			
+			import events.DownloadCompleteEvent;
+			
+			private var _loader:URLLoader;
 			
 			private var _storeItem:classes.StoreItem;
-			
 			[Bindable]
 			public function get storeItem():classes.StoreItem
 			{
 				return _storeItem;
 			}
-			
 			public function set storeItem(value:classes.StoreItem):void
 			{
 				_storeItem = value;
-				icon.source = value.iconUrl;
+				
+				_loader = new URLLoader();
+				_loader.dataFormat = URLLoaderDataFormat.BINARY;
+				_loader.addEventListener(Event.COMPLETE, iconLoadCompleteHandler);
+				
+				var request:URLRequest = new URLRequest();
+				request.url = value.iconUrl;
+				_loader.load(request);
+			}
+			
+			private function iconLoadCompleteHandler(event:Event):void
+			{
+				var buf:ByteArray = _loader.data;
+				icon.load(buf);
+			}
+			
+			public var _downloadItem:Download;
+			[Bindable]
+			public function get downloadItem():Download
+			{
+				return _downloadItem;
+			}
+			public function set downloadItem(item:Download):void
+			{
+				if (_downloadItem)
+					_downloadItem.removeEventListener(DownloadCompleteEvent.name, downloadCompleted);
+				_downloadItem = item;
+				if (_downloadItem)
+					_downloadItem.addEventListener(DownloadCompleteEvent.name, downloadCompleted);
+			}
+			
+			protected function downloadCompleted(event:DownloadCompleteEvent):void
+			{
+				currentState = "downloaded";
 			}
 			
 			protected function btnBuy_clickHandler(event:MouseEvent):void
 			{
-				navigateToURL(new URLRequest("http://store.taobao.com/shop/view_shop.htm?user_number_id=881657015"));
+				currentState = "downloading";
+				downloadItem = UIController.instance.addStoreItemToDownload(storeItem);
+			}
+			
+			protected function btnCancel_clickHandler(event:MouseEvent):void
+			{
+				UIController.instance.deleteDownload(downloadItem);
+				currentState = "default";
 			}
 		]]>
 	</fx:Script>
+	<s:states>
+		<s:State name="default" />
+		<s:State name="downloading" />
+		<s:State name="downloaded" />
+	</s:states>
 	<s:layout>
-		<s:HorizontalLayout gap="15"/>
+		<s:HorizontalLayout gap="0"/>
 	</s:layout>
-	<s:Image id="icon" source="@Embed(source='assets/icon-placeholder.png')" width="75" height="75" scaleMode="stretch"/>
-	<s:VGroup>
+	<fx:Binding source="downloadItem.percentage" destination="rcDownloading.percentWidth"/>
+	
+	<mx:Image id="icon" source="@Embed(source='assets/icon-placeholder.png')" width="75" height="75"/>
+	
+	<s:Spacer width="15"/>
+	
+	<s:VGroup width="100%" height="100%">
 		<s:Label text="{storeItem.name}" fontSize="15" color="#666666"/>
 		<s:Label text="分类：{storeItem.category}"/>
-		<s:Spacer height="6"/>
-		<components:KPButton id="btnBuy" text="限时免费" width="80" height="22" click="btnBuy_clickHandler(event)"/>
+		<s:Spacer height="100%"/>
+		<components:KPButton id="btnBuy" text="限时免费" width="80" height="22" click="btnBuy_clickHandler(event)" includeIn="default"/>
+		<s:HGroup width="100%" height="22" gap="3" includeIn="downloading" verticalAlign="bottom">
+			<s:Group width="100%" height="14" verticalCenter="-2">
+				<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
+					<s:fill>
+						<s:SolidColor color="#666666"/>
+					</s:fill>
+				</s:Rect>
+				<s:Group left="2" top="2" right="2" bottom="2">
+					<s:Rect id="rcDownloading" width="0%" height="100%" radiusX="6">
+						<s:fill>
+							<s:SolidColor color="#fb8941"/>
+						</s:fill>
+					</s:Rect>
+				</s:Group>
+			</s:Group>
+			<s:Image id="btnCancel" source="@Embed(source='assets/icon-cancel.png')"
+					 width="22" height="22" includeIn="downloading" verticalCenter="2"
+					 click="btnCancel_clickHandler(event)"/>
+		</s:HGroup>
+		<s:Label color="#CCCCCC" text="已下载" height="16" verticalAlign="middle" includeIn="downloaded"/>
 	</s:VGroup>
 </s:Group>
