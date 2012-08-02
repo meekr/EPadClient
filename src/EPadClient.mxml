@@ -24,7 +24,7 @@
 				if (event.success)
 				{
 					IVisualElementContainer(homeContainer.parent).swapElementsAt(0, 1);
-					homeContainer.height = homePage.measuredHeight-10;
+					homeContainer.height = homePage.measuredHeight-2;
 					homeContainer.top = -homeContainer.height;
 					homeContainer.alpha = 1;
 					Tweener.addTween(homePage, {alpha:0, time:1});

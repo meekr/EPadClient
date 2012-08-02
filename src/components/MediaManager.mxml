@@ -5,6 +5,9 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import classes.DataController;
+			import classes.MediaItem;
+			import classes.MediaType;
 			import classes.UIController;
 			
 			import mx.controls.Alert;
@@ -15,20 +18,6 @@
 			
 			[Bindable]
 			private var selectedDeviceIndex:Number = 0;
-			
-			protected function checkAll_changeHandler(event:Event):void
-			{
-				/*
-				if (checkAll.selected)
-				{
-					
-				}
-				else
-				{
-					
-				}
-				*/
-			}
 			
 			protected function changeLocalIndex(index:Number):void
 			{
@@ -57,6 +46,24 @@
 					if (ret && ret.length>0)
 					{
 						localPath.text = ret;
+						var files:String = ExternalInterface.call("F2C_getLocalPictures", ret);
+						
+						// update data
+						DataController.instance.mediaItems4Picture.removeAll();
+						var items:Array = files.split(",");
+						for each (var str:String in items)
+						{
+							var filepath:String = str.split("#")[0];
+							var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
+							
+							var item:MediaItem = new MediaItem();
+							item.fileUrl = filepath;
+							item.type = MediaType.PICTURE;
+							item.name = name;
+							item.fileSizeInBytes = parseInt(str.split("#")[1]);
+							
+							DataController.instance.mediaItems4Picture.addItem(item);
+						}
 					}
 				}
 			}
@@ -109,8 +116,6 @@
 			<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(1)"/>
 			<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(2)"/>
 			<s:Spacer width="100%"/>
-			<s:CheckBox id="checkAll" top="0" skinClass="skins.MyCheckBox" change="checkAll_changeHandler(event)"/>
-			<s:Spacer width="100%"/>
 		</s:HGroup>
 		<s:HGroup left="0" top="50" right="0" height="66" paddingLeft="10" paddingRight="10" gap="10">
 			<s:Image source="@Embed(source='assets/computer.png')" width="65" height="50"/>
@@ -125,8 +130,14 @@
 			</s:VGroup>
 		</s:HGroup>
 		<s:Image left="0" top="106" right="0" source="@Embed(source='assets/gradient-line.png')" height="1"/>
-		<s:List id="lstLocal" left="0" top="107" right="0" bottom="8"
-				skinClass="skins.MyListSkin" borderColor="#FFFFFF">
+		<s:List id="lstLocal" left="8" top="107" right="8" bottom="8"
+				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
+				dataProvider="{DataController.instance.mediaItems4Picture}"
+				itemRenderer="renderers.MediaItemRenderer"
+				horizontalScrollPolicy="off">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+			</s:layout>
 		</s:List>
 		<s:Rect top="110" right="-45" width="48" height="100" topRightRadiusX="8" bottomRightRadiusX="8">
 			<s:fill>

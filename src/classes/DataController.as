@@ -29,6 +29,9 @@ package classes
 		public var itemsOnStore:ArrayCollection;
 		
 		[Bindable]
+		public var mediaItems4Picture:ArrayCollection;
+		
+		[Bindable]
 		public var retrievingStoreList:Boolean;
 		[Bindable]
 		public var retrievingDeviceList:Boolean;
@@ -47,6 +50,8 @@ package classes
 			itemsOnStore = new ArrayCollection();
 			
 			itemsOnDeviceHash = new Object();
+			
+			mediaItems4Picture = new ArrayCollection();
 			
 			setTimeout(getPcProductList, 1);
 		}
