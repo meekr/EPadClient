@@ -9,6 +9,7 @@
 			import classes.Download;
 			import classes.StoreItem;
 			import classes.UIController;
+			import classes.DataController;
 			import classes.Constants;
 			
 			import events.DownloadCompleteEvent;
@@ -32,6 +33,9 @@
 				var request:URLRequest = new URLRequest();
 				request.url = value.iconUrl;
 				_loader.load(request);
+				
+				if (DataController.instance.boughtItems.hasBought(value.name))
+					currentState = "downloaded";
 			}
 			
 			private function iconLoadCompleteHandler(event:Event):void

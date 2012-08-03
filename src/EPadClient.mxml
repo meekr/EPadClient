@@ -11,28 +11,56 @@
 		<![CDATA[
 			import caurina.transitions.Tweener;
 			
+			import classes.BoughtItem;
+			import classes.Constants;
+			import classes.DataController;
 			import classes.UIController;
 			
 			import events.LoginEvent;
 			import events.MenuBarSelectedIndexChangedEvent;
 			
+			import mx.controls.Alert;
 			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
 			
 			protected function loginHandler(event:LoginEvent):void
 			{
 				if (event.success)
 				{
+					// ui adjust
 					IVisualElementContainer(homeContainer.parent).swapElementsAt(0, 1);
 					homeContainer.height = homePage.measuredHeight-2;
 					homeContainer.top = -homeContainer.height;
 					homeContainer.alpha = 1;
 					Tweener.addTween(homePage, {alpha:0, time:1});
 					Tweener.addTween(homeContainer, {top:0, time:1});
+					
+					// data prepare
+					var service:HTTPService = new HTTPService();
+					service.url = Constants.DOWNLOAD_HISTORY_URL;
+					service.method = "POST";
+					service.resultFormat = "text";
+					service.addEventListener(ResultEvent.RESULT, downloadHistoryListener);
+					service.send(this);
 				}
 				else
 				{
 					trace('fale: '+event.error);
+				}
+			}
+			
+			private function downloadHistoryListener(event:ResultEvent):void {
+				var json:String = String(event.result);
+				var obj:Object = JSON.parse(json);
+				DataController.instance.boughtItems.items.removeAll();
+				for (var i:int=0; i<obj.products.length; i++) {
+					var item:BoughtItem = new BoughtItem();
+					item.id = obj.products[i].id;
+					item.name = obj.products[i].name;
+					item.downloadLink = Constants.getNpkUrl(obj.products[i].download_link);
+					DataController.instance.boughtItems.addItem(item);
 				}
 			}
 			

@@ -1,6 +1,6 @@
 package classes
 {
-	public class MediaType
+	public class MediaItemType
 	{
 		public static var PICTURE:String = "picture";
 		public static var AUDIO:String = "audio";

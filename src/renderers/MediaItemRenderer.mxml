@@ -4,19 +4,54 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="true"
 				width="100%">
+	<fx:Script>
+		<![CDATA[
+			import classes.MediaItem;
+			import classes.MediaItemType;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				var item:MediaItem = value as MediaItem;
+				if (item) {
+					switch (item.type)
+					{
+						case MediaItemType.AUDIO:
+							currentState = "audio";
+							break;
+						case MediaItemType.VIDEO:
+							currentState = "video";
+							break;
+						default:
+							currentState = "default";
+							break;
+					}
+				}
+			}
+			
+			protected function checkbox_changeHandler(event:Event):void
+			{
+				data.selected = checkbox.selected;
+			}
+		]]>
+	</fx:Script>
 	<s:states>
 		<s:State name="default"/>
+		<s:State name="audio"/>
+		<s:State name="video"/>
 	</s:states>
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle" paddingTop="5" paddingBottom="5"/>
+		<s:HorizontalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
 	</s:layout>
 	
-	<mx:Image id="thumbnail" source="data.fileUrl" width="132" height="75"/>
+	<s:Image source="{data.fileUrl}" width="70" height="40" scaleMode="stretch" includeIn="default"/>
+	<s:Image source="@Embed(source='assets/icon-audio-item.png')" width="70" height="40" scaleMode="stretch" includeIn="audio"/>
+	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video"/>
 	<s:Spacer width="0"/>
-	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="8" gap="10">
+	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="0" gap="10">
 		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
 		<s:Label text="文件大小：{data.fileSize}"/>
 	</s:VGroup>
-	<s:CheckBox skinClass="skins.MyCheckBox" selected="{data.selected}"/>
+	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)"/>
 	<s:Spacer width="5"/>
 </s:ItemRenderer>

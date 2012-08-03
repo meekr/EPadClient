@@ -2,14 +2,17 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*"
+		 creationComplete="group1_creationCompleteHandler(event)"
 		 >
 	<fx:Script>
 		<![CDATA[
 			import classes.DataController;
 			import classes.MediaItem;
-			import classes.MediaType;
+			import classes.MediaItemType;
 			import classes.UIController;
 			
+			import mx.binding.utils.BindingUtils;
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
@@ -19,11 +22,33 @@
 			[Bindable]
 			private var selectedDeviceIndex:Number = 0;
 			
+			private var items4PicturePopulated:Boolean;
+			private var items4AudioPopulated:Boolean;
+			private var items4VideoPopulated:Boolean;
+			
+			
 			protected function changeLocalIndex(index:Number):void
 			{
 				if (index != selectedLocalIndex)
 				{
 					selectedLocalIndex = index;
+					
+					var so:SharedObject = SharedObject.getLocal("localPath4Media");
+					switch (selectedLocalIndex)
+					{
+						case 0:
+							localPath.text = so.data.picture;
+							populateMediaList(localPath.text);
+							break;
+						case 1:
+							localPath.text = so.data.audio;
+							populateMediaList(localPath.text);
+							break;
+						case 2:
+							localPath.text = so.data.video;
+							populateMediaList(localPath.text);
+							break;
+					}
 				}
 			}
 			
@@ -43,27 +68,94 @@
 			{
 				CONFIG::ON_PC {
 					var ret:String = ExternalInterface.call("F2C_getLocalMediaPath", "");
-					if (ret && ret.length>0)
+					if (ret && ret.length > 0)
 					{
-						localPath.text = ret;
-						var files:String = ExternalInterface.call("F2C_getLocalPictures", ret);
-						
-						// update data
-						DataController.instance.mediaItems4Picture.removeAll();
-						var items:Array = files.split(",");
-						for each (var str:String in items)
+						switch (selectedLocalIndex)
 						{
-							var filepath:String = str.split("#")[0];
-							var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
-							
-							var item:MediaItem = new MediaItem();
-							item.fileUrl = filepath;
-							item.type = MediaType.PICTURE;
-							item.name = name;
-							item.fileSizeInBytes = parseInt(str.split("#")[1]);
-							
-							DataController.instance.mediaItems4Picture.addItem(item);
+							case 0:
+								items4PicturePopulated = false;
+								break;
+							case 1:
+								items4AudioPopulated = false;
+								break;
+							case 2:
+								items4VideoPopulated = false;
+								break;
 						}
+						populateMediaList(ret);
+					}
+				}
+			}
+			
+			private function populateMediaList(directory:String):void
+			{
+				CONFIG::ON_PC {
+					if (directory && directory.length>0)
+					{
+						var so:SharedObject = SharedObject.getLocal("localPath4Media");
+						var f2c_method:String;
+						var itemsCollection:ArrayCollection;
+						var mediaType:String;
+						switch (selectedLocalIndex)
+						{
+							case 0:
+								so.data.picture = directory;
+								if (!items4PicturePopulated)
+								{
+									f2c_method = "F2C_getLocalPictures";
+									items4PicturePopulated = true;
+								}
+								itemsCollection = DataController.instance.mediaItems4Picture;
+								mediaType = MediaItemType.PICTURE;
+								break;
+							case 1:
+								so.data.audio = directory;
+								if (!items4AudioPopulated)
+								{
+									f2c_method = "F2C_getLocalAudios";
+									items4AudioPopulated = true;
+								}
+								itemsCollection = DataController.instance.mediaItems4Audio;
+								mediaType = MediaItemType.AUDIO;
+								break;
+							case 2:
+								so.data.video = directory;
+								if (!items4VideoPopulated)
+								{
+									f2c_method = "F2C_getLocalVideos";
+									items4VideoPopulated = true;
+								}
+								itemsCollection = DataController.instance.mediaItems4Video;
+								mediaType = MediaItemType.VIDEO;
+								break;
+						}
+						so.flush();
+						
+						localPath.text = directory;
+						
+						if (f2c_method && f2c_method.length > 0)
+						{
+							var files:String = ExternalInterface.call(f2c_method, directory);
+							
+							// update data
+							itemsCollection.removeAll();
+							var items:Array = files.split(",");
+							for each (var str:String in items)
+							{
+								var filepath:String = str.split("#")[0];
+								var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
+								
+								var item:MediaItem = new MediaItem();
+								item.fileUrl = filepath;
+								item.type = mediaType;
+								item.name = name;
+								item.fileSizeInBytes = parseInt(str.split("#")[1]);
+								
+								itemsCollection.addItem(item);
+							}
+						}
+						
+						lstLocal.dataProvider = itemsCollection;
 					}
 				}
 			}
@@ -78,6 +170,13 @@
 			{
 				// TODO Auto-generated method stub
 				
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var so:SharedObject = SharedObject.getLocal("localPath4Media");
+				localPath.text = so.data.picture;
+				populateMediaList(localPath.text);
 			}
 			
 		]]>
@@ -132,7 +231,6 @@
 		<s:Image left="0" top="106" right="0" source="@Embed(source='assets/gradient-line.png')" height="1"/>
 		<s:List id="lstLocal" left="8" top="107" right="8" bottom="8"
 				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
-				dataProvider="{DataController.instance.mediaItems4Picture}"
 				itemRenderer="renderers.MediaItemRenderer"
 				horizontalScrollPolicy="off">
 			<s:layout>

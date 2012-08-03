@@ -31,5 +31,10 @@ package classes
 		{
 			return DOMAIN + thumbPath;
 		}
+		
+		public static function get DOWNLOAD_HISTORY_URL():String
+		{
+			return DOMAIN + "client/user/download?token=" + UIController.instance.user.token + "&size=200";
+		}
 	}
 }

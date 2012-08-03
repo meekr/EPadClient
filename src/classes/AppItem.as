@@ -21,6 +21,9 @@ package classes
 		public var selected:Boolean;
 		public var type:String;
 		
+		public var purchased:Boolean;
+		public var downloaded:Boolean;
+		
 		public var npkUrl:String;
 		public var iconUrl:String;
 		

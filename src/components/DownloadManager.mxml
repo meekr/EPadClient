@@ -88,12 +88,12 @@
 			<s:CheckBox id="checkAll" top="0" skinClass="skins.MyCheckBox" change="checkAll_changeHandler(event)"/>
 			<s:Spacer width="100%"/>
 		</s:HGroup>
-		<s:List id="lstLocal" left="0" top="40" right="0" bottom="40"
+		<s:List id="lstLocal" left="8" top="40" right="8" bottom="40"
 				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
 				dataProvider="{DataController.instance.itemsOnPc}"
 				itemRenderer="renderers.AppListItemRenderer">
 			<s:layout>
-				<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10" gap="10"/>
+				<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
 			</s:layout>
 		</s:List>
 		<s:Label backgroundColor="#e9e9e9" height="2" left="0" right="0" bottom="40"/>
