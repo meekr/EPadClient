@@ -8,9 +8,12 @@ package classes
 		public var fileUrl:String;
 		public var fileSizeInBytes:Number;
 		public var selected:Boolean;
+		public var converter:Converter;
+		public var enabled:Boolean;
 		
 		public function MediaItem()
 		{
+			enabled = true;
 		}
 		
 		public function get fileSize():String

@@ -30,13 +30,6 @@ package classes
 		public var itemsOnStore:ArrayCollection;
 		
 		[Bindable]
-		public var mediaItems4Picture:ArrayCollection;
-		[Bindable]
-		public var mediaItems4Audio:ArrayCollection;
-		[Bindable]
-		public var mediaItems4Video:ArrayCollection;
-		
-		[Bindable]
 		public var retrievingStoreList:Boolean;
 		[Bindable]
 		public var retrievingDeviceList:Boolean;
@@ -61,10 +54,6 @@ package classes
 			itemsOnPcHash = new Object();
 			
 			boughtItems = new BoughtItemsManager();
-			
-			mediaItems4Picture = new ArrayCollection();
-			mediaItems4Audio = new ArrayCollection();
-			mediaItems4Video = new ArrayCollection();
 			
 			setTimeout(getPcProductList, 1);
 		}

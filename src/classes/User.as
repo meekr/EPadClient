@@ -13,7 +13,7 @@ package classes
 	[Bindable]
 	public class User extends EventDispatcher
 	{
-		public var username:String = "NONE";
+		public var username:String = "";
 		public var password:String;
 		public var token:String;
 		public var hcode:String;

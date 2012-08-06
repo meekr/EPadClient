@@ -6,7 +6,9 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import classes.Converter;
 			import classes.DataController;
+			import classes.MediaController;
 			import classes.MediaItem;
 			import classes.MediaItemType;
 			import classes.UIController;
@@ -105,7 +107,7 @@
 									f2c_method = "F2C_getLocalPictures";
 									items4PicturePopulated = true;
 								}
-								itemsCollection = DataController.instance.mediaItems4Picture;
+								itemsCollection = MediaController.instance.mediaItems4Picture;
 								mediaType = MediaItemType.PICTURE;
 								break;
 							case 1:
@@ -115,7 +117,7 @@
 									f2c_method = "F2C_getLocalAudios";
 									items4AudioPopulated = true;
 								}
-								itemsCollection = DataController.instance.mediaItems4Audio;
+								itemsCollection = MediaController.instance.mediaItems4Audio;
 								mediaType = MediaItemType.AUDIO;
 								break;
 							case 2:
@@ -125,7 +127,7 @@
 									f2c_method = "F2C_getLocalVideos";
 									items4VideoPopulated = true;
 								}
-								itemsCollection = DataController.instance.mediaItems4Video;
+								itemsCollection = MediaController.instance.mediaItems4Video;
 								mediaType = MediaItemType.VIDEO;
 								break;
 						}
@@ -177,6 +179,40 @@
 				var so:SharedObject = SharedObject.getLocal("localPath4Media");
 				localPath.text = so.data.picture;
 				populateMediaList(localPath.text);
+			}
+			
+			protected function btnTransfer2Device_clickHandler(event:MouseEvent):void
+			{
+				var itemsCollection:ArrayCollection;
+				switch (selectedLocalIndex)
+				{
+					case 0:
+						itemsCollection = MediaController.instance.mediaItems4Picture;
+						break;
+					case 1:
+						itemsCollection = MediaController.instance.mediaItems4Audio;
+						break;
+					case 2:
+						itemsCollection = MediaController.instance.mediaItems4Video;
+						break;
+				}
+				
+				// convert selected
+				for each (var item:MediaItem in itemsCollection)
+				{
+					if (!item.selected) continue;
+					var converter:Converter = new Converter();
+					converter.sourceFile = item.fileUrl;
+					MediaController.instance.addConvertTask(converter);
+					item.converter = converter;
+				}
+				MediaController.instance.startConverting();
+			}
+			
+			protected function btnTransfer2Local_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
 			}
 			
 		]]>
@@ -245,6 +281,9 @@
 		<components:KPButton id="btnTransfer2Device"
 							 top="116" right="-40"
 							 backgroundColor="#75b508"
+							 click="btnTransfer2Device_clickHandler(event)"
+							 enabled="{MediaController.instance.convertingPool.length == 0}"
+							 mouseEnabled="{MediaController.instance.convertingPool.length == 0}"
 							 width="36" height="88">
 		</components:KPButton>
 		<s:Image source="@Embed(source='assets/white-arrow-right.png')" width="17" height="29" right="-30" top="148"/>
@@ -304,6 +343,7 @@
 		<components:KPButton id="btnTransfer2Local"
 							 top="240" right="360"
 							 backgroundColor="#07b1dc"
+							 click="btnTransfer2Local_clickHandler(event)"
 							 width="36" height="88">
 		</components:KPButton>
 		<s:Image source="@Embed(source='assets/white-arrow-left.png')" width="17" height="29" right="370" top="274"/>

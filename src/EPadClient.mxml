@@ -6,7 +6,9 @@
 			   xmlns:classes="classes.*"
 			   minWidth="978" minHeight="608"
 			   skinClass="skins.ApplicationSkin"
-			   creationComplete="application_creationCompleteHandler(event)">
+			   creationComplete="application_creationCompleteHandler(event)"
+			   backgroundColor="#abc123"
+			   >
 	<fx:Script>
 		<![CDATA[
 			import caurina.transitions.Tweener;
@@ -22,6 +24,7 @@
 			import mx.controls.Alert;
 			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.http.HTTPService;
 			

@@ -12,6 +12,7 @@
 			import classes.Constants;
 			import classes.UIController;
 			
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.http.HTTPService;
@@ -42,6 +43,7 @@
 			}
 			
 			private function uiCheckResultListener(event:ResultEvent):void {
+				mx.controls.Alert.show(event.result+"::");
 				var xml:XML = event.result as XML;
 				remoteVersion = xml.attributes()[0].toString();
 				if (parseFloat(remoteVersion) > parseFloat(UIController.instance.firmwareVersion)) {
@@ -138,8 +140,7 @@
 			<s:Label text="系统升级" fontSize="18"/>
 			<s:Spacer width="100%"/>
 			<components:KPButton id="btnCheck" text="检查更新" click="btnCheck_clickHandler(event)"
-								 enabled="{UIController.instance.deviceDisk.connected}"
-								 mouseEnabled="{UIController.instance.deviceDisk.connected}"/>
+								 />
 		</s:HGroup>
 		<s:BorderContainer width="85%" height="60"
 						   borderColor="#cccccc" borderWeight="1">

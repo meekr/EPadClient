@@ -11,19 +11,19 @@
         <s:State name="disabled" />
     </s:states>
     <s:Image source="@Embed(source='assets/top-bar-bg.png')" left="0" right="0" top="0" bottom="0"/>
-	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1"
+	<s:Rect id="shadow" left="0" right="0" top="0" bottom="0"
 			radiusX="10" radiusY="10">
 		<s:fill>
 			<s:SolidColor color="#000000" alpha="0.01"/>
 		</s:fill>
 	</s:Rect>
-	<s:Rect id="top_bar_bg" left="1" right="1" top="1" height="26"
+	<s:Rect id="top_bar_bg" left="0" right="0" top="0" height="26"
 			topLeftRadiusX="10" topLeftRadiusY="10" topRightRadiusX="10" topRightRadiusY="10">
 		<s:fill>
 			<s:BitmapFill source="@Embed(source='assets/top-bar-bg.png')" fillMode="repeat"/>
 		</s:fill>
 	</s:Rect>
-    <s:Rect id="content_bg" left="1" right="1" top="27" bottom="1"
+    <s:Rect id="content_bg" left="0" right="0" top="26" bottom="0"
 			bottomLeftRadiusX="10" bottomLeftRadiusY="10" bottomRightRadiusX="10" bottomRightRadiusY="10">
         <s:fill>
 			<s:BitmapFill source="@Embed(source='assets/app-bg.jpg')" fillMode="scale" alpha="1"/>
@@ -36,5 +36,5 @@
 		<s:Image source="@Embed(source='assets/icon-close.png')" width="26" height="26" click="fscommand('quit')"/>
 		<s:Spacer width="10"/>
 	</s:HGroup>
-	<s:Group id="contentGroup" left="1" right="1" top="27" bottom="1"/>
+	<s:Group id="contentGroup" left="0" right="0" top="26" bottom="0"/>
 </s:Skin>
