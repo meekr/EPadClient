@@ -47,6 +47,9 @@
 					case MediaItemTransitionStatus.CONVERTING:
 						currentState = "converting";
 						break;
+					case MediaItemTransitionStatus.TRANSFERING:
+						currentState = "transfering";
+						break;
 					case MediaItemTransitionStatus.COMPLETED:
 						currentState = "disabled";
 						break;
@@ -60,11 +63,13 @@
 		]]>
 	</fx:Script>
 	<fx:Binding source="data.converter.percentage" destination="rcConvertPercentage.percentWidth"/>
+	<fx:Binding source="data.converter.percentage" destination="rcTransferPercentage.percentWidth"/>
 	<s:states>
 		<s:State name="default"/>
 		<s:State name="audio"/>
 		<s:State name="video"/>
 		<s:State name="converting"/>
+		<s:State name="transfering"/>
 		<s:State name="waiting"/>
 		<s:State name="disabled"/>
 	</s:states>
@@ -74,7 +79,7 @@
 	
 	<s:Image source="{data.fileUrl}" width="70" height="40" scaleMode="stretch" includeIn="default"/>
 	<s:Image source="@Embed(source='assets/icon-audio-item.png')" width="70" height="40" scaleMode="stretch" includeIn="audio"/>
-	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video,waiting,converting,disabled"/>
+	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video,waiting,converting,transfering,disabled"/>
 	<s:Spacer width="0"/>
 	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="0" gap="10">
 		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
@@ -91,6 +96,23 @@
 					<s:Rect id="rcConvertPercentage" width="0%" height="100%" radiusX="6">
 						<s:fill>
 							<s:SolidColor color="#fb8941"/>
+						</s:fill>
+					</s:Rect>
+				</s:Group>
+			</s:Group>
+		</s:HGroup>
+		<s:HGroup width="100%" includeIn="transfering">
+			<s:Label text="已传送{data.converter.percentage}%" fontSize="10" width="70"/>
+			<s:Group width="100%" height="14">
+				<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
+					<s:fill>
+						<s:SolidColor color="#666666"/>
+					</s:fill>
+				</s:Rect>
+				<s:Group left="2" top="2" right="2" bottom="2">
+					<s:Rect id="rcTransferPercentage" width="0%" height="100%" radiusX="6">
+						<s:fill>
+							<s:SolidColor color="#72af0a"/>
 						</s:fill>
 					</s:Rect>
 				</s:Group>

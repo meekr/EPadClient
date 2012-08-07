@@ -1,5 +1,7 @@
 package classes
 {
+	import classes.MediaItemType;
+	
 	import events.MediaConvertEvent;
 	
 	import flash.events.EventDispatcher;
@@ -8,6 +10,7 @@ package classes
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 
 	public class MediaController extends EventDispatcher
 	{
@@ -22,6 +25,9 @@ package classes
 		[Bindable]
 		public var convertingPool:ArrayCollection;
 		
+		[Bindable]
+		public var itemsOnDevice:ArrayCollection;
+		
 		public function MediaController()
 		{
 			convertingPool = new ArrayCollection();
@@ -30,9 +36,45 @@ package classes
 			mediaItems4Audio = new ArrayCollection();
 			mediaItems4Video = new ArrayCollection();
 			
+			itemsOnDevice = new ArrayCollection();
+			
 			CONFIG::ON_PC {
 				ExternalInterface.addCallback("FL_setConvertPercentage", FL_setConvertPercentage);
+				ExternalInterface.addCallback("FL_setTransferPercentage", FL_setTransferPercentage);
 				ExternalInterface.addCallback("FL_completeConvert", FL_completeConvert);
+				ExternalInterface.addCallback("FL_completeTransfer", FL_completeTransfer);
+			}
+		}
+		
+		public function getDeviceMediaItems():void
+		{
+			CONFIG::ON_PC {
+				itemsOnDevice.removeAll();
+				
+				var methods:Array = ["F2C_getDeviceVideos", "F2C_getDeviceAudios", "F2C_getDevicePictures"];
+				var types:Array = [MediaItemType.VIDEO, MediaItemType.AUDIO, MediaItemType.PICTURE];
+				
+				for (var i:int=0; i<methods.length; i++)
+				{
+					var files:String = ExternalInterface.call(methods[i], "");
+					if (files.length > 0)
+					{
+						var items:Array = files.split(",");
+						for each (var str:String in items)
+						{
+							var filepath:String = str.split("#")[0];
+							var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
+							
+							var item:MediaItem = new MediaItem();
+							item.fileUrl = filepath;
+							item.type = types[i];
+							item.name = name;
+							item.fileSizeInBytes = parseInt(str.split("#")[1]);
+							
+							itemsOnDevice.addItem(item);
+						}
+					}
+				}
 			}
 		}
 		
@@ -56,16 +98,8 @@ package classes
 			{
 				var converter:Converter = convertingPool.getItemAt(0) as Converter;
 				CONFIG::ON_PC {
-					ExternalInterface.call("F2C_importVideo", converter.sourceFile);
+					ExternalInterface.call("F2C_convertVideo", converter.sourceFile);
 				}
-			}
-		}
-		
-		public function importVideo(converter:Converter):void
-		{
-			convertingPool[converter.sourceFile] = converter;
-			CONFIG::ON_PC {
-				ExternalInterface.call("F2C_importVideo", converter.sourceFile);
 			}
 		}
 		
@@ -83,7 +117,38 @@ package classes
 			converter.dispatchEvent(evt);
 		}
 		
+		private function FL_setTransferPercentage(args:String):void
+		{
+			var converter:Converter = convertingPool.getItemAt(0) as Converter;
+			converter.percentage = parseInt(args);
+			if (isNaN(converter.percentage))
+				converter.percentage = 0;
+			converter.percentage = Math.min(converter.percentage, 100);
+			
+			var evt:MediaConvertEvent = new MediaConvertEvent();
+			evt.status = MediaItemTransitionStatus.TRANSFERING;
+			evt.percentage = converter.percentage;
+			converter.dispatchEvent(evt);
+		}
+		
 		private function FL_completeConvert(args:String):void
+		{
+			if (convertingPool.length > 0)
+			{
+				var converter:Converter = convertingPool.getItemAt(0) as Converter;
+				
+				var evt:MediaConvertEvent = new MediaConvertEvent();
+				evt.percentage = 0;
+				evt.status = MediaItemTransitionStatus.TRANSFERING;
+				converter.dispatchEvent(evt);
+				
+				CONFIG::ON_PC {
+					ExternalInterface.call("F2C_transferVideo2Device", converter.filenameWithoutExtension);
+				}
+			}
+		}
+		
+		private function FL_completeTransfer(args:String):void
 		{
 			if (convertingPool.length > 0)
 			{

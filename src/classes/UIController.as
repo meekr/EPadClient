@@ -231,13 +231,5 @@ package classes
 				item.resumeDownload();
 			}
 		}
-		
-		public function importVideos():void
-		{
-			CONFIG::ON_PC {
-				var ret:String = ExternalInterface.call("F2C_importVideos", "");
-				Alert.show(ret);
-			}
-		}
 	}
 }

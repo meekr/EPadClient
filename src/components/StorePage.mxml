@@ -107,7 +107,7 @@
 				<s:BitmapFill source="@Embed(source='assets/local-area-top-bg.png')" fillMode="repeat"/>
 			</s:fill>
 		</s:Rect>
-		<s:Image left="{81+selectedCategoryIndex*48}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
+		<s:Image left="{8+selectedCategoryIndex*47}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
 			<s:filters>
 				<s:DropShadowFilter distance="2" angle="270" blurY="1" alpha="0.1"/>
 			</s:filters>
@@ -120,13 +120,12 @@
 		
 		<!-- content -->
 		<s:HGroup left="0" top="11" right="0" height="28" gap="17" paddingLeft="22" paddingRight="10">
-			<s:Label text="本地" height="100%" fontSize="17" color="#000000"/>
-			<s:Spacer width="5"/>
 			<s:Label text="全 部" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(0)"/>
-			<s:Label text="应 用" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(1)"/>
-			<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(2)"/>
-			<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(3)"/>
-			<s:Label text="电子书" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(4)"/>
+			<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(1)"/>
+			<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(2)"/>
+			<s:Label text="游 戏" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(3)"/>
+			<s:Label text="绘 本" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(4)"/>
+			<s:Label text="应 用" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(5)"/>
 			<s:Spacer width="100%"/>
 			<s:Label text="排序方式" height="100%" verticalAlign="middle"/>
 			<s:Group width="80" verticalCenter="-4" height="22">

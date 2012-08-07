@@ -11,5 +11,11 @@ package classes
 		public function Converter()
 		{
 		}
+		
+		public function get filenameWithoutExtension():String
+		{
+			var s:String = sourceFile.substr(sourceFile.lastIndexOf("\\")+1);
+			return s.substr(0, s.lastIndexOf("."));
+		}
 	}
 }

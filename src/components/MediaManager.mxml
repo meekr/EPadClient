@@ -164,14 +164,21 @@
 			
 			protected function btnDeviceDeleteSelected_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				for each (var item:MediaItem in MediaController.instance.itemsOnDevice)
+				{
+					if (item.selected)
+					{
+						
+					}
+				}
 			}
 			
 			protected function btnDeviceSelectAll_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				
+				for each (var item:MediaItem in MediaController.instance.itemsOnDevice)
+				{
+					item.selected = true;
+				}
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -179,6 +186,7 @@
 				var so:SharedObject = SharedObject.getLocal("localPath4Media");
 				localPath.text = so.data.picture;
 				populateMediaList(localPath.text);
+				MediaController.instance.getDeviceMediaItems();
 			}
 			
 			protected function btnTransfer2Device_clickHandler(event:MouseEvent):void
@@ -313,7 +321,13 @@
 				</s:fill>
 			</s:Rect>
 			<s:List id="lstDevice" left="6" top="6" right="6" bottom="77"
-					skinClass="skins.MyListSkin" borderColor="#fbe8cd">
+					skinClass="skins.MyListSkin" borderColor="#fbe8cd"
+					itemRenderer="renderers.MediaItemRenderer"
+					dataProvider="{MediaController.instance.itemsOnDevice}"
+					horizontalScrollPolicy="off">
+				<s:layout>
+					<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+				</s:layout>
 			</s:List>
 			<s:Label backgroundColor="#cccccc" left="0" right="0" bottom="75" height="1"/>
 			<s:HGroup left="0" right="0" bottom="44" height="30" verticalAlign="middle">
