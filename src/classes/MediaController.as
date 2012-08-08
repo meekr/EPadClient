@@ -51,6 +51,9 @@ package classes
 			CONFIG::ON_PC {
 				itemsOnDevice.removeAll();
 				
+				if (!UIController.instance.deviceDisk.connected)
+					return;
+				
 				var methods:Array = ["F2C_getDeviceVideos", "F2C_getDeviceAudios", "F2C_getDevicePictures"];
 				var types:Array = [MediaItemType.VIDEO, MediaItemType.AUDIO, MediaItemType.PICTURE];
 				
@@ -98,7 +101,18 @@ package classes
 			{
 				var converter:Converter = convertingPool.getItemAt(0) as Converter;
 				CONFIG::ON_PC {
-					ExternalInterface.call("F2C_convertVideo", converter.sourceFile);
+					var method:String;
+					switch (converter.mediaType)
+					{
+						case MediaItemType.VIDEO:
+							method = "F2C_convertVideo";
+							break;
+						case MediaItemType.AUDIO:
+							method = "F2C_convertAudio";
+							break;
+					}
+					
+					ExternalInterface.call(method, converter.sourceFile);
 				}
 			}
 		}
@@ -143,7 +157,15 @@ package classes
 				converter.dispatchEvent(evt);
 				
 				CONFIG::ON_PC {
-					ExternalInterface.call("F2C_transferVideo2Device", converter.filenameWithoutExtension);
+					switch (converter.mediaType)
+					{
+						case MediaItemType.AUDIO:
+							ExternalInterface.call("F2C_transferAudio2Device", converter.filenameWithoutExtension);
+							break;
+						case MediaItemType.VIDEO:
+							ExternalInterface.call("F2C_transferVideo2Device", converter.filenameWithoutExtension);
+							break;
+					}
 				}
 			}
 		}
@@ -158,6 +180,26 @@ package classes
 				var evt:MediaConvertEvent = new MediaConvertEvent();
 				evt.status = MediaItemTransitionStatus.COMPLETED;
 				converter.dispatchEvent(evt);
+				
+				var str:String = "";
+				CONFIG::ON_PC {
+					str = ExternalInterface.call("F2C_insertMediaNode", converter.mediaType + "," + converter.filenameWithoutExtension);
+				}
+				
+				// add item on device
+				if (str && str.length > 0)
+				{
+					var filepath:String = str.split("#")[0];
+					var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
+					
+					var item:MediaItem = new MediaItem();
+					item.fileUrl = filepath;
+					item.type = converter.mediaType;
+					item.name = name;
+					item.fileSizeInBytes = parseInt(str.split("#")[1]);
+					
+					itemsOnDevice.addItemAt(item, 0);
+				}
 			}
 			
 			startConverting();

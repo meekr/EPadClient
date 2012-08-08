@@ -13,6 +13,8 @@
 			import classes.MediaItemType;
 			import classes.UIController;
 			
+			import events.DeviceConnectionChangeEvent;
+			
 			import mx.binding.utils.BindingUtils;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -60,10 +62,6 @@
 				{
 					selectedDeviceIndex = index;
 				}
-			}
-			
-			protected function btnSync_clickHandler(event:MouseEvent):void
-			{
 			}
 			
 			protected function btnBrowse_clickHandler(event:MouseEvent):void
@@ -168,7 +166,11 @@
 				{
 					if (item.selected)
 					{
-						
+						CONFIG::ON_PC {
+							ExternalInterface.call("F2C_deleteDeviceMedia", item.type + "," + item.fileUrl);
+							var idx:int = MediaController.instance.itemsOnDevice.getItemIndex(item);
+							MediaController.instance.itemsOnDevice.removeItemAt(idx);
+						}
 					}
 				}
 			}
@@ -186,6 +188,13 @@
 				var so:SharedObject = SharedObject.getLocal("localPath4Media");
 				localPath.text = so.data.picture;
 				populateMediaList(localPath.text);
+				MediaController.instance.getDeviceMediaItems();
+				
+				UIController.instance.deviceDisk.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
+			}
+			
+			private function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
+			{
 				MediaController.instance.getDeviceMediaItems();
 			}
 			
@@ -211,6 +220,18 @@
 					if (!item.selected) continue;
 					var converter:Converter = new Converter();
 					converter.sourceFile = item.fileUrl;
+					switch (selectedLocalIndex)
+					{
+						case 0:
+							converter.mediaType = MediaItemType.PICTURE;
+							break;
+						case 1:
+							converter.mediaType = MediaItemType.AUDIO;
+							break;
+						case 2:
+							converter.mediaType = MediaItemType.VIDEO;
+							break;
+					}
 					MediaController.instance.addConvertTask(converter);
 					item.converter = converter;
 				}
