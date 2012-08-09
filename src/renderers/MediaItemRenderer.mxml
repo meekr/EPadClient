@@ -82,7 +82,7 @@
 	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video,waiting,converting,transfering,disabled"/>
 	<s:Spacer width="0"/>
 	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="0" gap="10">
-		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
+		<s:Label text="{data.name}" color="#333333" fontSize="14" width="100%"/>
 		<s:Label text="文件大小：{data.fileSize}" includeIn="default,audio,video,disabled"/>
 		<s:HGroup width="100%" includeIn="converting">
 			<s:Label text="已转换{data.converter.percentage}%" fontSize="10" width="70"/>

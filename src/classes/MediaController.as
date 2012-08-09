@@ -110,6 +110,9 @@ package classes
 						case MediaItemType.AUDIO:
 							method = "F2C_convertAudio";
 							break;
+						case MediaItemType.PICTURE:
+							method = "F2C_convertPicture";
+							break;
 					}
 					
 					ExternalInterface.call(method, converter.sourceFile);
@@ -164,6 +167,9 @@ package classes
 							break;
 						case MediaItemType.VIDEO:
 							ExternalInterface.call("F2C_transferVideo2Device", converter.filenameWithoutExtension);
+							break;
+						case MediaItemType.PICTURE:
+							ExternalInterface.call("F2C_transferPicture2Device", converter.filenameWithoutExtension);
 							break;
 					}
 				}

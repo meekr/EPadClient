@@ -12,6 +12,7 @@
 			import classes.MediaItem;
 			import classes.MediaItemType;
 			import classes.UIController;
+			import classes.Utils;
 			
 			import events.DeviceConnectionChangeEvent;
 			
@@ -190,7 +191,7 @@
 				populateMediaList(localPath.text);
 				MediaController.instance.getDeviceMediaItems();
 				
-				UIController.instance.deviceDisk.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
+				UIController.instance.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
 			}
 			
 			private function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
