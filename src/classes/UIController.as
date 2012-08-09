@@ -101,12 +101,6 @@ package classes
 			app.type = AppItemType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
 			DataController.instance.itemsOnPc.addItem(app);
-			
-			// sync status with device
-			if (DataController.instance.itemsOnDeviceHash[app.name]) {
-				app.localItemText = "已安装";
-				app.localItemEnabled = false;
-			}
 		}
 		
 		public function removeAppOnPc(app:AppItem):void
@@ -126,9 +120,6 @@ package classes
 				var arg:String = this.downloadDirectory + app.name + ".npk";
 				var ret:String = ExternalInterface.call("F2C_installApp", arg);
 				if (ret.length > 0) {
-					app.localItemText = "已安装";
-					app.localItemEnabled = false;
-					
 					// insert item on device
 					if (DataController.instance.itemsOnDevice.length > 0) {
 						var ai:AppItem = app.clone4DeviceItem();
@@ -139,10 +130,6 @@ package classes
 						DataController.instance.itemsOnDevice.addItemAt(ai, 0);
 						DataController.instance.itemsOnDevice.refresh();
 					}
-				}
-				else {
-					app.localItemText = "同步";
-					app.localItemEnabled = true;
 				}
 			}
 		}
@@ -172,20 +159,8 @@ package classes
 				if (ret == "1") {
 					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
 					DataController.instance.itemsOnDevice.removeItemAt(idx);
-					
-					// sync items on PC
-					for (var i:int=0; i<DataController.instance.itemsOnPc.length; i++) {
-						var ai:AppItem = DataController.instance.itemsOnPc[i];
-						if (ai.name == app.name) {
-							ai.localItemText = "同步";
-							ai.localItemEnabled = true;
-							break;
-						}
-					}
 				}
 				else {
-					app.deviceItemText = "从设备移除";
-					app.deviceItemEnabled = true;
 				}
 			}
 			return true;

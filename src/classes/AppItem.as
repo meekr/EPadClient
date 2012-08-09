@@ -20,6 +20,7 @@ package classes
 		public var category:String;
 		public var selected:Boolean;
 		public var type:String;
+		public var fileSizeInBytes:Number;
 		
 		public var purchased:Boolean;
 		public var downloaded:Boolean;
@@ -31,19 +32,8 @@ package classes
 		public var iconBase64:String;
 		public var iconFile:String;
 		
-		public var storeItemText:String = "购买";
-		public var storeItemEnabled:Boolean = true;
-		
-		public var localItemText:String = "同步";
-		public var localItemEnabled:Boolean = true;
-		
-		public var deviceItemText:String = "从设备移除";
-		public var deviceItemEnabled:Boolean = true;
-		
 		public function AppItem()
 		{
-			addEventListener(AppItemDeleteEvent.name, appItemDeleteHandler);
-			addEventListener(AppItemSyncEvent.name, appItemSyncHandler);
 		}
 		
 		public function dispose():void
@@ -79,20 +69,9 @@ package classes
 			return type == AppItemType.STORE;
 		}
 		
-		
-		protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
+		public function get fileSize():String
 		{
-			deviceItemText = "正在删除中...";
-			deviceItemEnabled = false;
-			setTimeout(UIController.instance.deleteAppFromDevice, 100, this);
-		}
-		
-		protected function appItemSyncHandler(event:AppItemSyncEvent):void
-		{
-			classes.Utils.log2c("sync "+this.name);
-			localItemText = "正在同步中...";
-			localItemEnabled = false;
-			setTimeout(UIController.instance.installApp, 100, this);
+			return Math.round(fileSizeInBytes/1024) + " KB";
 		}
 		
 		public function clone4DeviceItem():AppItem

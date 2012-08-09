@@ -90,75 +90,73 @@
 			
 			private function populateMediaList(directory:String):void
 			{
-				CONFIG::ON_PC {
-					if (directory && directory.length>0)
-					{
-						var so:SharedObject = SharedObject.getLocal("localPath4Media");
-						var f2c_method:String;
-						var itemsCollection:ArrayCollection;
-						var mediaType:String;
-						switch (selectedLocalIndex)
+				var so:SharedObject = SharedObject.getLocal("localPath4Media");
+				var f2c_method:String;
+				var itemsCollection:ArrayCollection;
+				var mediaType:String;
+				switch (selectedLocalIndex)
+				{
+					case 0:
+						so.data.picture = directory;
+						if (!items4PicturePopulated)
 						{
-							case 0:
-								so.data.picture = directory;
-								if (!items4PicturePopulated)
-								{
-									f2c_method = "F2C_getLocalPictures";
-									items4PicturePopulated = true;
-								}
-								itemsCollection = MediaController.instance.mediaItems4Picture;
-								mediaType = MediaItemType.PICTURE;
-								break;
-							case 1:
-								so.data.audio = directory;
-								if (!items4AudioPopulated)
-								{
-									f2c_method = "F2C_getLocalAudios";
-									items4AudioPopulated = true;
-								}
-								itemsCollection = MediaController.instance.mediaItems4Audio;
-								mediaType = MediaItemType.AUDIO;
-								break;
-							case 2:
-								so.data.video = directory;
-								if (!items4VideoPopulated)
-								{
-									f2c_method = "F2C_getLocalVideos";
-									items4VideoPopulated = true;
-								}
-								itemsCollection = MediaController.instance.mediaItems4Video;
-								mediaType = MediaItemType.VIDEO;
-								break;
+							f2c_method = "F2C_getLocalPictures";
+							items4PicturePopulated = true;
 						}
-						so.flush();
-						
-						localPath.text = directory;
-						
-						if (f2c_method && f2c_method.length > 0)
+						itemsCollection = MediaController.instance.mediaItems4Picture;
+						mediaType = MediaItemType.PICTURE;
+						break;
+					case 1:
+						so.data.audio = directory;
+						if (!items4AudioPopulated)
 						{
-							var files:String = ExternalInterface.call(f2c_method, directory);
+							f2c_method = "F2C_getLocalAudios";
+							items4AudioPopulated = true;
+						}
+						itemsCollection = MediaController.instance.mediaItems4Audio;
+						mediaType = MediaItemType.AUDIO;
+						break;
+					case 2:
+						so.data.video = directory;
+						if (!items4VideoPopulated)
+						{
+							f2c_method = "F2C_getLocalVideos";
+							items4VideoPopulated = true;
+						}
+						itemsCollection = MediaController.instance.mediaItems4Video;
+						mediaType = MediaItemType.VIDEO;
+						break;
+				}
+				so.flush();
+				
+				localPath.text = directory;
+				
+				if (f2c_method && f2c_method.length>0)
+				{
+					CONFIG::ON_PC {
+						var files:String = "";
+						if (directory && directory.length>0)
+							files = ExternalInterface.call(f2c_method, directory);
+						
+						// update data
+						itemsCollection.removeAll();
+						var items:Array = files.split(",");
+						for each (var str:String in items)
+						{
+							var filepath:String = str.split("#")[0];
+							var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
 							
-							// update data
-							itemsCollection.removeAll();
-							var items:Array = files.split(",");
-							for each (var str:String in items)
-							{
-								var filepath:String = str.split("#")[0];
-								var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
-								
-								var item:MediaItem = new MediaItem();
-								item.fileUrl = filepath;
-								item.type = mediaType;
-								item.name = name;
-								item.fileSizeInBytes = parseInt(str.split("#")[1]);
-								
-								itemsCollection.addItem(item);
-							}
+							var item:MediaItem = new MediaItem();
+							item.fileUrl = filepath;
+							item.type = mediaType;
+							item.name = name;
+							item.fileSizeInBytes = parseInt(str.split("#")[1]);
+							
+							itemsCollection.addItem(item);
 						}
-						
-						lstLocal.dataProvider = itemsCollection;
 					}
 				}
+				lstLocal.dataProvider = itemsCollection;
 			}
 			
 			protected function btnDeviceDeleteSelected_clickHandler(event:MouseEvent):void

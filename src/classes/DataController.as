@@ -55,7 +55,9 @@ package classes
 			
 			boughtItems = new BoughtItemsManager();
 			
-			setTimeout(getPcProductList, 1);
+			CONFIG::ON_PC {
+				ExternalInterface.addCallback("FL_addDownloadedApp", FL_addDownloadedApp);
+			}
 		}
 		
 		public static function get instance():DataController
@@ -65,6 +67,21 @@ package classes
 				mInstance = new DataController();
 			}
 			return mInstance;
+		}
+		
+		private function FL_addDownloadedApp(args:String):void
+		{
+			var npkPath:String = args.substr(0, args.lastIndexOf(","));
+			var iconPath:String = npkPath.substr(0, npkPath.length-3) + "png";
+			var appName:String = iconPath.substr(iconPath.lastIndexOf("\\") + 1);
+			var filesize:Number = parseInt(args.substr(args.lastIndexOf(",")+1));
+			
+			var app:AppItem = new AppItem();
+			app.name = appName;
+			app.type = AppItemType.PC;
+			app.iconUrl = iconPath;
+			app.fileSizeInBytes = filesize;
+			DataController.instance.itemsOnPc.addItem(app);
 		}
 		
 		public function getStoreProductList(categoryId:int, page:int, sort:String, slug:String):void
@@ -159,27 +176,6 @@ package classes
 			this.retrievingDeviceList = false;
 			itemsOnDevice.filterFunction = filterMyArrayCollection;
 			itemsOnDevice.refresh();
-			
-			syncStoreAndLocalStatusWithDevice();
-		}
-		
-		public function syncStoreAndLocalStatusWithDevice():void
-		{
-			var i:int;
-			var app:AppItem;
-			for (i=0; i<itemsOnStore.length; i++) {
-				app = itemsOnStore[i] as AppItem;
-				if (itemsOnDeviceHash[app.name])
-					app.storeItemText = "已购买";
-			}
-			
-			for (i=0; i<itemsOnPc.length; i++) {
-				app = itemsOnPc[i] as AppItem;
-				if (itemsOnDeviceHash[app.name]) {
-					app.localItemText = "已安装";
-					app.localItemEnabled = false;
-				}
-			}
 		}
 		
 		private function filterMyArrayCollection(item:Object):Boolean

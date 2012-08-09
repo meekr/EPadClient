@@ -41,7 +41,7 @@
 	<s:Spacer width="8"/>
 	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="8" gap="10">
 		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
-		<s:Label text="文件大小："/>
+		<s:Label text="文件大小：{data.fileSize}"/>
 	</s:VGroup>
 	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)"/>
 	<s:Spacer width="10"/>
