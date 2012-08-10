@@ -134,26 +134,10 @@
 				if (f2c_method && f2c_method.length>0)
 				{
 					CONFIG::ON_PC {
-						var files:String = "";
-						if (directory && directory.length>0)
-							files = ExternalInterface.call(f2c_method, directory);
-						
-						// update data
 						itemsCollection.removeAll();
-						var items:Array = files.split(",");
-						for each (var str:String in items)
-						{
-							var filepath:String = str.split("#")[0];
-							var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
-							
-							var item:MediaItem = new MediaItem();
-							item.fileUrl = filepath;
-							item.type = mediaType;
-							item.name = name;
-							item.fileSizeInBytes = parseInt(str.split("#")[1]);
-							
-							itemsCollection.addItem(item);
-						}
+						
+						if (directory && directory.length>0)
+							ExternalInterface.call(f2c_method, directory);
 					}
 				}
 				lstLocal.dataProvider = itemsCollection;

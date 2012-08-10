@@ -43,6 +43,7 @@ package classes
 				ExternalInterface.addCallback("FL_setTransferPercentage", FL_setTransferPercentage);
 				ExternalInterface.addCallback("FL_completeConvert", FL_completeConvert);
 				ExternalInterface.addCallback("FL_completeTransfer", FL_completeTransfer);
+				ExternalInterface.addCallback("FL_addLocalMedia", FL_addLocalMedia);
 			}
 		}
 		
@@ -209,6 +210,33 @@ package classes
 			}
 			
 			startConverting();
+		}
+		
+		private function FL_addLocalMedia(args:String):void
+		{
+			var str:Array = args.split(",");
+			var type:String = str[0];
+			var size:Number = parseInt(str[1]);
+			var file:String = str[2];
+			
+			var item:MediaItem = new MediaItem();
+			item.fileUrl = file;
+			item.type = type;
+			item.name = file.substr(file.lastIndexOf("\\")+1);
+			item.fileSizeInBytes = size;
+			
+			switch (type)
+			{
+				case MediaItemType.AUDIO:
+					mediaItems4Audio.addItem(item);
+					break;
+				case MediaItemType.VIDEO:
+					mediaItems4Video.addItem(item);
+					break;
+				case MediaItemType.PICTURE:
+					mediaItems4Picture.addItem(item);
+					break;
+			}
 		}
 	}
 }
