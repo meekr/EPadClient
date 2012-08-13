@@ -27,33 +27,18 @@
 			[Bindable]
 			private var selectedDeviceIndex:Number = 0;
 			
-			private var items4PicturePopulated:Boolean;
-			private var items4AudioPopulated:Boolean;
-			private var items4VideoPopulated:Boolean;
-			
+			private var mediaTypes:Array = ["picture", "music", "video"];
+			private var f2c_methods:Array = ["F2C_getLocalPictures", "F2C_getLocalMusics", "F2C_getLocalVideos"];
 			
 			protected function changeLocalIndex(index:Number):void
 			{
-				if (index != selectedLocalIndex)
+				if (index != selectedLocalIndex && index > -1)
 				{
 					selectedLocalIndex = index;
 					
 					var so:SharedObject = SharedObject.getLocal("localPath4Media");
-					switch (selectedLocalIndex)
-					{
-						case 0:
-							localPath.text = so.data.picture;
-							populateMediaList(localPath.text);
-							break;
-						case 1:
-							localPath.text = so.data.audio;
-							populateMediaList(localPath.text);
-							break;
-						case 2:
-							localPath.text = so.data.video;
-							populateMediaList(localPath.text);
-							break;
-					}
+					localPath.text = so.data[mediaTypes[index]];
+					viewStack.selectedIndex = index;
 				}
 			}
 			
@@ -71,88 +56,51 @@
 					var ret:String = ExternalInterface.call("F2C_getLocalMediaPath", "");
 					if (ret && ret.length > 0)
 					{
-						switch (selectedLocalIndex)
-						{
-							case 0:
-								items4PicturePopulated = false;
-								break;
-							case 1:
-								items4AudioPopulated = false;
-								break;
-							case 2:
-								items4VideoPopulated = false;
-								break;
-						}
-						populateMediaList(ret);
+						var so:SharedObject = SharedObject.getLocal("localPath4Media");
+						so.data[mediaTypes[selectedLocalIndex]] = ret;
+						so.flush();
+						
+						populateMedia(selectedLocalIndex);
 					}
 				}
 			}
 			
-			private function populateMediaList(directory:String):void
+			private function populateMedia(index:int):void
 			{
-				var so:SharedObject = SharedObject.getLocal("localPath4Media");
 				var f2c_method:String;
-				var itemsCollection:ArrayCollection;
-				var mediaType:String;
-				switch (selectedLocalIndex)
+				switch (index)
 				{
 					case 0:
-						so.data.picture = directory;
-						if (!items4PicturePopulated)
-						{
-							f2c_method = "F2C_getLocalPictures";
-							items4PicturePopulated = true;
-						}
-						itemsCollection = MediaController.instance.mediaItems4Picture;
-						mediaType = MediaItemType.PICTURE;
+						MediaController.instance.mediaItems4Picture.removeAll();
 						break;
 					case 1:
-						so.data.audio = directory;
-						if (!items4AudioPopulated)
-						{
-							f2c_method = "F2C_getLocalAudios";
-							items4AudioPopulated = true;
-						}
-						itemsCollection = MediaController.instance.mediaItems4Audio;
-						mediaType = MediaItemType.AUDIO;
+						MediaController.instance.mediaItems4Music.removeAll();
 						break;
 					case 2:
-						so.data.video = directory;
-						if (!items4VideoPopulated)
-						{
-							f2c_method = "F2C_getLocalVideos";
-							items4VideoPopulated = true;
-						}
-						itemsCollection = MediaController.instance.mediaItems4Video;
-						mediaType = MediaItemType.VIDEO;
+						MediaController.instance.mediaItems4Video.removeAll();
 						break;
 				}
-				so.flush();
 				
-				localPath.text = directory;
+				var so:SharedObject = SharedObject.getLocal("localPath4Media");
+				var directory:String = so.data[mediaTypes[index]];
 				
-				if (f2c_method && f2c_method.length>0)
-				{
-					CONFIG::ON_PC {
-						itemsCollection.removeAll();
-						
-						if (directory && directory.length>0)
-							ExternalInterface.call(f2c_method, directory);
-					}
+				CONFIG::ON_PC {
+					if (directory && directory.length>0)
+						ExternalInterface.call(f2c_methods[index], directory);
 				}
-				lstLocal.dataProvider = itemsCollection;
 			}
 			
 			protected function btnDeviceDeleteSelected_clickHandler(event:MouseEvent):void
 			{
-				for each (var item:MediaItem in MediaController.instance.itemsOnDevice)
+				for (var i:int=0; i<MediaController.instance.itemsOnDevice.length; i++)
 				{
+					var item:MediaItem = MediaController.instance.itemsOnDevice.getItemAt(i) as MediaItem;
 					if (item.selected)
 					{
 						CONFIG::ON_PC {
 							ExternalInterface.call("F2C_deleteDeviceMedia", item.type + "," + item.fileUrl);
-							var idx:int = MediaController.instance.itemsOnDevice.getItemIndex(item);
-							MediaController.instance.itemsOnDevice.removeItemAt(idx);
+							MediaController.instance.itemsOnDevice.removeItemAt(i);
+							i--;
 						}
 					}
 				}
@@ -170,10 +118,14 @@
 			{
 				var so:SharedObject = SharedObject.getLocal("localPath4Media");
 				localPath.text = so.data.picture;
-				populateMediaList(localPath.text);
 				MediaController.instance.getDeviceMediaItems();
 				
 				UIController.instance.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
+				
+				// populate local media items
+				populateMedia(0);
+				populateMedia(1);
+				populateMedia(2);
 			}
 			
 			private function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
@@ -190,20 +142,12 @@
 						itemsCollection = MediaController.instance.mediaItems4Picture;
 						break;
 					case 1:
-						itemsCollection = MediaController.instance.mediaItems4Audio;
+						itemsCollection = MediaController.instance.mediaItems4Music;
 						break;
 					case 2:
 						itemsCollection = MediaController.instance.mediaItems4Video;
 						break;
 				}
-				
-				for each (var item:MediaItem in itemsCollection)
-				{
-					if (!item.selected) continue;
-					classes.Utils.log2c(item.fileUrl);
-				}
-				return;
-				
 				
 				// convert selected
 				for each (var item:MediaItem in itemsCollection)
@@ -217,7 +161,7 @@
 							converter.mediaType = MediaItemType.PICTURE;
 							break;
 						case 1:
-							converter.mediaType = MediaItemType.AUDIO;
+							converter.mediaType = MediaItemType.MUSIC;
 							break;
 						case 2:
 							converter.mediaType = MediaItemType.VIDEO;
@@ -285,13 +229,38 @@
 			</s:VGroup>
 		</s:HGroup>
 		<s:Image left="0" top="106" right="0" source="@Embed(source='assets/gradient-line.png')" height="1"/>
-		<s:List id="lstLocal" left="8" top="107" right="8" bottom="8"
-				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
-				itemRenderer="renderers.MediaItemRenderer">
-			<s:layout>
-				<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
-			</s:layout>
-		</s:List>
+		<mx:ViewStack id="viewStack" left="8" top="107" right="8" bottom="8">
+			<s:NavigatorContent width="100%" height="100%">
+				<s:List left="0" top="0" right="0" bottom="0"
+						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
+						itemRenderer="renderers.MediaItemRenderer"
+						dataProvider="{MediaController.instance.mediaItems4Picture}">
+					<s:layout>
+						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+					</s:layout>
+				</s:List>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%">
+				<s:List left="0" top="0" right="0" bottom="0"
+						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
+						itemRenderer="renderers.MediaItemRenderer"
+						dataProvider="{MediaController.instance.mediaItems4Music}">
+					<s:layout>
+						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+					</s:layout>
+				</s:List>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%">
+				<s:List left="0" top="0" right="0" bottom="0"
+						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
+						itemRenderer="renderers.MediaItemRenderer"
+						dataProvider="{MediaController.instance.mediaItems4Video}">
+					<s:layout>
+						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+					</s:layout>
+				</s:List>
+			</s:NavigatorContent>
+		</mx:ViewStack>
 		<s:Rect top="110" right="-45" width="48" height="100" topRightRadiusX="8" bottomRightRadiusX="8">
 			<s:fill>
 				<s:SolidColor color="#FFFFFF"/>
@@ -301,8 +270,8 @@
 							 top="116" right="-40"
 							 backgroundColor="#75b508"
 							 click="btnTransfer2Device_clickHandler(event)"
-							 enabled="{MediaController.instance.convertingPool.length == 0}"
-							 mouseEnabled="{MediaController.instance.convertingPool.length == 0}"
+							 enabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
+							 mouseEnabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
 							 width="36" height="88">
 		</components:KPButton>
 		<s:Image source="@Embed(source='assets/white-arrow-right.png')" width="17" height="29" right="-30" top="148"/>
@@ -340,7 +309,8 @@
 				</s:layout>
 			</s:List>
 			<s:Label backgroundColor="#cccccc" left="0" right="0" bottom="75" height="1"/>
-			<s:HGroup left="0" right="0" bottom="44" height="30" verticalAlign="middle">
+			<s:HGroup left="0" right="0" bottom="44" height="30" verticalAlign="middle"
+					  enabled="{UIController.instance.deviceDisk.connected}" mouseEnabled="{UIController.instance.deviceDisk.connected}">
 				<s:Spacer width="100%"/>
 				<components:KPButton id="btnDeviceSelectAll"
 									 backgroundColor="#72af0a"
@@ -368,7 +338,8 @@
 							 top="240" right="360"
 							 backgroundColor="#07b1dc"
 							 click="btnTransfer2Local_clickHandler(event)"
-							 width="36" height="88">
+							 width="36" height="88"
+							 enabled="{UIController.instance.deviceDisk.connected}" mouseEnabled="{UIController.instance.deviceDisk.connected}">
 		</components:KPButton>
 		<s:Image source="@Embed(source='assets/white-arrow-left.png')" width="17" height="29" right="370" top="274"/>
 	</s:Group>

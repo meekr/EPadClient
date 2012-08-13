@@ -19,7 +19,7 @@ package classes
 		[Bindable]
 		public var mediaItems4Picture:ArrayCollection;
 		[Bindable]
-		public var mediaItems4Audio:ArrayCollection;
+		public var mediaItems4Music:ArrayCollection;
 		[Bindable]
 		public var mediaItems4Video:ArrayCollection;
 		[Bindable]
@@ -33,7 +33,7 @@ package classes
 			convertingPool = new ArrayCollection();
 			
 			mediaItems4Picture = new ArrayCollection();
-			mediaItems4Audio = new ArrayCollection();
+			mediaItems4Music = new ArrayCollection();
 			mediaItems4Video = new ArrayCollection();
 			
 			itemsOnDevice = new ArrayCollection();
@@ -55,8 +55,8 @@ package classes
 				if (!UIController.instance.deviceDisk.connected)
 					return;
 				
-				var methods:Array = ["F2C_getDeviceVideos", "F2C_getDeviceAudios", "F2C_getDevicePictures"];
-				var types:Array = [MediaItemType.VIDEO, MediaItemType.AUDIO, MediaItemType.PICTURE];
+				var methods:Array = ["F2C_getDeviceVideos", "F2C_getDeviceMusics", "F2C_getDevicePictures"];
+				var types:Array = [MediaItemType.VIDEO, MediaItemType.MUSIC, MediaItemType.PICTURE];
 				
 				for (var i:int=0; i<methods.length; i++)
 				{
@@ -108,8 +108,8 @@ package classes
 						case MediaItemType.VIDEO:
 							method = "F2C_convertVideo";
 							break;
-						case MediaItemType.AUDIO:
-							method = "F2C_convertAudio";
+						case MediaItemType.MUSIC:
+							method = "F2C_convertMusic";
 							break;
 						case MediaItemType.PICTURE:
 							method = "F2C_convertPicture";
@@ -163,8 +163,8 @@ package classes
 				CONFIG::ON_PC {
 					switch (converter.mediaType)
 					{
-						case MediaItemType.AUDIO:
-							ExternalInterface.call("F2C_transferAudio2Device", converter.filenameWithoutExtension);
+						case MediaItemType.MUSIC:
+							ExternalInterface.call("F2C_transferMusic2Device", converter.filenameWithoutExtension);
 							break;
 						case MediaItemType.VIDEO:
 							ExternalInterface.call("F2C_transferVideo2Device", converter.filenameWithoutExtension);
@@ -227,8 +227,8 @@ package classes
 			
 			switch (type)
 			{
-				case MediaItemType.AUDIO:
-					mediaItems4Audio.addItem(item);
+				case MediaItemType.MUSIC:
+					mediaItems4Music.addItem(item);
 					break;
 				case MediaItemType.VIDEO:
 					mediaItems4Video.addItem(item);

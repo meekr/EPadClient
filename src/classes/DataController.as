@@ -74,6 +74,7 @@ package classes
 			var npkPath:String = args.substr(0, args.lastIndexOf(","));
 			var iconPath:String = npkPath.substr(0, npkPath.length-3) + "png";
 			var appName:String = iconPath.substr(iconPath.lastIndexOf("\\") + 1);
+			appName = appName.substr(0, appName.length-4);
 			var filesize:Number = parseInt(args.substr(args.lastIndexOf(",")+1));
 			
 			var app:AppItem = new AppItem();

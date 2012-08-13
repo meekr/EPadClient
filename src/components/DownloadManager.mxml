@@ -19,14 +19,6 @@
 			[Bindable]
 			private var selectedDeviceIndex:Number = 0;
 			
-			protected function checkAll_changeHandler(event:Event):void
-			{
-				for each (var item:AppItem in DataController.instance.itemsOnPc)
-				{
-					item.selected = checkAll.selected;
-				}
-			}
-			
 			protected function changeLocalIndex(index:Number):void
 			{
 				if (index != selectedLocalIndex)
@@ -79,7 +71,7 @@
 		</s:Rect>
 		
 		<!-- content -->
-		<s:Image left="{81+selectedLocalIndex*48}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
+		<s:Image left="{81+selectedLocalIndex*47}" top="8" source="@Embed(source='assets/top-bar-item-bg.png')" width="57" height="47">
 			<s:filters>
 				<s:DropShadowFilter distance="2" angle="270" blurY="1" alpha="0.1"/>
 			</s:filters>
@@ -89,13 +81,11 @@
 			<s:Label text="本地" height="100%" fontSize="17" color="#000000"/>
 			<s:Spacer width="5"/>
 			<s:Label text="全 部" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(0)"/>
-			<s:Label text="应 用" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(1)"/>
-			<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(2)"/>
-			<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(3)"/>
-			<s:Label text="电子书" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(4)"/>
-			<s:Spacer width="100%"/>
-			<s:CheckBox id="checkAll" top="0" skinClass="skins.MyCheckBox" change="checkAll_changeHandler(event)"/>
-			<s:Spacer width="100%"/>
+			<s:Label text="音 乐" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(1)"/>
+			<s:Label text="视 频" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(2)"/>
+			<s:Label text="游 戏" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(3)"/>
+			<s:Label text="绘 本" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(4)"/>
+			<s:Label text="应用" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeLocalIndex(5)"/>
 		</s:HGroup>
 		<s:List id="lstLocal" left="8" top="40" right="8" bottom="41"
 				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
@@ -111,7 +101,11 @@
 			<components:KPButton id="btnSync"
 								 left="8" bottom="0"
 								 backgroundColor="#72af0a"
-								 text="同步到设备" width="120" height="28" fontSize="13" click="btnSync_clickHandler(event)"/>
+								 text="同步到设备"
+								 enabled="{UIController.instance.deviceDisk.connected}" mouseEnabled="{UIController.instance.deviceDisk.connected}"
+								 width="120" height="28"
+								 fontSize="13"
+								 click="btnSync_clickHandler(event)"/>
 			<s:Spacer width="100%"/>
 		</s:HGroup>
 	</s:Group>
