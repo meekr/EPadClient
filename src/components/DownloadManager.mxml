@@ -8,6 +8,7 @@
 		<![CDATA[
 			import classes.AppItem;
 			import classes.DataController;
+			import classes.ApplicationController;
 			import classes.Download;
 			import classes.UIController;
 			
@@ -37,6 +38,14 @@
 			
 			protected function btnSync_clickHandler(event:MouseEvent):void
 			{
+				for each (var item:AppItem in ApplicationController.instance.localItems)
+				{
+					if (item.selected)
+					{
+						ApplicationController.instance.installingPool.addItem(item);
+					}
+				}
+				ApplicationController.instance.startInstalling();
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -89,7 +98,7 @@
 		</s:HGroup>
 		<s:List id="lstLocal" left="8" top="40" right="8" bottom="41"
 				skinClass="skins.MyListSkin" borderColor="#FFFFFF"
-				dataProvider="{DataController.instance.itemsOnPc}"
+				dataProvider="{ApplicationController.instance.localItems}"
 				itemRenderer="renderers.AppListItemRenderer">
 			<s:layout>
 				<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
@@ -132,8 +141,13 @@
 				<s:SolidColor color="#fbe8cd"/>
 			</s:fill>
 		</s:Rect>
-		<s:List id="lstDevice" top="50" right="33" bottom="47" width="302"
-				skinClass="skins.MyListSkin" borderColor="#fbe8cd">
+		<s:List id="lstDevice" top="49" right="26" bottom="47" width="306"
+				skinClass="skins.MyListSkin" borderColor="#fbe8cd"
+				dataProvider="{ApplicationController.instance.deviceItems}"
+				itemRenderer="renderers.AppListItemRenderer">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+			</s:layout>
 		</s:List>
 		<s:HGroup right="21" bottom="17" width="316">
 			<s:Label text="{UIController.instance.deviceDisk.volumeStatus}"/>

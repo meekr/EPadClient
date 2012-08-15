@@ -4,13 +4,14 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="true"
 				width="100%"
-				alpha.disabled="0.5">
+				alpha.disabled="0.5" xmlns:components="components.*">
 	<fx:Script>
 		<![CDATA[
 			import classes.Converter;
 			import classes.MediaItem;
-			import classes.MediaItemType;
 			import classes.MediaItemTransitionStatus;
+			import classes.MediaItemType;
+			import classes.Utils;
 			
 			import events.MediaConvertEvent;
 			
@@ -19,9 +20,6 @@
 				super.data = value;
 				var item:MediaItem = value as MediaItem;
 				if (item) {
-					if (item.converter)
-						item.converter.addEventListener(MediaConvertEvent.name, convertHandler);
-				
 					switch (item.type)
 					{
 						case MediaItemType.MUSIC:
@@ -31,9 +29,24 @@
 							currentState = "video";
 							break;
 						default:
-							currentState = "default";
+							currentState = "picture";
 							break;
 					}
+					
+					if (item.base64Rep && item.base64Rep.length > 0) {
+						pic.visible = pic.includeInLayout = true;
+						try{
+						pic.load(item.base64ToByteArray);
+						}
+						catch(err:Error)
+						{
+							classes.Utils.log2c("error::"+err.message+","+err.errorID+","+err.name+","+err.getStackTrace());
+						}
+					}
+					pic.visible = pic.includeInLayout = (item.type == MediaItemType.PICTURE);
+					
+					if (item.converter)
+						item.converter.addEventListener(MediaConvertEvent.name, convertHandler);
 				}
 			}
 			
@@ -42,16 +55,16 @@
 				switch (event.status)
 				{
 					case MediaItemTransitionStatus.WAITING:
-						currentState = "waiting";
+						status.currentState = "waiting";
 						break;
 					case MediaItemTransitionStatus.CONVERTING:
-						currentState = "converting";
+						status.currentState = "converting";
 						break;
 					case MediaItemTransitionStatus.TRANSFERING:
-						currentState = "transfering";
+						status.currentState = "transfering";
 						break;
 					case MediaItemTransitionStatus.COMPLETED:
-						currentState = "disabled";
+						status.currentState = "disabled";
 						break;
 				}
 			}
@@ -62,64 +75,21 @@
 			}
 		]]>
 	</fx:Script>
-	<fx:Binding source="data.converter.percentage" destination="rcConvertPercentage.percentWidth"/>
-	<fx:Binding source="data.converter.percentage" destination="rcTransferPercentage.percentWidth"/>
 	<s:states>
-		<s:State name="default"/>
+		<s:State name="picture"/>
 		<s:State name="music"/>
 		<s:State name="video"/>
-		<s:State name="converting"/>
-		<s:State name="transfering"/>
-		<s:State name="waiting"/>
 		<s:State name="disabled"/>
 	</s:states>
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
 	</s:layout>
 	
-	<s:Image source="{data.fileUrl}" width="70" height="40" scaleMode="stretch" includeIn="default"/>
+	<mx:Image id="pic" source="{data.fileUrl}" width="70" height="40" scaleContent="true" maintainAspectRatio="false"/>
 	<s:Image source="@Embed(source='assets/icon-music-item.png')" width="70" height="40" scaleMode="stretch" includeIn="music"/>
-	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video,waiting,converting,transfering,disabled"/>
+	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video"/>
 	<s:Spacer width="0"/>
-	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="0" gap="10">
-		<s:Label text="{data.name}" color="#333333" fontSize="14" width="100%"/>
-		<s:Label text="文件大小：{data.fileSize}" includeIn="default,music,video,disabled"/>
-		<s:HGroup width="100%" includeIn="converting">
-			<s:Label text="已转换{data.converter.percentage}%" fontSize="10" width="70"/>
-			<s:Group width="100%" height="14">
-				<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
-					<s:fill>
-						<s:SolidColor color="#666666"/>
-					</s:fill>
-				</s:Rect>
-				<s:Group left="2" top="2" right="2" bottom="2">
-					<s:Rect id="rcConvertPercentage" width="0%" height="100%" radiusX="6">
-						<s:fill>
-							<s:SolidColor color="#fb8941"/>
-						</s:fill>
-					</s:Rect>
-				</s:Group>
-			</s:Group>
-		</s:HGroup>
-		<s:HGroup width="100%" includeIn="transfering">
-			<s:Label text="已传送{data.converter.percentage}%" fontSize="10" width="70"/>
-			<s:Group width="100%" height="14">
-				<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
-					<s:fill>
-						<s:SolidColor color="#666666"/>
-					</s:fill>
-				</s:Rect>
-				<s:Group left="2" top="2" right="2" bottom="2">
-					<s:Rect id="rcTransferPercentage" width="0%" height="100%" radiusX="6">
-						<s:fill>
-							<s:SolidColor color="#72af0a"/>
-						</s:fill>
-					</s:Rect>
-				</s:Group>
-			</s:Group>
-		</s:HGroup>
-		<s:Label text="等待转换..." color="#CCCCCC" fontSize="10" includeIn="waiting"/>
-	</s:VGroup>
+	<components:MediaItemRendererStatus id="status" width="100%" data="{data}"/>
 	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)"/>
 	<s:Spacer width="5"/>
 </s:ItemRenderer>

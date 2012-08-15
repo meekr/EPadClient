@@ -16,6 +16,7 @@
 			import classes.BoughtItem;
 			import classes.Constants;
 			import classes.DataController;
+			import classes.ApplicationController;
 			import classes.UIController;
 			
 			import events.LoginEvent;
@@ -57,13 +58,13 @@
 			private function downloadHistoryListener(event:ResultEvent):void {
 				var json:String = String(event.result);
 				var obj:Object = JSON.parse(json);
-				DataController.instance.boughtItems.items.removeAll();
+				ApplicationController.instance.boughtItems.removeAll();
 				for (var i:int=0; i<obj.products.length; i++) {
 					var item:BoughtItem = new BoughtItem();
 					item.id = obj.products[i].id;
 					item.name = obj.products[i].name;
 					item.downloadLink = Constants.getNpkUrl(obj.products[i].download_link);
-					DataController.instance.boughtItems.addItem(item);
+					ApplicationController.instance.boughtItems.addItem(item);
 				}
 			}
 			

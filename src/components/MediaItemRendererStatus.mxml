@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import classes.MediaItem;
+			import classes.MediaItemTransitionStatus;
+			import classes.MediaItemType;
+			import classes.Utils;
+			
+			import events.MediaConvertEvent;
+			
+			private var _data:MediaItem;
+			
+			[Bindable]
+			public function get data():MediaItem
+			{
+				return _data;
+			}
+			
+			public function set data(value:MediaItem):void
+			{
+				_data = value;
+				if (_data) {
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="converting"/>
+		<s:State name="transfering"/>
+		<s:State name="waiting"/>
+		<s:State name="disabled"/>
+	</s:states>
+	<fx:Binding source="data.converter.percentage" destination="rcConvertPercentage.percentWidth"/>
+	<fx:Binding source="data.converter.percentage" destination="rcTransferPercentage.percentWidth"/>
+	<s:layout>
+		<s:VerticalLayout verticalAlign="top" paddingTop="0" gap="10"/>
+	</s:layout>
+	
+	<s:Label text="{data.name}" color="#333333" fontSize="14" width="100%"/>
+	<s:Label text="文件大小：{data.fileSize}" includeIn="default,disabled"/>
+	<s:HGroup width="100%" includeIn="converting">
+		<s:Label text="已转换{data.converter.percentage}%" fontSize="10" width="70"/>
+		<s:Group width="100%" height="14">
+			<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
+				<s:fill>
+					<s:SolidColor color="#666666"/>
+				</s:fill>
+			</s:Rect>
+			<s:Group left="2" top="2" right="2" bottom="2">
+				<s:Rect id="rcConvertPercentage" width="0%" height="100%" radiusX="6">
+					<s:fill>
+						<s:SolidColor color="#fb8941"/>
+					</s:fill>
+				</s:Rect>
+			</s:Group>
+		</s:Group>
+	</s:HGroup>
+	<s:HGroup width="100%" includeIn="transfering">
+		<s:Label text="已传送{data.converter.percentage}%" fontSize="10" width="70"/>
+		<s:Group width="100%" height="14">
+			<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
+				<s:fill>
+					<s:SolidColor color="#666666"/>
+				</s:fill>
+			</s:Rect>
+			<s:Group left="2" top="2" right="2" bottom="2">
+				<s:Rect id="rcTransferPercentage" width="0%" height="100%" radiusX="6">
+					<s:fill>
+						<s:SolidColor color="#72af0a"/>
+					</s:fill>
+				</s:Rect>
+			</s:Group>
+		</s:Group>
+	</s:HGroup>
+	<s:Label text="等待转换..." color="#CCCCCC" fontSize="10" includeIn="waiting"/>
+</s:Group>

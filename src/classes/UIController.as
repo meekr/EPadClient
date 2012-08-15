@@ -19,7 +19,7 @@ package classes
 		
 		public var downloadDirectory:String;
 		
-		private var mDriveProgramName:String;
+		private var mDriveNANDName:String;
 		
 		[Bindable]
 		public var user:User;
@@ -51,9 +51,9 @@ package classes
 			return mInstance;
 		}
 		
-		public function get driveProgramName():String
+		public function get driveNANDName():String
 		{
-			return mDriveProgramName;
+			return mDriveNANDName;
 		}
 		
 		public function externalAddCallback(functionName:String, callback:Function):void
@@ -71,7 +71,7 @@ package classes
 		
 		private function FL_findNRDGameStoryAndAppRoot(args:String):void
 		{
-			mDriveProgramName = args;
+			mDriveNANDName = args;
 		}
 		
 		private function FL_setDiskVolumnStatus(args:String):void
@@ -89,25 +89,26 @@ package classes
 				firmwareVersion = ExternalInterface.call("F2C_getFirmwareVersion", "");
 		}
 		
-		public function addPcItem(appName:String):void
+		public function addPcItem(appName:String, fileSize:Number):void
 		{
-			for each(var item:AppItem in DataController.instance.itemsOnPc) {
+			for each(var item:AppItem in ApplicationController.instance.localItems) {
 				if (item.name == appName)
 					return;
 			}
 			
 			var app:AppItem = new AppItem();
 			app.name = appName;
-			app.type = AppItemType.PC;
+			app.fileSizeInBytes = fileSize;
+			app.location = LocationType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
-			DataController.instance.itemsOnPc.addItem(app);
+			ApplicationController.instance.localItems.addItem(app);
 		}
 		
 		public function removeAppOnPc(app:AppItem):void
 		{
-			var idx:int = DataController.instance.itemsOnPc.getItemIndex(app);
+			var idx:int = ApplicationController.instance.localItems.getItemIndex(app);
 			if (idx > -1) {
-				DataController.instance.itemsOnPc.removeItemAt(idx);
+				ApplicationController.instance.localItems.removeItemAt(idx);
 				CONFIG::ON_PC {
 					ExternalInterface.call("F2C_deleteAppOnPc", app.name);
 				}
@@ -117,6 +118,7 @@ package classes
 		public function installApp(app:AppItem):void
 		{
 			CONFIG::ON_PC {
+				/*
 				var arg:String = this.downloadDirectory + app.name + ".npk";
 				var ret:String = ExternalInterface.call("F2C_installApp", arg);
 				if (ret.length > 0) {
@@ -131,6 +133,7 @@ package classes
 						DataController.instance.itemsOnDevice.refresh();
 					}
 				}
+				*/
 			}
 		}
 		
@@ -140,8 +143,6 @@ package classes
 			download.appName = item.name;
 			download.npkUrl = item.npkUrl;
 			download.iconUrl = item.iconUrl;
-			DataController.instance.itemsDownloading.addItem(download);
-			//setTimeout(item.startDownload, 100);
 			download.startDownload();
 			return download;
 		}
@@ -149,62 +150,21 @@ package classes
 		public function deleteAppFromDevice(app:AppItem):Boolean
 		{
 			// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
-			CONFIG::ON_PC {
-				// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
-				var xmlFile:String = mDriveProgramName+"\\book\\storyList_"+app.category+".xml";
-				var path:String = mDriveProgramName+"\\book\\"+app.folderName.split("/").join("\\");
-				var arg:String = app.name+","+path+","+xmlFile;
-				Utils.log2c(arg);
-				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
-				if (ret == "1") {
-					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
-					DataController.instance.itemsOnDevice.removeItemAt(idx);
-				}
-				else {
-				}
-			}
+//			CONFIG::ON_PC {
+//				// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
+//				var xmlFile:String = mDriveProgramName+"\\book\\storyList_"+app.category+".xml";
+//				var path:String = mDriveProgramName+"\\book\\"+app.folderName.split("/").join("\\");
+//				var arg:String = app.name+","+path+","+xmlFile;
+//				Utils.log2c(arg);
+//				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
+//				if (ret == "1") {
+//					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
+//					DataController.instance.itemsOnDevice.removeItemAt(idx);
+//				}
+//				else {
+//				}
+//			}
 			return true;
-		}
-		
-		public function deleteDownload(item:Download):Boolean
-		{
-			var index:int = DataController.instance.itemsDownloading.getItemIndex(item);
-			if (index > -1)
-			{
-				item.cancelDownload();
-				DataController.instance.itemsDownloading.removeItemAt(index);
-				return true;
-			}
-			return false;
-		}
-		
-		public function completeDownload(item:Download):Boolean
-		{
-			var index:int = DataController.instance.itemsDownloading.getItemIndex(item);
-			if (index > -1)
-			{
-				DataController.instance.itemsDownloading.removeItemAt(index);
-				return true;
-			}
-			return false;
-		}
-		
-		public function pauseDownload(item:Download):void
-		{
-			var index:int = DataController.instance.itemsDownloading.getItemIndex(item);
-			if (index > -1)
-			{
-				item.pauseDownload();
-			}
-		}
-		
-		public function resumeDownload(item:Download):void
-		{
-			var index:int = DataController.instance.itemsDownloading.getItemIndex(item);
-			if (index > -1)
-			{
-				item.resumeDownload();
-			}
 		}
 	}
 }

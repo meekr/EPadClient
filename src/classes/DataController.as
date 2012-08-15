@@ -1,8 +1,10 @@
 package classes
 {
+	import classes.LocationType;
 	import classes.Constants;
 	import classes.Utils;
 	
+	import events.DeviceConnectionChangeEvent;
 	import events.LoginEvent;
 	import events.StoreItemsLoadedEvent;
 	
@@ -20,44 +22,10 @@ package classes
 	{
 		private static var mInstance:DataController;
 		
-		[Bindable]
-		public var itemsDownloading:ArrayCollection;
-		[Bindable]
-		public var itemsOnDevice:ArrayCollection;
-		[Bindable]
-		public var itemsOnPc:ArrayCollection;
-		[Bindable]
-		public var itemsOnStore:ArrayCollection;
-		
-		[Bindable]
-		public var retrievingStoreList:Boolean;
-		[Bindable]
-		public var retrievingDeviceList:Boolean;
-		[Bindable]
-		public var retrievingPcList:Boolean;
-		
-		public var itemsOnDeviceHash:Object;
-		public var itemsOnPcHash:Object;
-		
-		public var boughtItems:BoughtItemsManager;
-		
 		private var _currentCategoryFilter:String;
 		
 		public function DataController()
 		{
-			itemsDownloading = new ArrayCollection();
-			itemsOnDevice = new ArrayCollection();
-			itemsOnPc = new ArrayCollection();
-			itemsOnStore = new ArrayCollection();
-			
-			itemsOnDeviceHash = new Object();
-			itemsOnPcHash = new Object();
-			
-			boughtItems = new BoughtItemsManager();
-			
-			CONFIG::ON_PC {
-				ExternalInterface.addCallback("FL_addDownloadedApp", FL_addDownloadedApp);
-			}
 		}
 		
 		public static function get instance():DataController
@@ -69,26 +37,8 @@ package classes
 			return mInstance;
 		}
 		
-		private function FL_addDownloadedApp(args:String):void
-		{
-			var npkPath:String = args.substr(0, args.lastIndexOf(","));
-			var iconPath:String = npkPath.substr(0, npkPath.length-3) + "png";
-			var appName:String = iconPath.substr(iconPath.lastIndexOf("\\") + 1);
-			appName = appName.substr(0, appName.length-4);
-			var filesize:Number = parseInt(args.substr(args.lastIndexOf(",")+1));
-			
-			var app:AppItem = new AppItem();
-			app.name = appName;
-			app.type = AppItemType.PC;
-			app.iconUrl = iconPath;
-			app.fileSizeInBytes = filesize;
-			DataController.instance.itemsOnPc.addItem(app);
-		}
-		
 		public function getStoreProductList(categoryId:int, page:int, sort:String, slug:String):void
 		{
-			this.retrievingStoreList = true;
-		
 			var params:Array = new Array();
 			if (slug) {
 				params.push("slug="+encodeURIComponent(slug));
@@ -119,92 +69,29 @@ package classes
 			var json:String = String(event.result);
 			var obj:Object = JSON.parse(json);
 			
-			itemsOnStore.removeAll();
+			var items:ArrayCollection = new ArrayCollection();
 			for (var i:int=0; i<obj.products.length; i++) {
 				var item:StoreItem = new StoreItem();
 				item.id = obj.products[i].id;
 				item.name = obj.products[i].name;
 				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
-				itemsOnStore.addItem(item);
-				
-				// sync status with device
-				if (itemsOnDeviceHash[item.name])
-					item.purchased = true;
+				items.addItem(item);
 			}
-			this.retrievingStoreList = false;
 			
 			var evt:StoreItemsLoadedEvent = new StoreItemsLoadedEvent();
-			evt.items = itemsOnStore;
+			evt.items = items;
 			evt.numPages = parseInt(obj.pagination.total);
 			dispatchEvent(evt);
 		}
 		
-		public function getDeviceProductListAll():void
-		{
-			if (!UIController.instance.deviceDisk.connected)
-				return;
-			
-			itemsOnDeviceHash = new Object();
-			
-			this.retrievingDeviceList = true;
-			
-			var categoryNames:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
-			CONFIG::ON_PC {
-				for (var i:int=0; i<categoryNames.length; i++) {
-					var categoryXmlFile:String = UIController.instance.driveProgramName+"\\book\\storyList_"+categoryNames[i]+".xml";
-					var xmlContent:String = ExternalInterface.call("F2C_getDeviceFileContent", categoryXmlFile);
-					xmlContent = xmlContent.substr(xmlContent.indexOf("?>")+2);
-					var xml:XML = new XML(xmlContent);
-					Utils.log2c("Xml File:" + categoryXmlFile + " - has " + xml.story.length() + " stories");
-					for (var j:int=0; j<xml.story.length(); j++) {
-						var app:AppItem = new AppItem();
-						app.name = xml.story[j].name.toString();
-						app.category = categoryNames[i];
-						app.type = AppItemType.DEVICE;
-						app.iconFile = UIController.instance.driveProgramName+"\\book\\"+xml.story[j].icon.toString().split('/').join('\\');
-						app.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", app.iconFile);
-						
-						var entry:String = xml.story[j].icon.toString();
-						app.folderName = entry.substr(0, entry.lastIndexOf("/"));
-						
-						itemsOnDevice.addItem(app);
-						
-						itemsOnDeviceHash[app.name] = app;
-					}
-				}
-			}
-			this.retrievingDeviceList = false;
-			itemsOnDevice.filterFunction = filterMyArrayCollection;
-			itemsOnDevice.refresh();
-		}
+		
 		
 		private function filterMyArrayCollection(item:Object):Boolean
 		{
 			if (_currentCategoryFilter)
 				return item.category == _currentCategoryFilter;
 			return true;
-		}
-		
-		public function getDeviceProductList(category:String):void
-		{
-			_currentCategoryFilter = category;
-			itemsOnDevice.refresh();
-		}
-		
-		protected function getPcProductList():void
-		{
-			this.retrievingPcList = true;
-			CONFIG::ON_PC {
-				var namestr:String = ExternalInterface.call("F2C_getDownloadedAppNames", UIController.instance.downloadDirectory);
-				if (namestr.length > 0) {
-					var names:Array = namestr.split(",");
-					for (var i:int=0; i<names.length; i++) {
-						UIController.instance.addPcItem(names[i]);
-					}
-				}
-			}
-			this.retrievingPcList = false;
 		}
 	}
 }

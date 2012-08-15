@@ -7,12 +7,24 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.AppItem;
+			import classes.ApplicationController;
+			import events.AppInstallEvent;
+			
+			[Bindable]
+			private var description:String;
+			
 			override public function set data(value:Object):void
 			{
+				if (super.data is AppItem)
+					AppItem(super.data).removeEventListener(AppInstallEvent.name, installHandler);
 				super.data = value;
+				if (super.data is AppItem)
+					AppItem(super.data).addEventListener(AppInstallEvent.name, installHandler);
+				
 				var item:AppItem = value as AppItem;
 				if (item) {
 					if (item.isDeviceType()) {
+						currentState = "device";
 						thumbnail.load(item.iconByteArray);
 					}
 					else {
@@ -24,25 +36,52 @@
 				}
 			}
 			
+			private function installHandler(event:AppInstallEvent):void
+			{
+				currentState = event.status;
+				description = event.description;
+			}
+			
 			protected function checkbox_changeHandler(event:Event):void
 			{
 				data.selected = checkbox.selected;
 			}
+			
+			protected function btnDelete_clickHandler(event:MouseEvent):void
+			{
+				CONFIG::ON_PC {
+					var app:AppItem = AppItem(data);
+					ExternalInterface.call("F2C_deleteDeviceApp", app.name);
+					var idx:int = ApplicationController.instance.deviceItems.getItemIndex(app);
+					ApplicationController.instance.deviceItems.removeItemAt(idx);
+				}
+			}			
 		]]>
 	</fx:Script>
 	<s:states>
 		<s:State name="default"/>
+		<s:State name="extracting"/>
+		<s:State name="transfering"/>
+		<s:State name="completed"/>
+		<s:State name="device"/>
 	</s:states>
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingTop="5" paddingBottom="5"/>
 	</s:layout>
 	
-	<mx:Image id="thumbnail" source="@Embed(source='assets/icon-placeholder.png" width="75" height="75"/>
+	<mx:Image id="thumbnail" source="@Embed(source='assets/icon-placeholder.png')" width="75" height="75"/>
 	<s:Spacer width="8"/>
 	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="8" gap="10">
 		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
 		<s:Label text="文件大小：{data.fileSize}"/>
+		<s:Spacer height="100%"/>
+		<s:Label text="正在解压缩：{description}..." includeIn="extracting"/>
+		<s:Label text="正在安装：{description}..." includeIn="transfering"/>
+		<s:Label color="#333333" text="已安装" includeIn="completed"/>
 	</s:VGroup>
-	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)"/>
+	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)" excludeFrom="device"/>
+	<s:Image id="btnDelete" source="@Embed(source='assets/icon-cancel.png')"
+			 width="22" height="22" verticalCenter="2"
+			 click="btnDelete_clickHandler(event)" includeIn="device"/>
 	<s:Spacer width="10"/>
 </s:ItemRenderer>

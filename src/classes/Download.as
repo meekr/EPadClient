@@ -119,8 +119,7 @@ package classes
 				ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+appName+".npk,"+str);
 			}
 			
-			UIController.instance.completeDownload(this);
-			UIController.instance.addPcItem(appName);
+			UIController.instance.addPcItem(appName, buf.length);
 			
 			var evt:DownloadCompleteEvent = new DownloadCompleteEvent();
 			dispatchEvent(evt);

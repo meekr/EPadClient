@@ -71,13 +71,13 @@
 				switch (index)
 				{
 					case 0:
-						MediaController.instance.mediaItems4Picture.removeAll();
+						MediaController.instance.localPictureItems.removeAll();
 						break;
 					case 1:
-						MediaController.instance.mediaItems4Music.removeAll();
+						MediaController.instance.localMusicItems.removeAll();
 						break;
 					case 2:
-						MediaController.instance.mediaItems4Video.removeAll();
+						MediaController.instance.localVideoItems.removeAll();
 						break;
 				}
 				
@@ -85,6 +85,7 @@
 				var directory:String = so.data[mediaTypes[index]];
 				
 				CONFIG::ON_PC {
+					classes.Utils.log2c(f2c_methods[index]+"::"+directory);
 					if (directory && directory.length>0)
 						ExternalInterface.call(f2c_methods[index], directory);
 				}
@@ -92,14 +93,14 @@
 			
 			protected function btnDeviceDeleteSelected_clickHandler(event:MouseEvent):void
 			{
-				for (var i:int=0; i<MediaController.instance.itemsOnDevice.length; i++)
+				for (var i:int=0; i<MediaController.instance.deviceItems.length; i++)
 				{
-					var item:MediaItem = MediaController.instance.itemsOnDevice.getItemAt(i) as MediaItem;
+					var item:MediaItem = MediaController.instance.deviceItems.getItemAt(i) as MediaItem;
 					if (item.selected)
 					{
 						CONFIG::ON_PC {
 							ExternalInterface.call("F2C_deleteDeviceMedia", item.type + "," + item.fileUrl);
-							MediaController.instance.itemsOnDevice.removeItemAt(i);
+							MediaController.instance.deviceItems.removeItemAt(i);
 							i--;
 						}
 					}
@@ -108,7 +109,7 @@
 			
 			protected function btnDeviceSelectAll_clickHandler(event:MouseEvent):void
 			{
-				for each (var item:MediaItem in MediaController.instance.itemsOnDevice)
+				for each (var item:MediaItem in MediaController.instance.deviceItems)
 				{
 					item.selected = true;
 				}
@@ -126,6 +127,12 @@
 				populateMedia(0);
 				populateMedia(1);
 				populateMedia(2);
+				
+				// populate device media items
+				if (UIController.instance.deviceDisk.connected)
+				{
+					
+				}
 			}
 			
 			private function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
@@ -139,13 +146,13 @@
 				switch (selectedLocalIndex)
 				{
 					case 0:
-						itemsCollection = MediaController.instance.mediaItems4Picture;
+						itemsCollection = MediaController.instance.localPictureItems;
 						break;
 					case 1:
-						itemsCollection = MediaController.instance.mediaItems4Music;
+						itemsCollection = MediaController.instance.localMusicItems;
 						break;
 					case 2:
-						itemsCollection = MediaController.instance.mediaItems4Video;
+						itemsCollection = MediaController.instance.localVideoItems;
 						break;
 				}
 				
@@ -167,7 +174,7 @@
 							converter.mediaType = MediaItemType.VIDEO;
 							break;
 					}
-					MediaController.instance.addConvertTask(converter);
+					MediaController.instance.convertingPool.addItem(converter);
 					item.converter = converter;
 				}
 				MediaController.instance.startConverting();
@@ -178,7 +185,6 @@
 				// TODO Auto-generated method stub
 				
 			}
-			
 		]]>
 	</fx:Script>
 	
@@ -229,12 +235,12 @@
 			</s:VGroup>
 		</s:HGroup>
 		<s:Image left="0" top="106" right="0" source="@Embed(source='assets/gradient-line.png')" height="1"/>
-		<mx:ViewStack id="viewStack" left="8" top="107" right="8" bottom="8">
+		<mx:ViewStack id="viewStack" left="8" top="107" right="8" bottom="8" creationPolicy="all">
 			<s:NavigatorContent width="100%" height="100%">
 				<s:List left="0" top="0" right="0" bottom="0"
 						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
 						itemRenderer="renderers.MediaItemRenderer"
-						dataProvider="{MediaController.instance.mediaItems4Picture}">
+						dataProvider="{MediaController.instance.localPictureItems}">
 					<s:layout>
 						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
 					</s:layout>
@@ -244,7 +250,7 @@
 				<s:List left="0" top="0" right="0" bottom="0"
 						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
 						itemRenderer="renderers.MediaItemRenderer"
-						dataProvider="{MediaController.instance.mediaItems4Music}">
+						dataProvider="{MediaController.instance.localMusicItems}">
 					<s:layout>
 						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
 					</s:layout>
@@ -254,7 +260,7 @@
 				<s:List left="0" top="0" right="0" bottom="0"
 						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
 						itemRenderer="renderers.MediaItemRenderer"
-						dataProvider="{MediaController.instance.mediaItems4Video}">
+						dataProvider="{MediaController.instance.localVideoItems}">
 					<s:layout>
 						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
 					</s:layout>
@@ -303,7 +309,7 @@
 			<s:List id="lstDevice" left="6" top="6" right="6" bottom="77"
 					skinClass="skins.MyListSkin" borderColor="#fbe8cd"
 					itemRenderer="renderers.MediaItemRenderer"
-					dataProvider="{MediaController.instance.itemsOnDevice}">
+					dataProvider="{MediaController.instance.deviceItems}">
 				<s:layout>
 					<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
 				</s:layout>

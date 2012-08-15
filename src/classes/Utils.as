@@ -1,6 +1,9 @@
 package classes
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.external.*;
+	import flash.utils.ByteArray;
 	
 	public class Utils
 	{
@@ -9,6 +12,28 @@ package classes
 			CONFIG::ON_PC {
 				ExternalInterface.call("F2C_TRACE", message);
 			}
+		}
+		
+		public static function byteArray2Bitmap(bytes:ByteArray):Bitmap
+		{
+			var bmd:ByteArray = bytes; 
+			bmd.position =bmd.length-2; 
+			var imageWidth:int = bmd.readShort(); 
+			bmd.position =bmd.length-4; 
+			var imageHeight:int = bmd.readShort(); 
+			var copyBmp:BitmapData = new BitmapData(imageWidth, imageHeight, true); 
+			//利用setPixel方法给图片中的每一个像素赋值,做逆操作 
+			//ByteArray数组从零开始存储一直到最后都是图片数据,因为读入时的高和宽都是一样的,所以当循环结束是正好读完 
+			bmd.position = 0; 
+			for (var i:uint=0; i<imageHeight; i++) 
+			{ 
+				for (var j:uint=0; j<imageWidth; j++) 
+				{ 
+					copyBmp.setPixel(j, i, bmd.readUnsignedInt()); 
+				} 
+			} 
+			var bmp:Bitmap = new Bitmap(copyBmp);
+			return bmp;
 		}
 	}
 }

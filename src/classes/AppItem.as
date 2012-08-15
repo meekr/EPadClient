@@ -2,6 +2,7 @@ package classes
 {
 	import events.AppItemDeleteEvent;
 	import events.AppItemSyncEvent;
+	import classes.LocationType;
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.*;
@@ -15,11 +16,9 @@ package classes
 	{
 		public var id:String;
 		public var name:String;
-		public var folderName:String;
-		public var description:String;
 		public var category:String;
+		public var location:String;
 		public var selected:Boolean;
-		public var type:String;
 		public var fileSizeInBytes:Number;
 		
 		public var purchased:Boolean;
@@ -29,8 +28,7 @@ package classes
 		public var iconUrl:String;
 		
 		// Base64 encoded
-		public var iconBase64:String;
-		public var iconFile:String;
+		public var iconBase64Rep:String;
 		
 		public function AppItem()
 		{
@@ -40,33 +38,34 @@ package classes
 		{
 			name = "";
 			category = "";
-			iconBase64 = "";
+			iconBase64Rep = "";
 		}
 		
 		public function get iconByteArray():ByteArray
 		{
-			if (iconBase64)
+			if (iconBase64Rep)
 			{
 				var base64Dec:Base64Decoder = new Base64Decoder();
-				base64Dec.decode(iconBase64);
-				return base64Dec.toByteArray();
+				base64Dec.decode(iconBase64Rep);
+				var ba:ByteArray = base64Dec.toByteArray();
+				return ba;
 			}
 			return null;
 		}
 		
 		public function isDeviceType():Boolean
 		{
-			return type == AppItemType.DEVICE;
+			return location == LocationType.DEVICE;
 		}
 		
 		public function isPcType():Boolean
 		{
-			return type == AppItemType.PC;
+			return location == LocationType.PC;
 		}
 		
 		public function isStoreType():Boolean
 		{
-			return type == AppItemType.STORE;
+			return location == LocationType.STORE;
 		}
 		
 		public function get fileSize():String
@@ -79,8 +78,7 @@ package classes
 			var app:AppItem = new AppItem();
 			app.name = this.name;
 			app.category = this.category;
-			app.type = AppItemType.DEVICE;
-			app.folderName = this.name;
+			app.location = LocationType.DEVICE;
 			return app;
 		}
 	}

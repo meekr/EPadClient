@@ -17,31 +17,31 @@ package classes
 		private static var mInstance:MediaController;
 		
 		[Bindable]
-		public var mediaItems4Picture:ArrayCollection;
+		public var localPictureItems:ArrayCollection;
 		[Bindable]
-		public var mediaItems4Music:ArrayCollection;
+		public var localMusicItems:ArrayCollection;
 		[Bindable]
-		public var mediaItems4Video:ArrayCollection;
+		public var localVideoItems:ArrayCollection;
 		[Bindable]
 		public var convertingPool:ArrayCollection;
 		
 		[Bindable]
-		public var itemsOnDevice:ArrayCollection;
+		public var deviceItems:ArrayCollection;
 		
 		public function MediaController()
 		{
 			convertingPool = new ArrayCollection();
 			
-			mediaItems4Picture = new ArrayCollection();
-			mediaItems4Music = new ArrayCollection();
-			mediaItems4Video = new ArrayCollection();
+			localPictureItems = new ArrayCollection();
+			localMusicItems = new ArrayCollection();
+			localVideoItems = new ArrayCollection();
 			
-			itemsOnDevice = new ArrayCollection();
+			deviceItems = new ArrayCollection();
 			
 			CONFIG::ON_PC {
 				ExternalInterface.addCallback("FL_setConvertPercentage", FL_setConvertPercentage);
-				ExternalInterface.addCallback("FL_setTransferPercentage", FL_setTransferPercentage);
 				ExternalInterface.addCallback("FL_completeConvert", FL_completeConvert);
+				ExternalInterface.addCallback("FL_setTransferPercentage", FL_setTransferPercentage);
 				ExternalInterface.addCallback("FL_completeTransfer", FL_completeTransfer);
 				ExternalInterface.addCallback("FL_addLocalMedia", FL_addLocalMedia);
 			}
@@ -50,7 +50,7 @@ package classes
 		public function getDeviceMediaItems():void
 		{
 			CONFIG::ON_PC {
-				itemsOnDevice.removeAll();
+				deviceItems.removeAll();
 				
 				if (!UIController.instance.deviceDisk.connected)
 					return;
@@ -74,8 +74,10 @@ package classes
 							item.type = types[i];
 							item.name = name;
 							item.fileSizeInBytes = parseInt(str.split("#")[1]);
+							if (item.type == MediaItemType.PICTURE)
+								item.base64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.fileUrl);
 							
-							itemsOnDevice.addItem(item);
+							deviceItems.addItem(item);
 						}
 					}
 				}
@@ -89,11 +91,6 @@ package classes
 				mInstance = new MediaController();
 			}
 			return mInstance;
-		}
-		
-		public function addConvertTask(converter:Converter):void
-		{
-			convertingPool.addItem(converter);
 		}
 		
 		public function startConverting():void
@@ -135,20 +132,6 @@ package classes
 			converter.dispatchEvent(evt);
 		}
 		
-		private function FL_setTransferPercentage(args:String):void
-		{
-			var converter:Converter = convertingPool.getItemAt(0) as Converter;
-			converter.percentage = parseInt(args);
-			if (isNaN(converter.percentage))
-				converter.percentage = 0;
-			converter.percentage = Math.min(converter.percentage, 100);
-			
-			var evt:MediaConvertEvent = new MediaConvertEvent();
-			evt.status = MediaItemTransitionStatus.TRANSFERING;
-			evt.percentage = converter.percentage;
-			converter.dispatchEvent(evt);
-		}
-		
 		private function FL_completeConvert(args:String):void
 		{
 			if (convertingPool.length > 0)
@@ -175,6 +158,20 @@ package classes
 					}
 				}
 			}
+		}
+		
+		private function FL_setTransferPercentage(args:String):void
+		{
+			var converter:Converter = convertingPool.getItemAt(0) as Converter;
+			converter.percentage = parseInt(args);
+			if (isNaN(converter.percentage))
+				converter.percentage = 0;
+			converter.percentage = Math.min(converter.percentage, 100);
+			
+			var evt:MediaConvertEvent = new MediaConvertEvent();
+			evt.status = MediaItemTransitionStatus.TRANSFERING;
+			evt.percentage = converter.percentage;
+			converter.dispatchEvent(evt);
 		}
 		
 		private function FL_completeTransfer(args:String):void
@@ -205,7 +202,7 @@ package classes
 					item.name = name;
 					item.fileSizeInBytes = parseInt(str.split("#")[1]);
 					
-					itemsOnDevice.addItemAt(item, 0);
+					deviceItems.addItemAt(item, 0);
 				}
 			}
 			
@@ -228,13 +225,13 @@ package classes
 			switch (type)
 			{
 				case MediaItemType.MUSIC:
-					mediaItems4Music.addItem(item);
+					localMusicItems.addItem(item);
 					break;
 				case MediaItemType.VIDEO:
-					mediaItems4Video.addItem(item);
+					localVideoItems.addItem(item);
 					break;
 				case MediaItemType.PICTURE:
-					mediaItems4Picture.addItem(item);
+					localPictureItems.addItem(item);
 					break;
 			}
 		}

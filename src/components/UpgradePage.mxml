@@ -4,6 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:components="components.*"
 		 xmlns:classes="classes.*"
+		 enabled="{UIController.instance.deviceDisk.connected}"
+		 mouseEnabled="{UIController.instance.deviceDisk.connected}"
 		 >
 	<fx:Declarations>
 	</fx:Declarations>
@@ -36,16 +38,17 @@
 				service.url = Constants.CHECK_UI_URL;
 				trace(service.url);
 				service.method = "GET";
-				service.resultFormat = "e4x";
+				service.resultFormat = "text";
 				service.addEventListener(ResultEvent.RESULT, uiCheckResultListener);
 				service.showBusyCursor = true;
 				service.send();
 			}
 			
 			private function uiCheckResultListener(event:ResultEvent):void {
-				mx.controls.Alert.show(event.result+"::");
-				var xml:XML = event.result as XML;
-				remoteVersion = xml.attributes()[0].toString();
+				var str:String = String(event.result);
+				var ver:String = str.substr(str.indexOf("<version>")+9);
+				ver = ver.substr(0, ver.indexOf("<"));
+				remoteVersion = ver;
 				if (parseFloat(remoteVersion) > parseFloat(UIController.instance.firmwareVersion)) {
 					status = "found_update";
 				}
@@ -125,6 +128,7 @@
 			
 		]]>
 	</fx:Script>
+	<fx:Binding source="downloadPercentage" destination="downloadBar.rcPercentage.percentWidth"/>
 	<s:Rect width="100%" height="100%" radiusX="8" topLeftRadiusX="0">
 		<s:fill>
 			<s:SolidColor color="#ffffff"/>
@@ -139,7 +143,10 @@
 		<s:HGroup width="90%" verticalAlign="baseline">
 			<s:Label text="系统升级" fontSize="18"/>
 			<s:Spacer width="100%"/>
-			<components:KPButton id="btnCheck" text="检查更新" click="btnCheck_clickHandler(event)"
+			<components:KPButton id="btnCheck"
+								 text="检查更新"
+								 width="80" height="25"
+								 click="btnCheck_clickHandler(event)"
 								 />
 		</s:HGroup>
 		<s:BorderContainer width="85%" height="60"
@@ -156,13 +163,13 @@
 			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"
 					 text="您的设备已经是最新的系统版本^_^"
 					 visible="{status == 'no_update'}" includeInLayout="{status == 'no_update'}"/>
-			<s:VGroup width="100%" gap="12" paddingTop="20" paddingRight="20" paddingBottom="20" paddingLeft="20"
+			<s:VGroup width="100%" gap="12" paddingTop="20" paddingRight="0" paddingBottom="20" paddingLeft="0"
 					  visible="{status=='found_update' || status=='downloading' || status=='updating'}" includeInLayout="{status=='found_update' || status=='downloading' || status=='updating'}">
 				<s:HGroup width="100%" gap="8" verticalAlign="baseline">
 					<s:Label text="发现新的系统版本：{remoteVersion}"/>
 					<s:Spacer width="100%"/>
-					<components:KPButton id="btnUpdate" text="开始更新" click="btnUpdate_clickHandler(event)"/>
-					<components:KPButton id="btnCancel" text="取消更新" backgroundColor="#ee7119" click="btnCancel_clickHandler(event)"/>
+					<components:KPButton id="btnUpdate" text="开始更新" width="80" height="25" click="btnUpdate_clickHandler(event)"/>
+					<components:KPButton id="btnCancel" text="取消更新" width="80" height="25" backgroundColor="#ee7119" click="btnCancel_clickHandler(event)"/>
 				</s:HGroup>
 				<s:Spacer height="1"/>
 				<components:ProgressBar id="downloadBar" width="100%" height="22" progressText="下载系统文件：{downloadPercentage}%"
