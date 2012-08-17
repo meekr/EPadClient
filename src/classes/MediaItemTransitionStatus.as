@@ -2,9 +2,9 @@ package classes
 {
 	public class MediaItemTransitionStatus
 	{
-		public static var WAITING:String = "WAITING";
-		public static var CONVERTING:String = "CONVERTING";
-		public static var TRANSFERING:String = "TRANSFERING";
-		public static var COMPLETED:String = "COMPLETED";
+		public static var DEFAULT:String = "default";
+		public static var CONVERTING:String = "converting";
+		public static var TRANSFERING:String = "transfering";
+		public static var COMPLETED:String = "completed";
 	}
 }

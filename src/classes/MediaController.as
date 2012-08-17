@@ -1,7 +1,7 @@
 package classes
 {
 	import classes.MediaItemType;
-	
+	import classes.LocationType;
 	import events.MediaConvertEvent;
 	
 	import flash.events.EventDispatcher;
@@ -73,6 +73,7 @@ package classes
 							item.fileUrl = filepath;
 							item.type = types[i];
 							item.name = name;
+							item.location = LocationType.DEVICE;
 							item.fileSizeInBytes = parseInt(str.split("#")[1]);
 							if (item.type == MediaItemType.PICTURE)
 								item.base64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.fileUrl);
@@ -97,10 +98,10 @@ package classes
 		{
 			if (convertingPool.length > 0)
 			{
-				var converter:Converter = convertingPool.getItemAt(0) as Converter;
+				var item:MediaItem = convertingPool.getItemAt(0) as MediaItem;
 				CONFIG::ON_PC {
 					var method:String;
-					switch (converter.mediaType)
+					switch (item.type)
 					{
 						case MediaItemType.VIDEO:
 							method = "F2C_convertVideo";
@@ -113,7 +114,7 @@ package classes
 							break;
 					}
 					
-					ExternalInterface.call(method, converter.sourceFile);
+					ExternalInterface.call(method, item.fileUrl);
 				}
 			}
 		}
@@ -121,39 +122,41 @@ package classes
 		// methods invoke UI
 		private function FL_setConvertPercentage(args:String):void
 		{
-			var converter:Converter = convertingPool.getItemAt(0) as Converter;
-			converter.percentage = parseInt(args);
-			if (isNaN(converter.percentage))
-				converter.percentage = 0;
+			var item:MediaItem = convertingPool.getItemAt(0) as MediaItem;
+			item.status = MediaItemTransitionStatus.CONVERTING;
+			var percentage:Number = (isNaN(parseInt(args)) ? 0 : parseInt(args));
 			
 			var evt:MediaConvertEvent = new MediaConvertEvent();
 			evt.status = MediaItemTransitionStatus.CONVERTING;
-			evt.percentage = converter.percentage;
-			converter.dispatchEvent(evt);
+			evt.percentage = percentage;
+			item.dispatchEvent(evt);
 		}
 		
 		private function FL_completeConvert(args:String):void
 		{
 			if (convertingPool.length > 0)
 			{
-				var converter:Converter = convertingPool.getItemAt(0) as Converter;
+				var item:MediaItem = convertingPool.getItemAt(0) as MediaItem;
 				
 				var evt:MediaConvertEvent = new MediaConvertEvent();
 				evt.percentage = 0;
 				evt.status = MediaItemTransitionStatus.TRANSFERING;
-				converter.dispatchEvent(evt);
+				item.dispatchEvent(evt);
 				
 				CONFIG::ON_PC {
-					switch (converter.mediaType)
+					var s:String = item.fileUrl.substr(item.fileUrl.lastIndexOf("\\")+1);
+					s = s.substr(0, s.lastIndexOf("."));
+					
+					switch (item.type)
 					{
 						case MediaItemType.MUSIC:
-							ExternalInterface.call("F2C_transferMusic2Device", converter.filenameWithoutExtension);
+							ExternalInterface.call("F2C_transferMusic2Device", s);
 							break;
 						case MediaItemType.VIDEO:
-							ExternalInterface.call("F2C_transferVideo2Device", converter.filenameWithoutExtension);
+							ExternalInterface.call("F2C_transferVideo2Device", s);
 							break;
 						case MediaItemType.PICTURE:
-							ExternalInterface.call("F2C_transferPicture2Device", converter.filenameWithoutExtension);
+							ExternalInterface.call("F2C_transferPicture2Device", s);
 							break;
 					}
 				}
@@ -162,32 +165,36 @@ package classes
 		
 		private function FL_setTransferPercentage(args:String):void
 		{
-			var converter:Converter = convertingPool.getItemAt(0) as Converter;
-			converter.percentage = parseInt(args);
-			if (isNaN(converter.percentage))
-				converter.percentage = 0;
-			converter.percentage = Math.min(converter.percentage, 100);
+			var item:MediaItem = convertingPool.getItemAt(0) as MediaItem;
+			item.status = MediaItemTransitionStatus.TRANSFERING;
+			var percentage:Number = (isNaN(parseInt(args)) ? 0 : parseInt(args));
+			percentage = Math.min(percentage, 100);
 			
 			var evt:MediaConvertEvent = new MediaConvertEvent();
 			evt.status = MediaItemTransitionStatus.TRANSFERING;
-			evt.percentage = converter.percentage;
-			converter.dispatchEvent(evt);
+			evt.percentage = percentage;
+			item.dispatchEvent(evt);
 		}
 		
 		private function FL_completeTransfer(args:String):void
 		{
 			if (convertingPool.length > 0)
 			{
-				var converter:Converter = convertingPool.getItemAt(0) as Converter;
+				var item:MediaItem = convertingPool.getItemAt(0) as MediaItem;
+				item.status = MediaItemTransitionStatus.COMPLETED;
+				item.selected = false;
 				convertingPool.removeItemAt(0);
 				
 				var evt:MediaConvertEvent = new MediaConvertEvent();
 				evt.status = MediaItemTransitionStatus.COMPLETED;
-				converter.dispatchEvent(evt);
+				evt.percentage = 100;
+				item.dispatchEvent(evt);
 				
 				var str:String = "";
 				CONFIG::ON_PC {
-					str = ExternalInterface.call("F2C_insertMediaNode", converter.mediaType + "," + converter.filenameWithoutExtension);
+					var s:String = item.fileUrl.substr(item.fileUrl.lastIndexOf("\\")+1);
+					s = s.substr(0, s.lastIndexOf("."));
+					str = ExternalInterface.call("F2C_insertMediaNode", item.type + "," + s);
 				}
 				
 				// add item on device
@@ -196,13 +203,14 @@ package classes
 					var filepath:String = str.split("#")[0];
 					var name:String = filepath.substr(filepath.lastIndexOf("\\")+1);
 					
-					var item:MediaItem = new MediaItem();
-					item.fileUrl = filepath;
-					item.type = converter.mediaType;
-					item.name = name;
-					item.fileSizeInBytes = parseInt(str.split("#")[1]);
+					var mi:MediaItem = new MediaItem();
+					mi.fileUrl = filepath;
+					mi.type = item.type;
+					mi.name = name;
+					mi.location = LocationType.DEVICE;
+					mi.fileSizeInBytes = parseInt(str.split("#")[1]);
 					
-					deviceItems.addItemAt(item, 0);
+					deviceItems.addItemAt(mi, 0);
 				}
 			}
 			
@@ -220,6 +228,7 @@ package classes
 			item.fileUrl = file;
 			item.type = type;
 			item.name = file.substr(file.lastIndexOf("\\")+1);
+			item.location = LocationType.PC;
 			item.fileSizeInBytes = size;
 			
 			switch (type)

@@ -8,7 +8,7 @@ package events
 		public static var name:String = "mediaConvertEvent";
 		
 		public var percentage:Number = 0;
-		public var status:String = MediaItemTransitionStatus.WAITING;
+		public var status:String = MediaItemTransitionStatus.DEFAULT;
 		
 		public function MediaConvertEvent()
 		{

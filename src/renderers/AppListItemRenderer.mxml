@@ -3,12 +3,19 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="true"
-				width="100%" height="85">
+				width="100%" height="85"
+				alpha.installed="0.5">
 	<fx:Script>
 		<![CDATA[
 			import classes.AppItem;
+			import classes.AppItemTransitionStatus;
 			import classes.ApplicationController;
+			import classes.Utils;
+			
 			import events.AppInstallEvent;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
 			
 			[Bindable]
 			private var description:String;
@@ -30,6 +37,9 @@
 					else {
 						thumbnail.source = item.iconUrl;
 					}
+					
+					if (item.installed)
+						currentState = "installed";
 				}
 				else {
 					thumbnail.source = null;
@@ -38,7 +48,19 @@
 			
 			private function installHandler(event:AppInstallEvent):void
 			{
-				currentState = event.status;
+				switch (event.status)
+				{
+					case AppItemTransitionStatus.COMPLETED:
+						currentState = "installed";
+						break;
+					case AppItemTransitionStatus.REMOVED:
+						currentState = "default";
+						break;
+					default:
+						currentState = event.status;
+						break;
+				}
+				
 				description = event.description;
 			}
 			
@@ -47,14 +69,33 @@
 				data.selected = checkbox.selected;
 			}
 			
+			private function alertEventHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES) {
+					CONFIG::ON_PC {
+						currentState = "deleting";
+						var app:AppItem = AppItem(data);
+						ExternalInterface.call("F2C_deleteDeviceApp", app.name);
+						var idx:int = ApplicationController.instance.deviceItems.getItemIndex(app);
+						ApplicationController.instance.deviceItems.removeItemAt(idx);
+						
+						// reset downloaded app status
+						for each (var ai:AppItem in ApplicationController.instance.localItems)
+						{
+							if (ai.name == app.name && ai.installed)
+							{
+								ai.installed = false;
+								var evt:AppInstallEvent = new AppInstallEvent();
+								evt.status = AppItemTransitionStatus.DEFAULT;
+								ai.dispatchEvent(evt);
+							}
+						}
+					}
+				}
+			}
+			
 			protected function btnDelete_clickHandler(event:MouseEvent):void
 			{
-				CONFIG::ON_PC {
-					var app:AppItem = AppItem(data);
-					ExternalInterface.call("F2C_deleteDeviceApp", app.name);
-					var idx:int = ApplicationController.instance.deviceItems.getItemIndex(app);
-					ApplicationController.instance.deviceItems.removeItemAt(idx);
-				}
+				Alert.show("您确定从设备移除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.NO);
 			}			
 		]]>
 	</fx:Script>
@@ -62,8 +103,9 @@
 		<s:State name="default"/>
 		<s:State name="extracting"/>
 		<s:State name="transfering"/>
-		<s:State name="completed"/>
+		<s:State name="installed"/>
 		<s:State name="device"/>
+		<s:State name="deleting"/>
 	</s:states>
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingTop="5" paddingBottom="5"/>
@@ -73,13 +115,14 @@
 	<s:Spacer width="8"/>
 	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="8" gap="10">
 		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
-		<s:Label text="文件大小：{data.fileSize}"/>
+		<s:Label text="文件大小：{data.fileSize}" excludeFrom="device"/>
 		<s:Spacer height="100%"/>
-		<s:Label text="正在解压缩：{description}..." includeIn="extracting"/>
-		<s:Label text="正在安装：{description}..." includeIn="transfering"/>
-		<s:Label color="#333333" text="已安装" includeIn="completed"/>
+		<s:Label text="正在解压缩..." includeIn="extracting"/>
+		<s:Label text="正在安装：{description}" includeIn="transfering"/>
+		<s:Label color="#999999" text="已安装" includeIn="installed"/>
+		<s:Label text="正在删除..." includeIn="deleting"/>
 	</s:VGroup>
-	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)" excludeFrom="device"/>
+	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)" excludeFrom="device,installed"/>
 	<s:Image id="btnDelete" source="@Embed(source='assets/icon-cancel.png')"
 			 width="22" height="22" verticalCenter="2"
 			 click="btnDelete_clickHandler(event)" includeIn="device"/>

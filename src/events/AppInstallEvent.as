@@ -7,7 +7,7 @@ package events
 	public class AppInstallEvent extends Event
 	{
 		public static var name:String = "appInstallEvent";
-		public var status:String = AppItemTransitionStatus.WAITING;
+		public var status:String = AppItemTransitionStatus.DEFAULT;
 		public var description:String;
 		public var percentage:Number;
 		

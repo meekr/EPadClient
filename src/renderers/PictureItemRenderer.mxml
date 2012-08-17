@@ -25,19 +25,7 @@
 				super.data = value;
 				var item:MediaItem = value as MediaItem;
 				if (item) {
-					switch (item.type)
-					{
-						case MediaItemType.MUSIC:
-							currentState = "music";
-							break;
-						case MediaItemType.VIDEO:
-							currentState = "video";
-							break;
-						default:
-							currentState = "picture";
-							break;
-					}
-					
+					item.addEventListener(MediaConvertEvent.name, convertHandler);
 					if (item.base64Rep && item.base64Rep.length > 0) {
 						classes.Utils.log2c(item.base64Rep);
 						pic.visible = pic.includeInLayout = true;
@@ -49,32 +37,11 @@
 							classes.Utils.log2c("error::"+err.message+","+err.errorID+","+err.name+","+err.getStackTrace());
 						}
 					}
-					pic.visible = pic.includeInLayout = (item.type == MediaItemType.PICTURE);
-					
-					item.addEventListener(MediaConvertEvent.name, convertHandler);
 				}
 			}
 			
 			private function convertHandler(event:MediaConvertEvent):void
 			{
-				switch (event.status)
-				{
-					case MediaItemTransitionStatus.DEFAULT:
-						currentState = event.type;
-						break;
-					case MediaItemTransitionStatus.CONVERTING:
-						status.currentState = "converting";
-						break;
-					case MediaItemTransitionStatus.TRANSFERING:
-						status.currentState = "transfering";
-						break;
-					case MediaItemTransitionStatus.COMPLETED:
-						status.currentState = "installed";
-						MediaItem(data).selected = false;
-						checkbox.visible = false;
-						alpha = 0.5;
-						break;
-				}
 				if (!isNaN(event.percentage))
 					status.percentage = event.percentage;
 			}
@@ -85,20 +52,13 @@
 			}
 		]]>
 	</fx:Script>
-	<s:states>
-		<s:State name="picture"/>
-		<s:State name="music"/>
-		<s:State name="video"/>
-	</s:states>
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
 	</s:layout>
 	
 	<mx:Image id="pic" source="{data.fileUrl}" width="70" height="40" scaleContent="true" maintainAspectRatio="false"/>
-	<s:Image source="@Embed(source='assets/icon-music-item.png')" width="70" height="40" scaleMode="stretch" includeIn="music"/>
-	<s:Image source="@Embed(source='assets/icon-video-item.png')" width="70" height="40" scaleMode="stretch" includeIn="video"/>
 	<s:Spacer width="0"/>
 	<components:MediaItemRendererStatus id="status" width="100%" data="{data}"/>
-	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)"/>
+	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)" visible="{data.status!='completed'}"/>
 	<s:Spacer width="5"/>
 </s:ItemRenderer>

@@ -1,7 +1,7 @@
 package classes
 {
+	import classes.MediaItemTransitionStatus;
 	import flash.utils.ByteArray;
-	
 	import mx.utils.Base64Decoder;
 
 	[Bindable]
@@ -13,18 +13,18 @@ package classes
 		public var fileUrl:String;
 		public var fileSizeInBytes:Number;
 		public var selected:Boolean;
-		public var converter:Converter;
-		public var enabled:Boolean;
 		public var base64Rep:String;
+		
+		public var status:String;
 		
 		public function MediaItem()
 		{
-			enabled = true;
+			status = MediaItemTransitionStatus.DEFAULT;
 		}
 		
 		public function get fileSize():String
 		{
-			return Math.round(fileSizeInBytes/1024) + " KB";
+			return classes.Utils.getFileSize(fileSizeInBytes);
 		}
 		
 		public function get base64ToByteArray():ByteArray

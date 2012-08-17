@@ -6,7 +6,6 @@
 		 >
 	<fx:Script>
 		<![CDATA[
-			import classes.Converter;
 			import classes.DataController;
 			import classes.MediaController;
 			import classes.MediaItem;
@@ -20,6 +19,8 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			
+			import renderers.*;
 			
 			[Bindable]
 			private var selectedLocalIndex:Number = 0;
@@ -56,6 +57,7 @@
 					var ret:String = ExternalInterface.call("F2C_getLocalMediaPath", "");
 					if (ret && ret.length > 0)
 					{
+						localPath.text = ret;
 						var so:SharedObject = SharedObject.getLocal("localPath4Media");
 						so.data[mediaTypes[selectedLocalIndex]] = ret;
 						so.flush();
@@ -85,7 +87,6 @@
 				var directory:String = so.data[mediaTypes[index]];
 				
 				CONFIG::ON_PC {
-					classes.Utils.log2c(f2c_methods[index]+"::"+directory);
 					if (directory && directory.length>0)
 						ExternalInterface.call(f2c_methods[index], directory);
 				}
@@ -160,22 +161,7 @@
 				for each (var item:MediaItem in itemsCollection)
 				{
 					if (!item.selected) continue;
-					var converter:Converter = new Converter();
-					converter.sourceFile = item.fileUrl;
-					switch (selectedLocalIndex)
-					{
-						case 0:
-							converter.mediaType = MediaItemType.PICTURE;
-							break;
-						case 1:
-							converter.mediaType = MediaItemType.MUSIC;
-							break;
-						case 2:
-							converter.mediaType = MediaItemType.VIDEO;
-							break;
-					}
-					MediaController.instance.convertingPool.addItem(converter);
-					item.converter = converter;
+					MediaController.instance.convertingPool.addItem(item);
 				}
 				MediaController.instance.startConverting();
 			}
@@ -184,6 +170,16 @@
 			{
 				// TODO Auto-generated method stub
 				
+			}
+			
+			public function genderItemRendererFunction(item:*):IFactory
+			{
+				if (item.type == MediaItemType.PICTURE)
+					return new ClassFactory(PictureItemRenderer);
+				else if (item.type == MediaItemType.PICTURE)
+					return new ClassFactory(MusicItemRenderer);
+				else
+					return new ClassFactory(VideoItemRenderer);
 			}
 		]]>
 	</fx:Script>
@@ -235,34 +231,37 @@
 			</s:VGroup>
 		</s:HGroup>
 		<s:Image left="0" top="106" right="0" source="@Embed(source='assets/gradient-line.png')" height="1"/>
-		<mx:ViewStack id="viewStack" left="8" top="107" right="8" bottom="8" creationPolicy="all">
+		<mx:ViewStack id="viewStack" left="8" top="107" right="8" bottom="8">
 			<s:NavigatorContent width="100%" height="100%">
 				<s:List left="0" top="0" right="0" bottom="0"
 						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
-						itemRenderer="renderers.MediaItemRenderer"
+						itemRenderer="renderers.PictureItemRenderer"
 						dataProvider="{MediaController.instance.localPictureItems}">
 					<s:layout>
-						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"
+										  useVirtualLayout="true" variableRowHeight="false" rowHeight="60"/>
 					</s:layout>
 				</s:List>
 			</s:NavigatorContent>
 			<s:NavigatorContent width="100%" height="100%">
 				<s:List left="0" top="0" right="0" bottom="0"
 						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
-						itemRenderer="renderers.MediaItemRenderer"
+						itemRenderer="renderers.MusicItemRenderer"
 						dataProvider="{MediaController.instance.localMusicItems}">
 					<s:layout>
-						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"
+										  useVirtualLayout="true" variableRowHeight="false" rowHeight="60"/>
 					</s:layout>
 				</s:List>
 			</s:NavigatorContent>
 			<s:NavigatorContent width="100%" height="100%">
 				<s:List left="0" top="0" right="0" bottom="0"
 						skinClass="skins.MyListSkin" borderColor="#FFFFFF"
-						itemRenderer="renderers.MediaItemRenderer"
+						itemRenderer="renderers.VideoItemRenderer"
 						dataProvider="{MediaController.instance.localVideoItems}">
 					<s:layout>
-						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
+						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"
+										  useVirtualLayout="true" variableRowHeight="false" rowHeight="60"/>
 					</s:layout>
 				</s:List>
 			</s:NavigatorContent>
@@ -272,12 +271,12 @@
 				<s:SolidColor color="#FFFFFF"/>
 			</s:fill>
 		</s:Rect>
+		<!--enabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
+		mouseEnabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"-->
 		<components:KPButton id="btnTransfer2Device"
 							 top="116" right="-40"
 							 backgroundColor="#75b508"
 							 click="btnTransfer2Device_clickHandler(event)"
-							 enabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
-							 mouseEnabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
 							 width="36" height="88">
 		</components:KPButton>
 		<s:Image source="@Embed(source='assets/white-arrow-right.png')" width="17" height="29" right="-30" top="148"/>
@@ -308,8 +307,8 @@
 			</s:Rect>
 			<s:List id="lstDevice" left="6" top="6" right="6" bottom="77"
 					skinClass="skins.MyListSkin" borderColor="#fbe8cd"
-					itemRenderer="renderers.MediaItemRenderer"
-					dataProvider="{MediaController.instance.deviceItems}">
+					dataProvider="{MediaController.instance.deviceItems}"
+					itemRendererFunction="genderItemRendererFunction">
 				<s:layout>
 					<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"/>
 				</s:layout>

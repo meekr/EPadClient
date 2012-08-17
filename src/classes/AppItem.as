@@ -1,8 +1,9 @@
 package classes
 {
+	import classes.LocationType;
+	
 	import events.AppItemDeleteEvent;
 	import events.AppItemSyncEvent;
-	import classes.LocationType;
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.*;
@@ -23,6 +24,7 @@ package classes
 		
 		public var purchased:Boolean;
 		public var downloaded:Boolean;
+		public var installed:Boolean;
 		
 		public var npkUrl:String;
 		public var iconUrl:String;
@@ -70,7 +72,7 @@ package classes
 		
 		public function get fileSize():String
 		{
-			return Math.round(fileSizeInBytes/1024) + " KB";
+			return classes.Utils.getFileSize(fileSizeInBytes);
 		}
 		
 		public function clone4DeviceItem():AppItem

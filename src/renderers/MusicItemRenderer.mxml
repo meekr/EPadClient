@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				width="100%"
+				xmlns:components="components.*">
+	<fx:Script>
+		<![CDATA[
+			import classes.MediaItem;
+			import classes.MediaItemTransitionStatus;
+			import classes.MediaItemType;
+			import classes.Utils;
+			
+			import events.MediaConvertEvent;
+			
+			override public function set data(value:Object):void
+			{
+				if (super.data == value)
+					return;
+				
+				if (super.data is MediaItem) {
+					MediaItem(super.data).removeEventListener(MediaConvertEvent.name, convertHandler);
+				}
+				super.data = value;
+				var item:MediaItem = value as MediaItem;
+				if (item) {
+					item.addEventListener(MediaConvertEvent.name, convertHandler);
+				}
+			}
+			
+			private function convertHandler(event:MediaConvertEvent):void
+			{
+				if (!isNaN(event.percentage))
+					status.percentage = event.percentage;
+			}
+			
+			protected function checkbox_changeHandler(event:Event):void
+			{
+				data.selected = checkbox.selected;
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
+	</s:layout>
+	
+	<s:Image source="@Embed(source='assets/icon-music-item.png')" width="70" height="40" scaleMode="stretch"/>
+	<s:Spacer width="0"/>
+	<components:MediaItemRendererStatus id="status" width="100%" data="{data}"/>
+	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)" visible="{data.status!='completed'}"/>
+	<s:Spacer width="5"/>
+</s:ItemRenderer>

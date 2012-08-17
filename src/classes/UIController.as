@@ -26,7 +26,7 @@ package classes
 		[Bindable]
 		public var deviceDisk:DeviceDisk;
 		[Bindable]
-		public var firmwareVersion:String = "0.9";
+		public var firmwareVersion:String = "1.0";
 		
 		public function UIController()
 		{
@@ -115,28 +115,6 @@ package classes
 			}
 		}
 		
-		public function installApp(app:AppItem):void
-		{
-			CONFIG::ON_PC {
-				/*
-				var arg:String = this.downloadDirectory + app.name + ".npk";
-				var ret:String = ExternalInterface.call("F2C_installApp", arg);
-				if (ret.length > 0) {
-					// insert item on device
-					if (DataController.instance.itemsOnDevice.length > 0) {
-						var ai:AppItem = app.clone4DeviceItem();
-						ai.iconFile = UIController.instance.driveProgramName+"\\book\\"+app.folderName+"\\75_75.png";
-						ai.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", ai.iconFile);
-						ai.category = ret;
-						
-						DataController.instance.itemsOnDevice.addItemAt(ai, 0);
-						DataController.instance.itemsOnDevice.refresh();
-					}
-				}
-				*/
-			}
-		}
-		
 		public function addStoreItemToDownload(item:StoreItem):Download
 		{
 			var download:Download = new Download();
@@ -145,26 +123,6 @@ package classes
 			download.iconUrl = item.iconUrl;
 			download.startDownload();
 			return download;
-		}
-		
-		public function deleteAppFromDevice(app:AppItem):Boolean
-		{
-			// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
-//			CONFIG::ON_PC {
-//				// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
-//				var xmlFile:String = mDriveProgramName+"\\book\\storyList_"+app.category+".xml";
-//				var path:String = mDriveProgramName+"\\book\\"+app.folderName.split("/").join("\\");
-//				var arg:String = app.name+","+path+","+xmlFile;
-//				Utils.log2c(arg);
-//				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
-//				if (ret == "1") {
-//					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
-//					DataController.instance.itemsOnDevice.removeItemAt(idx);
-//				}
-//				else {
-//				}
-//			}
-			return true;
 		}
 	}
 }

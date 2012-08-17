@@ -5,6 +5,7 @@ package classes
 	
 	import flash.events.EventDispatcher;
 	import flash.external.*;
+	
 	import mx.collections.ArrayCollection;
 
 	public class ApplicationController extends EventDispatcher
@@ -106,7 +107,17 @@ package classes
 			app.location = LocationType.PC;
 			app.iconUrl = iconPath;
 			app.fileSizeInBytes = filesize;
+			app.location = LocationType.PC;
 			localItems.addItem(app);
+			
+			for each (var ai:AppItem in deviceItems)
+			{
+				if (ai.name == appName)
+				{
+					app.installed = true;
+					break;
+				}
+			}
 		}
 		
 		private function FL_installSetExtractInformation(args:String):void
@@ -143,6 +154,8 @@ package classes
 		private function FL_installCompleteTransfer(args:String):void
 		{
 			var app:AppItem = installingPool.getItemAt(0) as AppItem;
+			app.selected = false;
+			
 			var evt:AppInstallEvent = new AppInstallEvent();
 			evt.status = AppItemTransitionStatus.COMPLETED;
 			evt.percentage = 0;

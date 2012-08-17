@@ -11,6 +11,9 @@
 			
 			import events.MediaConvertEvent;
 			
+			[Bindable]
+			public var percentage:Number;
+			
 			private var _data:MediaItem;
 			
 			[Bindable]
@@ -22,28 +25,20 @@
 			public function set data(value:MediaItem):void
 			{
 				_data = value;
-				if (_data) {
-				}
 			}
 		]]>
 	</fx:Script>
-	<s:states>
-		<s:State name="default"/>
-		<s:State name="converting"/>
-		<s:State name="transfering"/>
-		<s:State name="waiting"/>
-		<s:State name="disabled"/>
-	</s:states>
-	<fx:Binding source="data.converter.percentage" destination="rcConvertPercentage.percentWidth"/>
-	<fx:Binding source="data.converter.percentage" destination="rcTransferPercentage.percentWidth"/>
+	<fx:Binding source="percentage" destination="rcConvertPercentage.percentWidth"/>
+	<fx:Binding source="percentage" destination="rcTransferPercentage.percentWidth"/>
 	<s:layout>
-		<s:VerticalLayout verticalAlign="top" paddingTop="0" gap="10"/>
+		<s:VerticalLayout verticalAlign="top" paddingTop="5" gap="10"/>
 	</s:layout>
 	
-	<s:Label text="{data.name}" color="#333333" fontSize="14" width="100%"/>
-	<s:Label text="文件大小：{data.fileSize}" includeIn="default,disabled"/>
-	<s:HGroup width="100%" includeIn="converting">
-		<s:Label text="已转换{data.converter.percentage}%" fontSize="10" width="70"/>
+	<s:Label text="{data.name}" color="#333333" fontSize="14" width="100%" height="15" verticalAlign="middle"/>
+	<s:Label text="文件大小：{data.fileSize}" visible="{data.status=='default'}" includeInLayout="{data.status=='default'}"/>
+	<s:Label text="已传送到设备" visible="{data.status=='completed'}" includeInLayout="{data.status=='completed'}"/>
+	<s:HGroup width="100%" visible="{data.status=='converting'}" includeInLayout="{data.status=='converting'}">
+		<s:Label text="已转换{percentage}%" fontSize="10" width="70"/>
 		<s:Group width="100%" height="14">
 			<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
 				<s:fill>
@@ -59,8 +54,8 @@
 			</s:Group>
 		</s:Group>
 	</s:HGroup>
-	<s:HGroup width="100%" includeIn="transfering">
-		<s:Label text="已传送{data.converter.percentage}%" fontSize="10" width="70"/>
+	<s:HGroup width="100%" visible="{data.status=='transfering'}" includeInLayout="{data.status=='transfering'}">
+		<s:Label text="已传送{percentage}%" fontSize="10" width="70"/>
 		<s:Group width="100%" height="14">
 			<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
 				<s:fill>
@@ -76,5 +71,4 @@
 			</s:Group>
 		</s:Group>
 	</s:HGroup>
-	<s:Label text="等待转换..." color="#CCCCCC" fontSize="10" includeIn="waiting"/>
 </s:Group>

@@ -14,6 +14,20 @@ package classes
 			}
 		}
 		
+		public static function getFileSize(size:Number):String
+		{
+			
+			var m:Number = Math.floor(size/(1024*1024));
+			if (m > 0) {
+				size = size - m * 1024 * 1024;
+				var mm:Number = Math.round(size*10/(1024*1024));
+				mm = Math.min(9, mm);
+				return (mm<=0 ? m : m+"."+mm) + " MB";
+			}
+			else
+				return Math.round(size/1024) + " KB";
+		}
+		
 		public static function byteArray2Bitmap(bytes:ByteArray):Bitmap
 		{
 			var bmd:ByteArray = bytes; 
