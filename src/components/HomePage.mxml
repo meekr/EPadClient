@@ -4,9 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:components="components.*"
 		 xmlns:classes="classes.*"
-		 creationComplete="group1_creationCompleteHandler(event)"
 		 >
-	
 	<fx:Script>
 		<![CDATA[
 			import classes.UIController;
@@ -17,10 +15,10 @@
 			
 			protected function btnSubmit_clickHandler(event:MouseEvent):void
 			{
-				var evt:LoginEvent = new LoginEvent();
-				evt.success = true;
-				UIController.instance.user.dispatchEvent(evt);
-				return;
+//				var evt:LoginEvent = new LoginEvent();
+//				evt.success = true;
+//				UIController.instance.user.dispatchEvent(evt);
+//				return;
 				
 				var account:SharedObject = SharedObject.getLocal("account");
 				account.data.username = username.text;
@@ -29,19 +27,15 @@
 				
 				UIController.instance.user.login(username.text, password.text);
 			}
-			
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
-			{
-				var account:SharedObject = SharedObject.getLocal("account");
-				username.text = account.data.username;
-				password.text = account.data.password;
-			}
-			
 		]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-	</fx:Declarations>
+	<s:creationComplete>
+		<![CDATA[
+		var account:SharedObject = SharedObject.getLocal("account");
+		username.text = account.data.username;
+		password.text = account.data.password;
+		]]>
+	</s:creationComplete>
 	<s:Rect left="115" top="55" width="808" height="408">
 		<s:fill>
 			<s:BitmapFill source="@Embed(source='assets/home-bg.png')" fillMode="scale"/>

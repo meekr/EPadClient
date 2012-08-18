@@ -2,7 +2,6 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*"
-		 creationComplete="group1_creationCompleteHandler(event)"
 		 >
 	<fx:Script>
 		<![CDATA[
@@ -116,26 +115,6 @@
 				}
 			}
 			
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
-			{
-				var so:SharedObject = SharedObject.getLocal("localPath4Media");
-				localPath.text = so.data.picture;
-				MediaController.instance.getDeviceMediaItems();
-				
-				UIController.instance.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
-				
-				// populate local media items
-				populateMedia(0);
-				populateMedia(1);
-				populateMedia(2);
-				
-				// populate device media items
-				if (UIController.instance.deviceDisk.connected)
-				{
-					
-				}
-			}
-			
 			private function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
 			{
 				MediaController.instance.getDeviceMediaItems();
@@ -183,10 +162,20 @@
 			}
 		]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-	</fx:Declarations>
-	
+	<s:creationComplete>
+		<![CDATA[
+		var so:SharedObject = SharedObject.getLocal("localPath4Media");
+		localPath.text = so.data.picture;
+		MediaController.instance.getDeviceMediaItems();
+		
+		UIController.instance.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
+		
+		// populate local media items
+		populateMedia(0);
+		populateMedia(1);
+		populateMedia(2);
+		]]>
+	</s:creationComplete>
 	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="deviceProgressBar.rcPercentage.percentWidth"/>
 	
 	<!-- left -->
@@ -261,7 +250,8 @@
 						dataProvider="{MediaController.instance.localVideoItems}">
 					<s:layout>
 						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"
-										  useVirtualLayout="true" variableRowHeight="false" rowHeight="60"/>
+										  useVirtualLayout="true"
+										  variableRowHeight="false" rowHeight="78"/>
 					</s:layout>
 				</s:List>
 			</s:NavigatorContent>

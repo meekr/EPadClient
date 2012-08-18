@@ -6,7 +6,6 @@
 			   xmlns:classes="classes.*"
 			   minWidth="978" minHeight="608"
 			   skinClass="skins.ApplicationSkin"
-			   creationComplete="application_creationCompleteHandler(event)"
 			   backgroundColor="#abc123"
 			   >
 	<fx:Script>
@@ -73,14 +72,6 @@
 				viewStack.selectedIndex = event.newIndex;
 			}
 			
-			protected function application_creationCompleteHandler(event:FlexEvent):void
-			{
-				fscommand("loaded");
-				
-				UIController.instance.externalAddCallback("FL_setDeviceConnection", FL_setDeviceConnection);
-				UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
-			}
-			
 			private function FL_setDeviceConnection(args:String):void
 			{
 				UIController.instance.deviceDisk.connected = (args=="1");
@@ -93,8 +84,13 @@
 			}
 		]]>
 	</fx:Script>
-	<fx:Declarations>
-	</fx:Declarations>
+	<s:creationComplete>
+		<![CDATA[
+		fscommand("loaded");
+		UIController.instance.externalAddCallback("FL_setDeviceConnection", FL_setDeviceConnection);
+		UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
+		]]>
+	</s:creationComplete>
 	<fx:Style source="css/global.css"/>
 	<s:Group width="100%" height="100%">
 		<s:Label left="0" right="10" top="10" height="30" textAlign="right" text="Welcome, {UIController.instance.user.username}"/>

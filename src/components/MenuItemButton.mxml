@@ -2,17 +2,11 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="group1_creationCompleteHandler(event)"
 		 >
 	<fx:Declarations>
 		<fx:String id="label"></fx:String>
 		<fx:Number id="imageIndex">0</fx:Number>
 	</fx:Declarations>
-	<fx:Script>
-		<![CDATA[
-			
-		]]>
-	</fx:Script>
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -30,30 +24,19 @@
 			[Bindable]
 			protected var images:ArrayCollection = new ArrayCollection([image0, image1, image2, image3]);
 			
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
-			{
-				addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
-				addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
-				addEventListener(MouseEvent.MOUSE_UP, mouseUp);
-				addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
-			}
-			
 			private function mouseOver(event:MouseEvent):void
 			{
 				currentState = "over";
-				trace('over');
 			}
 			
 			private function mouseOut(event:MouseEvent):void
 			{
 				currentState = "up";
-				trace('up');
 			}
 			
 			private function mouseDown(event:MouseEvent):void
 			{
 				currentState = "down";
-				trace('down');
 			}
 			
 			private function mouseUp(event:MouseEvent):void
@@ -62,6 +45,14 @@
 			}
 		]]>
 	</fx:Script>
+	<s:creationComplete>
+		<![CDATA[
+		addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
+		addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
+		addEventListener(MouseEvent.MOUSE_UP, mouseUp);
+		addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
+		]]>
+	</s:creationComplete>
 	<s:states>
 		<s:State name="up" />
 		<s:State name="over" />

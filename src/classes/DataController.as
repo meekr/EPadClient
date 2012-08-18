@@ -1,7 +1,7 @@
 package classes
 {
-	import classes.LocationType;
 	import classes.Constants;
+	import classes.LocationType;
 	import classes.Utils;
 	
 	import events.DeviceConnectionChangeEvent;
@@ -55,6 +55,7 @@ package classes
 			params.push("size=6");
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
 			trace("STORE LIST URL: "+url);
+			classes.Utils.log2c("store url: "+url);
 			
 			var service:HTTPService = new HTTPService();
 			service.url = url;
@@ -68,12 +69,12 @@ package classes
 		private function storeResultListener(event:ResultEvent):void {
 			var json:String = String(event.result);
 			var obj:Object = JSON.parse(json);
-			
 			var items:ArrayCollection = new ArrayCollection();
 			for (var i:int=0; i<obj.products.length; i++) {
 				var item:StoreItem = new StoreItem();
 				item.id = obj.products[i].id;
 				item.name = obj.products[i].name;
+				item.category = obj.products[i].category_name;
 				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				items.addItem(item);
@@ -84,8 +85,6 @@ package classes
 			evt.numPages = parseInt(obj.pagination.total);
 			dispatchEvent(evt);
 		}
-		
-		
 		
 		private function filterMyArrayCollection(item:Object):Boolean
 		{

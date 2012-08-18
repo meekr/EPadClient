@@ -71,4 +71,5 @@ s|Label.whiteTitle {
 
 .linkText {
 	textDecoration:underline;
+	cursor:pointer;
 }

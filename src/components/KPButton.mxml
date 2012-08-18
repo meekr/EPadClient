@@ -2,20 +2,11 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 minWidth="24" minHeight="24"
-		 creationComplete="group1_creationCompleteHandler(event)">
+		 minWidth="24" minHeight="24">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
-			
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
-			{
-				addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
-				addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
-				addEventListener(MouseEvent.MOUSE_UP, mouseUp);
-				addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
-			}
-			
+
 			private function mouseOver(event:MouseEvent):void
 			{
 				currentState = "over";
@@ -37,6 +28,14 @@
 			}
 		]]>
 	</fx:Script>
+	<s:creationComplete>
+		<![CDATA[
+		addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
+		addEventListener(MouseEvent.MOUSE_OUT, mouseOut);
+		addEventListener(MouseEvent.MOUSE_UP, mouseUp);
+		addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
+		]]>
+	</s:creationComplete>
 	<s:states>
 		<s:State name="up" />
 		<s:State name="over" />

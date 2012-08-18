@@ -2,9 +2,22 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*"
-		 creationComplete="group1_creationCompleteHandler(event)"
 		 >
-	
+	<fx:Declarations>
+		<fx:Number id="selectedCategoryIndex">0</fx:Number>
+		<fx:Number id="currentPage">1</fx:Number>
+		<fx:String id="currentSlug"></fx:String>
+		<fx:Number id="totalPageCount">0</fx:Number>
+		<s:ArrayCollection id="currentStoreItems">
+			
+		</s:ArrayCollection>
+	</fx:Declarations>
+	<s:creationComplete>
+		<![CDATA[
+		DataController.instance.addEventListener(StoreItemsLoadedEvent.name, storeItemsLoaded);
+		DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
+		]]>
+	</s:creationComplete>
 	<fx:Script>
 		<![CDATA[
 			import classes.DataController;
@@ -14,19 +27,9 @@
 			
 			import mx.events.FlexEvent;
 			
-			[Bindable]
-			private var selectedCategoryIndex:Number = 0;
-			
 			private var catIds:Array = [0, 3, 7, 8, 11, 12, 13, 14, 15];
 			private var currentCid:int = 0;
-			[Bindable]
-			private var currentPage:int = 1;
 			private var currentSort:String = "";
-			
-			[Bindable]
-			private var currentSlug:String = "";
-			[Bindable]
-			public var totalPageCount:int = 0;
 			
 			protected function changeCategoryIndex(index:Number):void
 			{
@@ -41,32 +44,18 @@
 				navigateToURL(new URLRequest("http://store.taobao.com/shop/view_shop.htm?user_number_id=881657015"));
 			}
 			
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
-			{
-				DataController.instance.addEventListener(StoreItemsLoadedEvent.name, storeItemsLoaded);
-				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
-			}
-			
 			private function storeItemsLoaded(event:StoreItemsLoadedEvent):void
 			{
 				totalPageCount = event.numPages;
-				var w:Number = 250;
-				for (var i:int=0; i<event.items.length; i++)
-				{
-					var item:components.StoreItem = new components.StoreItem();
-					item.storeItem = event.items.getItemAt(i) as classes.StoreItem;
-					item.width = w;
-					storeItems.addElement(item);
-				}
+				currentStoreItems = event.items;
 				
-				//storeGroup.swapElementsAt(0, 1);
 				storeGroupContent.alpha = 1;
 				loading.alpha = 0;
 			}
 			
 			private function previousPage():void
 			{
-				if (currentPage > 0)
+				if (currentPage > 1)
 				{
 					currentPage--;
 					updateStoreItems();
@@ -75,7 +64,7 @@
 			
 			private function nextPage():void
 			{
-				if (currentPage < totalPageCount-1)
+				if (currentPage < totalPageCount)
 				{
 					currentPage++;
 					updateStoreItems();
@@ -84,16 +73,13 @@
 			
 			private function updateStoreItems():void
 			{
-				storeItems.removeAllElements();
+				currentStoreItems.removeAll();
 				storeGroupContent.alpha = 0;
 				loading.alpha = 1;
 				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
 			}
 		]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-	</fx:Declarations>
 	<s:Rect left="144" top="0" right="0" bottom="0" radiusX="8">
 		<s:fill>
 			<s:SolidColor color="#fb8941"/>
@@ -141,6 +127,19 @@
 		
 		<s:Group id="storeGroup" left="10" top="210" right="10" bottom="0">
 			<s:Group id="storeGroupContent" left="0" right="0" top="0" bottom="0" alpha="0">
+				<s:List id="storeItems" left="0" top="0" right="0" bottom="33"
+						skinClass="skins.MyListSkin" borderColor="#ffffff"
+						dataProvider="{currentStoreItems}"
+						itemRenderer="renderers.StoreItemRenderer">
+					<s:layout>
+						<s:TileLayout requestedColumnCount="3"
+									  paddingLeft="0" paddingRight="0" paddingTop="8"
+									  horizontalGap="10" verticalGap="10"
+									  clipAndEnableScrolling="false"
+									  useVirtualLayout="true"/>
+					</s:layout>
+				</s:List>
+				<!--
 				<s:TileGroup id="storeItems"
 							 left="0" top="0" right="0" bottom="33"
 							 horizontalGap="10" verticalGap="10"
@@ -149,11 +148,12 @@
 							 clipAndEnableScrolling="true">
 					
 				</s:TileGroup>
+				-->
 				<s:Label backgroundColor="#cccccc" left="0" right="0" bottom="32" height="1"/>
 				<s:HGroup left="0" right="0" bottom="0" height="32" verticalAlign="middle" gap="6">
 					<s:Spacer width="100%"/>
-					<s:Label text="上一页" click="previousPage()" enabled="{currentPage&gt;0}" mouseEnabled="{currentPage&gt;0}"/>
-					<s:Label text="下一页" click="nextPage()" enabled="{currentPage&lt;totalPageCount-1}" mouseEnabled="{currentPage&lt;totalPageCount-1}"/>
+					<s:Label text="上一页" click="previousPage()" enabled="{currentPage&gt;1}" mouseEnabled="{currentPage&gt;1}"/>
+					<s:Label text="下一页" click="nextPage()" enabled="{currentPage&lt;totalPageCount}" mouseEnabled="{currentPage&lt;totalPageCount}"/>
 					<s:Spacer width="100%"/>
 				</s:HGroup>
 			</s:Group>
