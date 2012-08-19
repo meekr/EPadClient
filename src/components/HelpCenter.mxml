@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="components.*">
+	<fx:Script>
+		<![CDATA[
+			import classes.Utils;
+		]]>
+	</fx:Script>
+	<s:Rect left="144" top="0" right="0" bottom="0" radiusX="8">
+		<s:fill>
+			<s:SolidColor color="#fb8941"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:Group left="152" top="10" right="10" bottom="10">
+		<!-- background -->
+		<s:Rect left="0" top="0" right="0" bottom="0" radiusX="8">
+			<s:fill>
+				<s:SolidColor color="#FFFFFF"/>
+			</s:fill>
+		</s:Rect>
+		
+		<s:Label text="正在建设中 ..." fontSize="24" left="10" top="10" right="10" bottom="50"
+				 textAlign="center" verticalAlign="middle"/>
+	</s:Group>
+		
+	<!-- left bottom -->
+	<s:Image left="5" bottom="35" source="@Embed(source='assets/e-pad.png')" width="127" height="91"/>
+	<components:KPButton id="btnGoshop"
+						 left="8" bottom="0"
+						 backgroundColor="#07b1dc"
+						 text="前往淘宝旗舰店" width="120" height="25" fontSize="14" click="Utils.gotoUrl('http://store.taobao.com/shop/view_shop.htm?user_number_id=881657015')"/>
+</s:Group>

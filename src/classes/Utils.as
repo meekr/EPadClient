@@ -4,6 +4,7 @@ package classes
 	import flash.display.BitmapData;
 	import flash.external.*;
 	import flash.utils.ByteArray;
+	import flash.net.*;
 	
 	public class Utils
 	{
@@ -26,6 +27,11 @@ package classes
 			}
 			else
 				return Math.round(size/1024) + " KB";
+		}
+		
+		public static function gotoUrl(url:String):void
+		{
+			navigateToURL(new URLRequest(url));
 		}
 		
 		public static function byteArray2Bitmap(bytes:ByteArray):Bitmap

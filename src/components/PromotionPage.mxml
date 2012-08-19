@@ -11,7 +11,9 @@
 	</s:Rect>
 	<s:Rect left="10" top="10" right="10" bottom="10" radiusX="0">
 		<s:fill>
-			<s:SolidColor color="#7d7d7d"/>
+			<s:SolidColor color="#CCCCCC"/>
 		</s:fill>
 	</s:Rect>
+	<s:Label text="欢迎使用E巧派助手" fontSize="24" left="10" top="10" right="10" bottom="50"
+			 textAlign="center" verticalAlign="middle"/>
 </s:Group>

@@ -251,7 +251,7 @@
 					<s:layout>
 						<s:VerticalLayout paddingLeft="0" paddingTop="5" paddingRight="0" paddingBottom="5" gap="0"
 										  useVirtualLayout="true"
-										  variableRowHeight="false" rowHeight="78"/>
+										  variableRowHeight="false" rowHeight="60"/>
 					</s:layout>
 				</s:List>
 			</s:NavigatorContent>
@@ -267,6 +267,8 @@
 							 top="116" right="-40"
 							 backgroundColor="#75b508"
 							 click="btnTransfer2Device_clickHandler(event)"
+							 enabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
+							 mouseEnabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
 							 width="36" height="88">
 		</components:KPButton>
 		<s:Image source="@Embed(source='assets/white-arrow-right.png')" width="17" height="29" right="-30" top="148"/>
