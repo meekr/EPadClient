@@ -155,7 +155,7 @@
 			{
 				if (item.type == MediaItemType.PICTURE)
 					return new ClassFactory(PictureItemRenderer);
-				else if (item.type == MediaItemType.PICTURE)
+				else if (item.type == MediaItemType.MUSIC)
 					return new ClassFactory(MusicItemRenderer);
 				else
 					return new ClassFactory(VideoItemRenderer);

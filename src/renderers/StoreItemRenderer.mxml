@@ -18,6 +18,7 @@
 			
 			import events.DownloadCompleteEvent;
 			
+			import mx.controls.Alert;
 			import mx.controls.listClasses.ListData;
 			
 			private var _loader:URLLoader;
@@ -79,8 +80,15 @@
 			
 			protected function btnBuy_clickHandler(event:MouseEvent):void
 			{
-				currentState = "downloading";
-				downloadItem = UIController.instance.addStoreItemToDownload(StoreItem(data));
+				if (UIController.instance.user.loggedIn)
+				{
+					currentState = "downloading";
+					downloadItem = UIController.instance.addStoreItemToDownload(StoreItem(data));
+				}
+				else
+				{
+					mx.controls.Alert("请您登录后下载");
+				}
 			}
 			
 			protected function btnCancel_clickHandler(event:MouseEvent):void
@@ -121,7 +129,7 @@
 		<s:Label text="分类：{data.category}"/>
 		<s:Spacer height="100%"/>
 		<components:KPButton id="btnBuy"
-							 text="限时免费" text.purchased="重新下载"
+							 text="免费下载" text.purchased="重新下载"
 							 backgroundColor.purchased="#fd4122"
 							 width="80" height="22"
 							 click="btnBuy_clickHandler(event)"

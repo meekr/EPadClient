@@ -11,7 +11,7 @@
 			
 			protected function btnGoshop_clickHandler(event:MouseEvent):void
 			{
-				navigateToURL(new URLRequest("http://store.taobao.com/shop/view_shop.htm?user_number_id=881657015"));
+				navigateToURL(new URLRequest("http://tongmeng100.taobao.com/"));
 			}
 			
 			protected function tabClickHandler(index:Number):void

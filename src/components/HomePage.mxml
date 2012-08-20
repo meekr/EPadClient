@@ -8,6 +8,7 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.UIController;
+			import classes.Utils;
 			
 			import events.LoginEvent;
 			
@@ -21,11 +22,27 @@
 //				return;
 				
 				var account:SharedObject = SharedObject.getLocal("account");
-				account.data.username = username.text;
-				account.data.password = password.text;
+				account.data.rememberMe = chkRemember.selected;
+				if (chkRemember.selected) {
+					account.data.username = username.text;
+					account.data.password = password.text;
+				}
+				else {
+					account.data.username = "";
+					account.data.password = "";
+				}
 				account.flush();
 				
 				UIController.instance.user.login(username.text, password.text);
+			}
+			
+			private function keyPressed(event:KeyboardEvent):void
+			{
+				classes.Utils.log2c("keycode="+event.keyCode);
+				if (event.keyCode == 13)
+				{
+					btnSubmit_clickHandler(null);
+				}
 			}
 		]]>
 	</fx:Script>
@@ -34,6 +51,9 @@
 		var account:SharedObject = SharedObject.getLocal("account");
 		username.text = account.data.username;
 		password.text = account.data.password;
+		chkRemember.selected = account.data.rememberMe;
+		
+//		addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 		]]>
 	</s:creationComplete>
 	<s:Rect left="115" top="55" width="808" height="408">
@@ -65,7 +85,13 @@
 		</s:HGroup>
 		<s:HGroup>
 			<s:Label width="60" text=""/>
+			<s:CheckBox id="chkRemember" label="记住用户名和密码" fontSize="13"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="bottom">
+			<s:Label width="60" text=""/>
 			<components:KPButton id="btnSubmit" text="登  录" width="108" height="32" fontSize="14" click="btnSubmit_clickHandler(event)"/>
+			<s:Spacer width="10"/>
+			<s:Label text="注册" fontSize="13" styleName="linkText" click="classes.Utils.gotoUrl('http://www.kizup.com/signup')"/>
 		</s:HGroup>
 	</s:VGroup>
 </s:Group>

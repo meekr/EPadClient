@@ -17,6 +17,9 @@ package classes
 		public var password:String;
 		public var token:String;
 		public var hcode:String;
+		public var email:String;
+		public var mobile:String;
+		public var babyBirth:String;
 		
 		public var loggedIn:Boolean;
 		
@@ -43,9 +46,12 @@ package classes
 			
 			var evt:LoginEvent = new LoginEvent();
 			if (obj.state == "valid") {
-				this.loggedIn = true;
-				this.token = obj.data.token;
-				this.hcode = obj.data.user.hcode;
+				loggedIn = true;
+				token = obj.data.token;
+				hcode = obj.data.user.hcode;
+				email = obj.data.user.email;
+				mobile = obj.data.user.mobile;
+				babyBirth = obj.data.user.babybirth;
 				
 				evt.success = true;
 			}
