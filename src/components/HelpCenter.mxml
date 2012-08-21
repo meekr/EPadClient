@@ -22,8 +22,16 @@
 			</s:fill>
 		</s:Rect>
 		
-		<s:Label text="正在建设中 ..." fontSize="24" left="10" top="10" right="10" bottom="50"
-				 textAlign="center" verticalAlign="middle"/>
+		<s:Scroller width="100%" height="100%" horizontalScrollPolicy="off">
+			<s:VGroup width="100%" gap="0">
+				<s:Image source="@Embed(source='assets/manual_01.jpg')" width="100%" scaleMode="zoom"/>
+				<s:Image source="@Embed(source='assets/manual_02.jpg')" width="100%" scaleMode="zoom"/>
+				<s:Image source="@Embed(source='assets/manual_03.jpg')" width="100%" scaleMode="zoom"/>
+				<s:Image source="@Embed(source='assets/manual_04.jpg')" width="100%" scaleMode="zoom"/>
+				<s:Image source="@Embed(source='assets/manual_05.jpg')" width="100%" scaleMode="zoom"/>
+				<s:Image source="@Embed(source='assets/manual_06.jpg')" width="100%" scaleMode="zoom"/>
+			</s:VGroup>
+		</s:Scroller>
 	</s:Group>
 		
 	<!-- left bottom -->

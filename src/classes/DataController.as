@@ -4,7 +4,6 @@ package classes
 	import classes.LocationType;
 	import classes.Utils;
 	
-	import events.DeviceConnectionChangeEvent;
 	import events.LoginEvent;
 	import events.StoreItemsLoadedEvent;
 	

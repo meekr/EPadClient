@@ -12,13 +12,14 @@
 		<![CDATA[
 			import caurina.transitions.Tweener;
 			
+			import classes.ApplicationController;
 			import classes.BoughtItem;
 			import classes.Constants;
 			import classes.DataController;
-			import classes.ApplicationController;
 			import classes.UIController;
 			
 			import events.LoginEvent;
+			import events.LogoutEvent;
 			import events.MenuBarSelectedIndexChangedEvent;
 			
 			import mx.controls.Alert;
@@ -52,6 +53,15 @@
 				{
 					trace('fale: '+event.error);
 				}
+			}
+			
+			protected function logoutHandler(event:LogoutEvent):void
+			{
+				// ui adjust
+				IVisualElementContainer(homeContainer.parent).swapElementsAt(0, 1);
+				homeContainer.top = -homeContainer.height;
+				homeContainer.alpha = 0;
+				homePage.alpha = 1;
 			}
 			
 			private function downloadHistoryListener(event:ResultEvent):void {
@@ -89,6 +99,7 @@
 		fscommand("loaded");
 		UIController.instance.externalAddCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 		UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
+		UIController.instance.user.addEventListener(LogoutEvent.name, logoutHandler);
 		]]>
 	</s:creationComplete>
 	<fx:Style source="css/global.css"/>

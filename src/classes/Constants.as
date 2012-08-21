@@ -11,6 +11,7 @@ package classes
 		public static var SIGNUP_URL:String = DOMAIN + "signup";
 		public static var CHECK_UI_URL:String = DOMAIN + "client/ui.xml";
 		public static var BUILT_INT_ZIP_URL:String = DOMAIN + "client/builtIn.zip";
+		public static var CHANGE_PROFILE_URL:String = DOMAIN + "client/user/edit_profile";
 		
 		public static function getProductDetailUrl(id:int):String
 		{

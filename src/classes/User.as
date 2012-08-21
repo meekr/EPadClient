@@ -3,6 +3,7 @@ package classes
 	import classes.Constants;
 	
 	import events.LoginEvent;
+	import events.LogoutEvent;
 	
 	import flash.events.EventDispatcher;
 	
@@ -31,13 +32,13 @@ package classes
 		{
 			this.username = name;
 			this.password = password;
-			var loginService:HTTPService = new HTTPService();
-			loginService.url = Constants.LOGIN_URL;
-			loginService.method = "POST";
-			loginService.resultFormat = "text";
-			loginService.addEventListener(ResultEvent.RESULT, resultListener);
-			loginService.showBusyCursor = true;
-			loginService.send(this);
+			var service:HTTPService = new HTTPService();
+			service.url = Constants.LOGIN_URL;
+			service.method = "POST";
+			service.resultFormat = "text";
+			service.addEventListener(ResultEvent.RESULT, resultListener);
+			service.showBusyCursor = true;
+			service.send(this);
 		}
 		
 		private function resultListener(event:ResultEvent):void {
@@ -59,6 +60,20 @@ package classes
 				this.loggedIn = false;
 				evt.error = "failed";
 			}
+			dispatchEvent(evt);
+		}
+		
+		public function logout():void
+		{
+			loggedIn = false;
+			username = "";
+			token = "";
+			hcode = "";
+			email = "";
+			mobile = "";
+			babyBirth = "";
+			
+			var evt:LogoutEvent = new LogoutEvent();
 			dispatchEvent(evt);
 		}
 	}

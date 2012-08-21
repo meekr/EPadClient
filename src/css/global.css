@@ -27,7 +27,8 @@ s|List #scroller
 	horizontalScrollPolicy: off;
 }
 
-s|List s|VScrollBar {
+s|List s|VScrollBar,
+s|Scroller s|VScrollBar{
 	skinClass: ClassReference("skins.VScrollBarSkin");
 	fixedThumbSize:true;
 }
