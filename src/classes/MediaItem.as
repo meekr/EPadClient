@@ -34,7 +34,6 @@ package classes
 				var base64Dec:Base64Decoder = new Base64Decoder();
 				base64Dec.decode(base64Rep);
 				var ba:ByteArray = base64Dec.toByteArray();
-				classes.Utils.log2c("MEDIA:"+fileUrl+", strlen="+base64Rep.length+", byte length="+ba.length);
 				return base64Dec.toByteArray();
 			}
 			return null;

@@ -37,7 +37,6 @@
 			private function resultListener(event:ResultEvent):void {
 				var json:String = String(event.result);
 				var obj:Object = JSON.parse(json);
-				classes.Utils.log2c(json);
 				
 				if (obj.result == "success") {
 					description = "账户信息修改成功！";

@@ -10,6 +10,8 @@ package classes
 		public var npkUrl:String;
 		public var iconUrl:String;
 		
+		public var downloading:Boolean;
+		public var downloaded:Boolean;
 		public var purchased:Boolean;
 		
 		public function StoreItem()

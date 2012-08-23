@@ -261,8 +261,6 @@
 				<s:SolidColor color="#FFFFFF"/>
 			</s:fill>
 		</s:Rect>
-		<!--enabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"
-		mouseEnabled="{MediaController.instance.convertingPool.length == 0 &amp;&amp; UIController.instance.deviceDisk.connected}"-->
 		<components:KPButton id="btnTransfer2Device"
 							 top="116" right="-40"
 							 backgroundColor="#75b508"
@@ -290,7 +288,8 @@
 			</s:filters>
 		</s:Image>
 		<s:Image right="206" top="10" source="@Embed(source='assets/device-title-pad.png')" width="68" height="40" click="changeDeviceIndex(0)"/>
-		<s:Image right="83" top="10" source="@Embed(source='assets/device-title-card.png')" width="74" height="40" click="changeDeviceIndex(1)"/>
+		<s:Image right="83" top="10" source="@Embed(source='assets/device-title-card.png')" width="74" height="40" click="changeDeviceIndex(1)"
+				 enabled="false" mouseEnabled="false" alpha="0.5"/>
 		<s:Group left="21" top="43" right="21" bottom="0">
 			<s:Rect left="0" top="0" right="0" bottom="42" radiusX="8">
 				<s:fill>

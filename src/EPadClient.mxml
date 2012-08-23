@@ -51,7 +51,7 @@
 				}
 				else
 				{
-					trace('fale: '+event.error);
+					homePage.currentState = "error";
 				}
 			}
 			

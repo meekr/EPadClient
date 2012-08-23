@@ -53,11 +53,10 @@ package classes
 				params.push("page="+page);
 			params.push("size=6");
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
-			trace("STORE LIST URL: "+url);
-			classes.Utils.log2c("store url: "+url);
 			
 			var service:HTTPService = new HTTPService();
 			service.url = url;
+			classes.Utils.log2c(url);
 			service.method = "POST";
 			service.resultFormat = "text";
 			service.addEventListener(ResultEvent.RESULT, storeResultListener);

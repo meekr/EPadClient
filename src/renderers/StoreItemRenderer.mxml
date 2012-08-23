@@ -39,13 +39,20 @@
 					
 					for each (var bi:BoughtItem in ApplicationController.instance.boughtItems) {
 						if (bi.name == item.name) {
-							currentState = "purchased";
+							item.purchased = true;
 							break;
 						}
 					}
 					for each (var ai:AppItem in ApplicationController.instance.localItems) {
 						if (ai.name == item.name) {
-							currentState = "downloaded";
+							item.downloaded = true;
+							break;
+						}
+					}
+					for each (var d:Download in UIController.instance.downloadingItems) {
+						if (d.appName == item.name) {
+							item.downloading = true;
+							_downloadItem = d;
 							break;
 						}
 					}
@@ -75,14 +82,23 @@
 			
 			protected function downloadCompleted(event:DownloadCompleteEvent):void
 			{
-				currentState = "downloaded";
+				data.downloading = false;
+				data.downloaded = true;
+				for (var i:int=0; i<UIController.instance.downloadingItems.length; i++)
+				{
+					var d:Download = UIController.instance.downloadingItems.getItemAt(i) as Download;
+					if (d.appName == data.name) {
+						UIController.instance.downloadingItems.removeItemAt(i);
+						break;
+					}
+				}
 			}
 			
 			protected function btnBuy_clickHandler(event:MouseEvent):void
 			{
 				if (UIController.instance.user.loggedIn)
 				{
-					currentState = "downloading";
+					data.downloading = true;
 					downloadItem = UIController.instance.addStoreItemToDownload(StoreItem(data));
 				}
 				else
@@ -95,11 +111,12 @@
 			{
 				for each (var item:AppItem in ApplicationController.instance.boughtItems) {
 					if (item.name == data.name) {
-						currentState = "purchased";
+						data.purchased = true;
 						return;
 					}
 				}
-				currentState = "default";
+				data.downloading = false;
+				data.downloaded = false;
 			}
 			
 			protected function icon_clickHandler(event:MouseEvent):void
@@ -109,12 +126,6 @@
 			
 		]]>
 	</fx:Script>
-	<s:states>
-		<s:State name="default" />
-		<s:State name="downloading" />
-		<s:State name="downloaded" />
-		<s:State name="purchased" />
-	</s:states>
 	<s:layout>
 		<s:HorizontalLayout gap="0"/>
 	</s:layout>
@@ -128,13 +139,19 @@
 		<s:Label text="{data.name}" fontSize="15" color="#666666" styleName="linkText" click="icon_clickHandler(event)"/>
 		<s:Label text="分类：{data.category}"/>
 		<s:Spacer height="100%"/>
-		<components:KPButton id="btnBuy"
-							 text="免费下载" text.purchased="重新下载"
-							 backgroundColor.purchased="#fd4122"
+		<components:KPButton text="免费下载"
 							 width="80" height="22"
 							 click="btnBuy_clickHandler(event)"
-							 includeIn="default,purchased"/>
-		<s:HGroup width="100%" height="22" gap="3" includeIn="downloading" verticalAlign="bottom">
+							 visible="{!data.downloading &amp;&amp; !data.downloaded &amp;&amp; !data.purchased}"
+							 includeInLayout="{!data.downloading &amp;&amp; !data.downloaded &amp;&amp; !data.purchased}"/>
+		<components:KPButton text="重新下载"
+							 backgroundColor="#fd4122"
+							 width="80" height="22"
+							 click="btnBuy_clickHandler(event)"
+							 visible="{!data.downloading &amp;&amp; !data.downloaded &amp;&amp; data.purchased}"
+							 includeInLayout="{!data.downloading &amp;&amp; !data.downloaded &amp;&amp; data.purchased}"/>
+		<s:HGroup width="100%" height="22" gap="3" verticalAlign="bottom"
+				  visible="{data.downloading}" includeInLayout="{data.downloading}">
 			<s:Group width="100%" height="14" verticalCenter="-2">
 				<s:Rect left="0" top="0" right="0" bottom="0" radiusX="6">
 					<s:fill>
@@ -153,6 +170,6 @@
 					 width="22" height="22" verticalCenter="2"
 					 click="btnCancel_clickHandler(event)"/>
 		</s:HGroup>
-		<s:Label color="#CCCCCC" text="已下载" height="16" verticalAlign="middle" includeIn="downloaded"/>
+		<s:Label color="#CCCCCC" text="已下载" height="16" verticalAlign="middle" visible="{data.downloaded}" includeInLayout="{data.downloaded}"/>
 	</s:VGroup>
 </s:ItemRenderer>

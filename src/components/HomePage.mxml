@@ -20,6 +20,8 @@
 //				evt.success = true;
 //				UIController.instance.user.dispatchEvent(evt);
 //				return;
+			
+				currentState = "default";
 				
 				var account:SharedObject = SharedObject.getLocal("account");
 				account.data.rememberMe = chkRemember.selected;
@@ -35,15 +37,6 @@
 				
 				UIController.instance.user.login(username.text, password.text);
 			}
-			
-			private function keyPressed(event:KeyboardEvent):void
-			{
-				classes.Utils.log2c("keycode="+event.keyCode);
-				if (event.keyCode == 13)
-				{
-					btnSubmit_clickHandler(null);
-				}
-			}
 		]]>
 	</fx:Script>
 	<s:creationComplete>
@@ -52,10 +45,12 @@
 		username.text = account.data.username;
 		password.text = account.data.password;
 		chkRemember.selected = account.data.rememberMe;
-		
-//		addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 		]]>
 	</s:creationComplete>
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="error"/>
+	</s:states>
 	<s:Rect left="115" top="55" width="808" height="408">
 		<s:fill>
 			<s:BitmapFill source="@Embed(source='assets/home-bg.png')" fillMode="scale"/>
@@ -92,6 +87,10 @@
 			<components:KPButton id="btnSubmit" text="登  录" width="108" height="32" fontSize="14" click="btnSubmit_clickHandler(event)"/>
 			<s:Spacer width="10"/>
 			<s:Label text="注册" fontSize="13" styleName="linkText" click="classes.Utils.gotoUrl('http://www.kizup.com/signup')"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="bottom" includeIn="error">
+			<s:Label width="60" text=""/>
+			<s:Label text="用户名或密码错误" color="#FF0000" fontSize="13"/>
 		</s:HGroup>
 	</s:VGroup>
 </s:Group>

@@ -74,7 +74,6 @@ package classes
 						item.iconUrl = UIController.instance.driveNANDName + "\\book\\" + icon;
 						item.location = LocationType.DEVICE;
 						item.iconBase64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.iconUrl);
-						classes.Utils.log2c(item.iconBase64Rep);
 						
 						deviceItems.addItem(item);
 					}

@@ -27,6 +27,8 @@ package classes
 		public var deviceDisk:DeviceDisk;
 		[Bindable]
 		public var firmwareVersion:String = "1.0";
+		[Bindable]
+		public var downloadingItems:ArrayCollection;
 		
 		public function UIController()
 		{
@@ -42,6 +44,7 @@ package classes
 			
 			user = new User();
 			deviceDisk = new DeviceDisk();
+			downloadingItems = new ArrayCollection();
 		}
 		
 		public static function get instance():UIController
@@ -122,6 +125,7 @@ package classes
 			download.npkUrl = item.npkUrl;
 			download.iconUrl = item.iconUrl;
 			download.startDownload();
+			downloadingItems.addItem(download);
 			return download;
 		}
 	}

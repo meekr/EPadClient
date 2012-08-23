@@ -28,8 +28,6 @@
 					item.addEventListener(MediaConvertEvent.name, convertHandler);
 					/*
 					if (item.base64Rep && item.base64Rep.length > 0) {
-						classes.Utils.log2c(item.base64Rep);
-						pic.visible = pic.includeInLayout = true;
 						try{
 							pic.load(item.base64ToByteArray);
 						}

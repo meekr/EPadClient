@@ -29,7 +29,7 @@
 			
 			import mx.events.FlexEvent;
 			
-			private var catIds:Array = [0, 3, 7, 8, 11, 12, 13, 14, 15];
+			private var catIds:Array = [0, 51, 49, 48, 50, 47];
 			private var currentCid:int = 0;
 			private var currentSort:String = "";
 			
@@ -38,6 +38,9 @@
 				if (index != selectedCategoryIndex)
 				{
 					selectedCategoryIndex = index;
+					currentCid = catIds[index];
+					currentPage = 1;
+					updateStoreItems();
 				}
 			}
 			
@@ -110,7 +113,7 @@
 			<s:Label text="绘 本" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(4)"/>
 			<s:Label text="应 用" height="100%" verticalAlign="middle" fontSize="13" color="#2674d0" click="changeCategoryIndex(5)"/>
 			<s:Spacer width="100%"/>
-			<s:Label text="排序方式" height="100%" verticalAlign="middle"/>
+			<!--<s:Label text="排序方式" height="100%" verticalAlign="middle"/>
 			<s:Group width="80" verticalCenter="-4" height="22">
 				<s:Rect width="100%" height="100%" radiusX="3">
 					<s:fill>
@@ -118,7 +121,7 @@
 					</s:fill>
 				</s:Rect>
 				<s:Label width="100%" height="100%" color="#FFFFFF" text="发布时间" textAlign="center" verticalAlign="middle"/>
-			</s:Group>
+			</s:Group>-->
 		</s:HGroup>
 		<s:HGroup left="10" top="50" right="10" height="152" gap="0">
 			<s:Image source="@Embed(source='assets/promo-1.png')" width="382" height="152" click="Utils.gotoUrl('http://www.kizup.com/product/view/228')"/>
@@ -143,8 +146,8 @@
 				<s:Label backgroundColor="#cccccc" left="0" right="0" bottom="32" height="1"/>
 				<s:HGroup left="0" right="0" bottom="0" height="32" verticalAlign="middle" gap="6">
 					<s:Spacer width="100%"/>
-					<s:Label text="上一页" click="previousPage()" enabled="{currentPage&gt;1}" mouseEnabled="{currentPage&gt;1}"/>
-					<s:Label text="下一页" click="nextPage()" enabled="{currentPage&lt;totalPageCount}" mouseEnabled="{currentPage&lt;totalPageCount}"/>
+					<s:Label text="上一页" click="previousPage()" enabled="{currentPage&gt;1}" mouseEnabled="{currentPage&gt;1}" visible="{currentPage&gt;1}"/>
+					<s:Label text="下一页" click="nextPage()" enabled="{currentPage&lt;totalPageCount}" mouseEnabled="{currentPage&lt;totalPageCount}" visible="{currentPage&lt;totalPageCount}"/>
 					<s:Spacer width="100%"/>
 				</s:HGroup>
 			</s:Group>

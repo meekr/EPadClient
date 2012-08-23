@@ -1,7 +1,8 @@
 package classes
 {
-	import classes.MediaItemType;
 	import classes.LocationType;
+	import classes.MediaItemType;
+	
 	import events.MediaConvertEvent;
 	
 	import flash.events.EventDispatcher;
@@ -75,9 +76,18 @@ package classes
 							item.name = name;
 							item.location = LocationType.DEVICE;
 							item.fileSizeInBytes = parseInt(str.split("#")[1]);
+							/*
 							if (item.type == MediaItemType.PICTURE)
-								item.base64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.fileUrl);
-							
+							{
+								try{
+									item.base64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.fileUrl);
+								}
+								catch(err:Error)
+								{
+									classes.Utils.log2c("error::"+err.message+","+err.errorID+","+err.name+","+err.getStackTrace());
+								}
+							}
+							*/
 							deviceItems.addItem(item);
 						}
 					}
