@@ -8,6 +8,7 @@ package classes
 		
 		public static var LOGIN_URL:String = DOMAIN + "client/user/login";
 		public static var PRODUCT_URL:String = DOMAIN + "client/product/list";
+		public static var BANNER_URL:String = DOMAIN + "client/site/banner";
 		public static var SIGNUP_URL:String = DOMAIN + "signup";
 		public static var CHECK_UI_URL:String = DOMAIN + "client/ui.xml";
 		public static var BUILT_INT_ZIP_URL:String = DOMAIN + "client/builtIn.zip";

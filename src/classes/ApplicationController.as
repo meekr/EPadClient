@@ -7,6 +7,7 @@ package classes
 	import flash.external.*;
 	
 	import mx.collections.ArrayCollection;
+	import mx.utils.Base64Encoder;
 
 	public class ApplicationController extends EventDispatcher
 	{
@@ -60,6 +61,7 @@ package classes
 					return;
 				
 				var files:String = ExternalInterface.call("F2C_getDeviceApps", "");
+				classes.Utils.log2c(files);
 				if (files.length > 0)
 				{
 					var items:Array = files.split(",");
@@ -73,6 +75,7 @@ package classes
 						item.name = str.split("#")[0];
 						item.iconUrl = UIController.instance.driveNANDName + "\\book\\" + icon;
 						item.location = LocationType.DEVICE;
+						classes.Utils.log2c(item.iconUrl);
 						item.iconBase64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.iconUrl);
 						
 						deviceItems.addItem(item);

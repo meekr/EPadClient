@@ -9,25 +9,48 @@
 		<fx:Number id="currentPage">1</fx:Number>
 		<fx:String id="currentSlug"></fx:String>
 		<fx:Number id="totalPageCount">0</fx:Number>
-		<s:ArrayCollection id="currentStoreItems">
-			
-		</s:ArrayCollection>
+		<s:ArrayCollection id="currentStoreItems"/>
 	</fx:Declarations>
 	<s:creationComplete>
 		<![CDATA[
 		DataController.instance.addEventListener(StoreItemsLoadedEvent.name, storeItemsLoaded);
 		DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
+		
+		var service:HTTPService = new HTTPService();
+		service.url = Constants.BANNER_URL;
+		service.method = "GET";
+		service.resultFormat = "text";
+		service.addEventListener(ResultEvent.RESULT, function(event:ResultEvent):void{
+			var json:String = String(event.result);
+			var banners:Object = JSON.parse(json);
+			banner1.source = "http://www.kizup.com" + banners[0].pictureUrl;
+			banner2.source = "http://www.kizup.com" + banners[1].pictureUrl;
+			banner1.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+				var url:String = "http://www.kizup.com" + banners[0].targetUrl;
+				Utils.gotoUrl(url);
+			});
+			banner2.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
+				var url:String = "http://www.kizup.com" + banners[1].targetUrl;
+				Utils.gotoUrl(url);
+			});
+		});
+		service.send();
+		
 		]]>
 	</s:creationComplete>
 	<fx:Script>
 		<![CDATA[
+			import classes.Constants;
 			import classes.DataController;
 			import classes.StoreItem;
 			import classes.Utils;
 			
 			import events.StoreItemsLoadedEvent;
 			
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
 			
 			private var catIds:Array = [0, 51, 49, 48, 50, 47];
 			private var currentCid:int = 0;
@@ -124,9 +147,9 @@
 			</s:Group>-->
 		</s:HGroup>
 		<s:HGroup left="10" top="50" right="10" height="152" gap="0">
-			<s:Image source="@Embed(source='assets/promo-1.png')" width="382" height="152" click="Utils.gotoUrl('http://www.kizup.com/product/view/228')"/>
+			<s:Image id="banner1" width="382" height="152"/>
 			<s:Spacer width="100%"/>
-			<s:Image source="@Embed(source='assets/promo-2.png')" width="382" height="152" click="Utils.gotoUrl('http://www.kizup.com/product/view/221')"/>
+			<s:Image id="banner2" width="382" height="152"/>
 		</s:HGroup>
 		
 		<s:Group id="storeGroup" left="10" top="210" right="10" bottom="0">
