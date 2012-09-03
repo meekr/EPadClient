@@ -9,6 +9,7 @@ package classes
 		
 		public var npkUrl:String;
 		public var iconUrl:String;
+		public var createDate:String;
 		
 		public var downloading:Boolean;
 		public var downloaded:Boolean;

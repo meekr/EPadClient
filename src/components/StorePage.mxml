@@ -16,30 +16,47 @@
 		DataController.instance.addEventListener(StoreItemsLoadedEvent.name, storeItemsLoaded);
 		DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
 		
+		var leftBanners:ArrayCollection = new ArrayCollection();
+		var rightBanners:ArrayCollection = new ArrayCollection();
+		
 		var service:HTTPService = new HTTPService();
-		service.url = Constants.BANNER_URL;
+		service.url = Constants.LEFT_BANNER_URL;
 		service.method = "GET";
 		service.resultFormat = "text";
 		service.addEventListener(ResultEvent.RESULT, function(event:ResultEvent):void{
 			var json:String = String(event.result);
 			var banners:Object = JSON.parse(json);
-			banner1.source = "http://www.kizup.com" + banners[0].pictureUrl;
-			banner2.source = "http://www.kizup.com" + banners[1].pictureUrl;
-			banner1.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
-				var url:String = "http://www.kizup.com" + banners[0].targetUrl;
-				Utils.gotoUrl(url);
-			});
-			banner2.addEventListener(MouseEvent.CLICK, function(event:MouseEvent):void{
-				var url:String = "http://www.kizup.com" + banners[1].targetUrl;
-				Utils.gotoUrl(url);
-			});
+			for (var i:int=0; i<banners.length; i++) {
+				var banner:BannerItem = new BannerItem();
+				banner.pictureUrl = "http://www.kizup.com" + banners[i].pictureUrl;
+				banner.targetUrl = "http://www.kizup.com" + banners[i].targetUrl;
+				leftBanners.addItem(banner);
+			}
+			banner1.loadBanners(leftBanners);
 		});
 		service.send();
 		
+		service = new HTTPService();
+		service.url = Constants.RIGHT_BANNER_URL;
+		service.method = "GET";
+		service.resultFormat = "text";
+		service.addEventListener(ResultEvent.RESULT, function(event:ResultEvent):void{
+			var json:String = String(event.result);
+			var banners:Object = JSON.parse(json);
+			for (var i:int=0; i<banners.length; i++) {
+				var banner:BannerItem = new BannerItem();
+				banner.pictureUrl = "http://www.kizup.com" + banners[i].pictureUrl;
+				banner.targetUrl = "http://www.kizup.com" + banners[i].targetUrl;
+				rightBanners.addItem(banner);
+			}
+			banner2.loadBanners(rightBanners);
+		});
+		service.send();
 		]]>
 	</s:creationComplete>
 	<fx:Script>
 		<![CDATA[
+			import classes.BannerItem;
 			import classes.Constants;
 			import classes.DataController;
 			import classes.StoreItem;
@@ -147,9 +164,9 @@
 			</s:Group>-->
 		</s:HGroup>
 		<s:HGroup left="10" top="50" right="10" height="152" gap="0">
-			<s:Image id="banner1" width="382" height="152"/>
+			<components:Banner id="banner1" width="382" height="152"/>
 			<s:Spacer width="100%"/>
-			<s:Image id="banner2" width="382" height="152"/>
+			<components:Banner id="banner2" width="382" height="152"/>
 		</s:HGroup>
 		
 		<s:Group id="storeGroup" left="10" top="210" right="10" bottom="0">

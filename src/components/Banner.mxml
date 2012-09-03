@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="382" height="152">
+	<fx:Script>
+		<![CDATA[
+			import caurina.transitions.Tweener;
+			
+			import classes.BannerItem;
+			import classes.Utils;
+			
+			import flash.utils.setInterval;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.core.UIComponent;
+			
+			private var _banners:ArrayCollection;
+			private var _images:ArrayCollection = new ArrayCollection();
+			private var _currentIndex:int = 0;
+			[Bindable]
+			private var animating:Boolean;
+			
+			private var intervalId:uint;
+			
+			public function loadBanners(ac:ArrayCollection):void
+			{
+				_banners = ac;
+				banners.removeAllElements();
+				left.visible = right.visible = true;
+				
+				for (var i:int=0; i<ac.length; i++)
+				{
+					var banner:BannerItem = BannerItem(ac[i]);
+					var image:Image = new Image();
+					image.width = 382;
+					image.height = 152;
+					image.left = i*382;
+					image.source = banner.pictureUrl;
+					image.addEventListener(MouseEvent.CLICK, clickBanner); 
+					banners.addElement(image);
+					_images.addItem(image);
+				}
+			}
+			
+			private function clickBanner(event:MouseEvent):void
+			{
+				var image:Image = Image(event.currentTarget);
+				var idx:int = _images.getItemIndex(image);
+				var banner:BannerItem = BannerItem(_banners[idx]);
+				classes.Utils.gotoUrl(banner.targetUrl);
+			}
+			
+			private function mouseOverArrow(event:MouseEvent):void
+			{
+				var button:UIComponent = UIComponent(event.target);
+				button.alpha = 1.0;
+			}
+			
+			private function mouseOutArrow(event:MouseEvent):void
+			{
+				var button:UIComponent = UIComponent(event.target);
+				button.alpha = 0.5;
+			}
+			
+			private function previous(event:MouseEvent):void
+			{
+				if (_banners && _banners.length > 1)
+				{
+					clearInterval(intervalId);
+					
+					var previousIndex:int = _currentIndex - 1;
+					if (previousIndex < 0)
+						previousIndex = _banners.length - 1;
+					
+					var currentElm:IVisualElement = IVisualElement(_images.getItemAt(_currentIndex));
+					var previousElm:IVisualElement = IVisualElement(_images.getItemAt(previousIndex));
+					banners.setElementIndex(previousElm, 1);
+					previousElm.left = -382;
+					animating = true;
+					Tweener.addTween(currentElm, {left:382, time:1});
+					Tweener.addTween(previousElm, {left:0, time:1});
+					setTimeout(function():void{
+						animating = false;
+						_currentIndex = previousIndex;
+						intervalId = setInterval(function():void{next(null);}, 5000);
+					}, 1000);
+				}
+			}
+			
+			private function next(event:MouseEvent):void
+			{
+				if (_banners && _banners.length > 1)
+				{
+					clearInterval(intervalId);
+					
+					var nextIndex:int = _currentIndex + 1;
+					if (nextIndex >= _banners.length)
+						nextIndex = 0;
+					
+					var currentElm:IVisualElement = IVisualElement(_images.getItemAt(_currentIndex));
+					var nextElm:IVisualElement = IVisualElement(_images.getItemAt(nextIndex));
+					banners.setElementIndex(nextElm, 1);
+					nextElm.left = 382;
+					animating = true;
+					Tweener.addTween(currentElm, {left:-382, time:1});
+					Tweener.addTween(nextElm, {left:0, time:1});
+					setTimeout(function():void{
+						animating = false;
+						_currentIndex = nextIndex;
+						intervalId = setInterval(function():void{next(null);}, 5000);
+					}, 1000);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:creationComplete>
+		<![CDATA[
+			left.addEventListener(MouseEvent.MOUSE_OVER, mouseOverArrow);
+			left.addEventListener(MouseEvent.MOUSE_OUT, mouseOutArrow);
+			left.addEventListener(MouseEvent.CLICK, previous);
+		
+			right.addEventListener(MouseEvent.MOUSE_OVER, mouseOverArrow);
+			right.addEventListener(MouseEvent.MOUSE_OUT, mouseOutArrow);
+			right.addEventListener(MouseEvent.CLICK, next);
+		
+			intervalId = setInterval(function():void{next(null);}, 5000);
+		]]>
+	</s:creationComplete>
+	<s:Group id="banners" width="100%" height="100%" clipAndEnableScrolling="true">
+		<s:Label width="100%" height="100%" textAlign="center" verticalAlign="middle" text="加载中..."/>
+	</s:Group>
+	<s:Image id="left" source="@Embed(source='assets/circle-arrow-left.png')"
+			 width="46" height="46" alpha="0.5" left="10" top="53"
+			 visible="false" enabled="{!animating}" mouseEnabled="{!animating}"/>
+	<s:Image id="right" source="@Embed(source='assets/circle-arrow-right.png')"
+			 width="46" height="46" alpha="0.5" right="10" top="53"
+			 visible="false" enabled="{!animating}" mouseEnabled="{!animating}"/>
+</s:Group>

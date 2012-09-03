@@ -56,7 +56,6 @@ package classes
 			
 			var service:HTTPService = new HTTPService();
 			service.url = url;
-			classes.Utils.log2c(url);
 			service.method = "POST";
 			service.resultFormat = "text";
 			service.addEventListener(ResultEvent.RESULT, storeResultListener);
@@ -73,6 +72,7 @@ package classes
 				item.id = obj.products[i].id;
 				item.name = obj.products[i].name;
 				item.category = obj.products[i].category_name;
+				item.createDate = obj.products[i].create_date;
 				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				items.addItem(item);
