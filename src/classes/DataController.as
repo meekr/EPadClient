@@ -51,7 +51,12 @@ package classes
 			
 			if (page)
 				params.push("page="+page);
-			params.push("size=6");
+			
+			if (page && page > 1)
+				params.push("size=12");
+			else
+				params.push("size=6");
+			
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
 			
 			var service:HTTPService = new HTTPService();

@@ -51,6 +51,29 @@ package classes
 		private function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
 		{
 			getDeviceAppItems();
+			var lai:AppItem;
+			if (event.connected)
+			{
+				for each (lai in localItems)
+				{
+					for each (var ai:AppItem in deviceItems)
+					{
+						if (ai.name == lai.name)
+						{
+							lai.installed = true;
+							lai.selected = false;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				for each (lai in localItems)
+				{
+					lai.installed = false;
+				}
+			}
 		}
 		
 		private function getDeviceAppItems():void
@@ -158,6 +181,7 @@ package classes
 		{
 			var app:AppItem = installingPool.getItemAt(0) as AppItem;
 			app.selected = false;
+			app.installed = true;
 			
 			var evt:AppInstallEvent = new AppInstallEvent();
 			evt.status = AppItemTransitionStatus.COMPLETED;

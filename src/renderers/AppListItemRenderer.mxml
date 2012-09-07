@@ -3,8 +3,8 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="true"
-				width="100%" height="85"
-				alpha.installed="0.5">
+				width="100%" height="85" xmlns:components="components.*"
+				>
 	<fx:Script>
 		<![CDATA[
 			import classes.AppItem;
@@ -38,8 +38,12 @@
 						thumbnail.source = item.iconUrl;
 					}
 					
-					if (item.installed)
+					if (item.installed) {
 						currentState = "installed";
+					}
+					else if (!item.isDeviceType()) {
+						currentState = "default";
+					}
 				}
 				else {
 					thumbnail.source = null;
@@ -97,6 +101,16 @@
 			{
 				Alert.show("您确定从设备移除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.NO);
 			}
+			
+			protected function btnDeleteLocal_clickHandler(event:MouseEvent):void
+			{
+				CONFIG::ON_PC {
+					var app:AppItem = AppItem(data);
+					ExternalInterface.call("F2C_deleteLocalApp", app.name);
+					var idx:int = ApplicationController.instance.localItems.getItemIndex(app);
+					ApplicationController.instance.localItems.removeItemAt(idx);
+				}
+			}
 		]]>
 	</fx:Script>
 	<s:states>
@@ -111,16 +125,28 @@
 		<s:HorizontalLayout verticalAlign="middle" paddingTop="5" paddingBottom="5"/>
 	</s:layout>
 	
-	<mx:Image id="thumbnail" source="@Embed(source='assets/icon-placeholder.png')" width="75" height="75"/>
+	<mx:Image id="thumbnail" source="@Embed(source='assets/icon-placeholder.png')" width="75" height="75" alpha.installed="0.5"/>
 	<s:Spacer width="8"/>
-	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="8" gap="10">
-		<s:Label text="{data.name}" color="#333333" fontSize="14"/>
-		<s:Label text="文件大小：{data.fileSize}" excludeFrom="device"/>
+	<s:VGroup width="100%" height="100%" verticalAlign="top" paddingTop="8" paddingBottom="8" gap="7">
+		<s:HGroup width="100%">
+			<s:Label text="{data.name}" color="#333333" fontSize="14" alpha.installed="0.5"/>
+			<s:Spacer width="100%"/>
+			<components:KPButton id="btnDeleteLocal"
+								 backgroundColor="#fd4122"
+								 text="删除"
+								 fontSize="13"
+								 click="btnDeleteLocal_clickHandler(event)"
+								 excludeFrom="device"/>
+		</s:HGroup>
+		<s:Label text="文件大小：{data.fileSize}" excludeFrom="device" alpha.installed="0.5"/>
 		<s:Spacer height="100%"/>
-		<s:Label text="正在解压缩..." includeIn="extracting"/>
-		<s:Label text="正在安装：{description}" includeIn="transfering"/>
-		<s:Label color="#999999" text="已安装" includeIn="installed"/>
-		<s:Label text="正在删除..." includeIn="deleting"/>
+		<s:HGroup excludeFrom="device">
+			<s:Label text="正在解压缩..." includeIn="extracting"/>
+			<s:Label text="正在安装：{description}" includeIn="transfering"/>
+			<s:Label color="#999999" text="已安装" includeIn="installed"/>
+			<s:Label text="正在删除..." includeIn="deleting"/>
+			<s:Label text=""/>
+		</s:HGroup>
 	</s:VGroup>
 	<s:CheckBox id="checkbox" skinClass="skins.MyCheckBox" selected="{data.selected}" change="checkbox_changeHandler(event)" excludeFrom="device,installed"/>
 	<s:Image id="btnDelete" source="@Embed(source='assets/icon-cancel.png')"

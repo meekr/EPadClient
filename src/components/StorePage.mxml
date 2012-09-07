@@ -81,6 +81,7 @@
 					currentCid = catIds[index];
 					currentPage = 1;
 					updateStoreItems();
+					dispatchEvent(new Event("currentPageChanged"));
 				}
 			}
 			
@@ -99,6 +100,7 @@
 				{
 					currentPage--;
 					updateStoreItems();
+					dispatchEvent(new Event("currentPageChanged"));
 				}
 			}
 			
@@ -108,6 +110,7 @@
 				{
 					currentPage++;
 					updateStoreItems();
+					dispatchEvent(new Event("currentPageChanged"));
 				}
 			}
 			
@@ -117,6 +120,15 @@
 				storeGroupContent.alpha = 0;
 				loading.alpha = 1;
 				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
+			}
+			
+			[Bindable(event="currentPageChanged")]
+			private function getListTop():Number
+			{
+				if (currentPage > 1)
+					return 50;
+				else
+					return 210;
 			}
 		]]>
 	</fx:Script>
@@ -163,13 +175,13 @@
 				<s:Label width="100%" height="100%" color="#FFFFFF" text="发布时间" textAlign="center" verticalAlign="middle"/>
 			</s:Group>-->
 		</s:HGroup>
-		<s:HGroup left="10" top="50" right="10" height="152" gap="0">
+		<s:HGroup left="10" top="50" right="10" height="152" gap="0" visible="{currentPage == 1}" includeInLayout="{currentPage == 1}">
 			<components:Banner id="banner1" width="382" height="152"/>
 			<s:Spacer width="100%"/>
 			<components:Banner id="banner2" width="382" height="152"/>
 		</s:HGroup>
 		
-		<s:Group id="storeGroup" left="10" top="210" right="10" bottom="0">
+		<s:Group id="storeGroup" left="10" top="{getListTop()}" right="10" bottom="0">
 			<s:Group id="storeGroupContent" left="0" right="0" top="0" bottom="0" alpha="0">
 				<s:List id="storeItems" left="0" top="0" right="0" bottom="33"
 						skinClass="skins.MyListSkin" borderColor="#ffffff"
