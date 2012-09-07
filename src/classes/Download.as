@@ -68,6 +68,9 @@ package classes
 				request.url = iconUrl;
 				pngLoader.load(request);
 			}
+			else if (obj.error) {
+				Alert.show(obj.message);
+			}
 		}
 		
 		public function pauseDownload():void
@@ -112,7 +115,7 @@ package classes
 			var base64Enc:Base64Encoder = new Base64Encoder();
 			base64Enc.encodeBytes(buf, 0, buf.length);
 			var str:String = base64Enc.toString();
-			str = str.split("\n").join(""); 
+			str = str.split("\n").join("");
 			trace(str.length+": "+str.substr(0, 1000));
 			CONFIG::ON_PC {
 				ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+appName+".npk,"+str);

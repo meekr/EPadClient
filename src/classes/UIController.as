@@ -29,6 +29,8 @@ package classes
 		public var firmwareVersion:String = "1.0";
 		[Bindable]
 		public var downloadingItems:ArrayCollection;
+		[Bindable]
+		public var version:String = "1.0.09.07";
 		
 		public function UIController()
 		{
@@ -94,7 +96,7 @@ package classes
 		
 		public function addPcItem(appName:String, fileSize:Number):void
 		{
-			for each(var item:AppItem in ApplicationController.instance.localItems) {
+			for each (var item:AppItem in ApplicationController.instance.localItems) {
 				if (item.name == appName)
 					return;
 			}
@@ -105,6 +107,16 @@ package classes
 			app.location = LocationType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
 			ApplicationController.instance.localItems.addItem(app);
+			
+			// check install status
+			for each (var ai:AppItem in ApplicationController.instance.deviceItems)
+			{
+				if (ai.name == appName)
+				{
+					app.installed = true;
+					break;
+				}
+			}
 		}
 		
 		public function removeAppOnPc(app:AppItem):void
