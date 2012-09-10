@@ -8,7 +8,7 @@ package events
 	{
 		public static var name:String = "appInstallEvent";
 		public var status:String = AppItemTransitionStatus.DEFAULT;
-		public var description:String;
+		public var description:String = "";
 		public var percentage:Number;
 		
 		public function AppInstallEvent()

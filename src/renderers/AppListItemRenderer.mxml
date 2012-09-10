@@ -64,6 +64,7 @@
 						currentState = event.status;
 						break;
 				}
+				Utils.log2c("event.status="+event.status+", desc="+event.description);
 				
 				description = event.description;
 			}

@@ -6,7 +6,7 @@
         [HostComponent("spark.components.Application")]
     ]]>
     </fx:Metadata>
-    <s:states>
+	<s:states>
         <s:State name="normal" />
         <s:State name="disabled" />
     </s:states>
@@ -29,12 +29,14 @@
 			<s:BitmapFill source="@Embed(source='assets/app-bg.jpg')" fillMode="scale" alpha="1"/>
         </s:fill>
     </s:Rect>
+	<s:Group id="contentGroup" left="0" right="0" top="26" bottom="0"/>
 	<s:HGroup left="1" right="1" top="1" height="26" gap="-5">
 		<s:Spacer width="100%"/>
-		<s:Image source="@Embed(source='assets/icon-minimize.png')" width="26" height="26"/>
-		<s:Image source="@Embed(source='assets/icon-maximize.png')" width="26" height="26"/>
+		<!--
+		<s:Image source="@Embed(source='assets/icon-minimize.png')" width="26" height="26" click="fscommand('minimize')"/>
+		-->
+		<s:Image source="@Embed(source='assets/icon-minimize.png')" width="26" height="26" click="fscommand('minimize')"/>
 		<s:Image source="@Embed(source='assets/icon-close.png')" width="26" height="26" click="fscommand('quit')"/>
 		<s:Spacer width="10"/>
 	</s:HGroup>
-	<s:Group id="contentGroup" left="0" right="0" top="26" bottom="0"/>
 </s:Skin>

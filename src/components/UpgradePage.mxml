@@ -7,12 +7,20 @@
 		 enabled="{UIController.instance.deviceDisk.connected}"
 		 mouseEnabled="{UIController.instance.deviceDisk.connected}"
 		 >
-	<fx:Declarations>
-	</fx:Declarations>
+	<s:creationComplete>
+		<![CDATA[
+			CONFIG::ON_PC {
+				ExternalInterface.addCallback("FL_updateSetTransferInformation", FL_updateSetTransferInformation);
+				ExternalInterface.addCallback("FL_updateCompleteTransfer", FL_updateCompleteTransfer);
+				ExternalInterface.addCallback("FL_applyUpdate", FL_applyUpdate);
+			}
+		]]>
+	</s:creationComplete>
 	<fx:Script>
 		<![CDATA[
 			import classes.Constants;
 			import classes.UIController;
+			import classes.Utils;
 			
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
@@ -23,6 +31,8 @@
 			// ["none", "checking", "no_update", "found_update", "downloading", "updating", "updated"]
 			[Bindable]
 			private var status:String = "none";
+			[Bindable]
+			private var updateText:String = "";
 			[Bindable]
 			private var remoteVersion:String;
 			[Bindable]
@@ -104,13 +114,8 @@
 			
 			private function startUpdate():void
 			{
-				var ret:String = "1";
 				CONFIG::ON_PC {
-					ret = ExternalInterface.call("F2C_updateFirmware", UIController.instance.downloadDirectory+"builtIn.zip");
-				}
-				
-				if (ret == "1") {
-					status = "updated";
+					ExternalInterface.call("F2C_updateFirmware", UIController.instance.downloadDirectory+"builtIn.zip");
 				}
 			}
 			
@@ -126,6 +131,21 @@
 				}
 			}
 			
+			private function FL_updateSetTransferInformation(args:String):void
+			{
+				updateText = "正在更新系统文件("+args+")...";
+			}
+			
+			private function FL_updateCompleteTransfer(args:String):void
+			{
+				UIController.instance.firmwareVersion = remoteVersion;
+				status = "updated";
+			}
+			
+			private function FL_applyUpdate(args:String):void
+			{
+				updateText = "正在应用系统更新，切勿断开USB连接";
+			}
 		]]>
 	</fx:Script>
 	<fx:Binding source="downloadPercentage" destination="downloadBar.rcPercentage.percentWidth"/>
@@ -177,7 +197,7 @@
 				<s:HGroup horizontalAlign="center" width="100%"
 						  visible="{status == 'updating'}" includeInLayout="{status == 'updating'}">
 					<components:AnimatedGifImage source="assets/loading.gif"/>
-					<s:Label text="正在更新系统..." height="32" verticalAlign="middle"/>
+					<s:Label text="{updateText}" height="32" verticalAlign="middle"/>
 				</s:HGroup>
 			</s:VGroup>
 			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"

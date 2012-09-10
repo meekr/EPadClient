@@ -84,7 +84,6 @@ package classes
 					return;
 				
 				var files:String = ExternalInterface.call("F2C_getDeviceApps", "");
-				classes.Utils.log2c(files);
 				if (files.length > 0)
 				{
 					var items:Array = files.split(",");
@@ -148,69 +147,81 @@ package classes
 		
 		private function FL_installSetExtractInformation(args:String):void
 		{
-			var app:AppItem = installingPool.getItemAt(0) as AppItem;
-			var evt:AppInstallEvent = new AppInstallEvent();
-			evt.status = AppItemTransitionStatus.EXTRACTING;
-			evt.description = args;
-			app.dispatchEvent(evt);
+			if (installingPool.length > 0)
+			{
+				var app:AppItem = installingPool.getItemAt(0) as AppItem;
+				var evt:AppInstallEvent = new AppInstallEvent();
+				evt.status = AppItemTransitionStatus.EXTRACTING;
+				evt.description = args;
+				app.dispatchEvent(evt);
+			}
 		}
 		
 		private function FL_installCompleteExtract(args:String):void
 		{
-			var app:AppItem = installingPool.getItemAt(0) as AppItem;
-			var evt:AppInstallEvent = new AppInstallEvent();
-			evt.status = AppItemTransitionStatus.TRANSFERING;
-			evt.percentage = 0;
-			app.dispatchEvent(evt);
-			
-			CONFIG::ON_PC {
-				ExternalInterface.call("F2C_installTransferApp", app.name);
+			if (installingPool.length > 0)
+			{
+				var app:AppItem = installingPool.getItemAt(0) as AppItem;
+				var evt:AppInstallEvent = new AppInstallEvent();
+				evt.status = AppItemTransitionStatus.TRANSFERING;
+				evt.percentage = 0;
+				app.dispatchEvent(evt);
+				
+				CONFIG::ON_PC {
+					ExternalInterface.call("F2C_installTransferApp", app.name);
+				}
 			}
 		}
 		
 		private function FL_installSetTransferInformation(args:String):void
 		{
-			var app:AppItem = installingPool.getItemAt(0) as AppItem;
-			var evt:AppInstallEvent = new AppInstallEvent();
-			evt.status = AppItemTransitionStatus.TRANSFERING;
-			evt.description = args;
-			app.dispatchEvent(evt);
+			if (installingPool.length > 0)
+			{
+				var app:AppItem = installingPool.getItemAt(0) as AppItem;
+				var evt:AppInstallEvent = new AppInstallEvent();
+				evt.status = AppItemTransitionStatus.TRANSFERING;
+				evt.description = args;
+				app.dispatchEvent(evt);
+			}
 		}
 		
 		private function FL_installCompleteTransfer(args:String):void
 		{
-			var app:AppItem = installingPool.getItemAt(0) as AppItem;
-			app.selected = false;
-			app.installed = true;
-			
-			var evt:AppInstallEvent = new AppInstallEvent();
-			evt.status = AppItemTransitionStatus.COMPLETED;
-			evt.percentage = 0;
-			app.dispatchEvent(evt);
-			
-			var str:String = "";
-			CONFIG::ON_PC {
-				str = ExternalInterface.call("F2C_insertAppNode", app.name);
-			}
-			
-			// add item on device
-			if (str && str.length > 0)
+			if (installingPool.length > 0)
 			{
-				// str:name#iconUrl
-				var icon:String = str.split("#")[1];
-				icon = icon.split("/").join("\\");
+				var app:AppItem = installingPool.getItemAt(0) as AppItem;
+				app.selected = false;
+				app.installed = true;
 				
-				var item:AppItem = new AppItem();
-				item.name = str.split("#")[0];
-				item.iconUrl = UIController.instance.driveNANDName + "\\book\\" + icon;
-				item.location = LocationType.DEVICE;
-				item.iconBase64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.iconUrl);
+				var evt:AppInstallEvent = new AppInstallEvent();
+				evt.status = AppItemTransitionStatus.COMPLETED;
+				evt.percentage = 0;
+				app.dispatchEvent(evt);
 				
-				deviceItems.addItem(item);
+				var str:String = "";
+				CONFIG::ON_PC {
+					str = ExternalInterface.call("F2C_insertAppNode", app.name);
+				}
+				
+				// add item on device
+				if (str && str.length > 0)
+				{
+					// str:name#iconUrl
+					var icon:String = str.split("#")[1];
+					icon = icon.split("/").join("\\");
+					
+					var item:AppItem = new AppItem();
+					item.name = str.split("#")[0];
+					item.iconUrl = UIController.instance.driveNANDName + "\\book\\" + icon;
+					item.location = LocationType.DEVICE;
+					item.iconBase64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.iconUrl);
+					
+					deviceItems.addItem(item);
+				}
+				
+				installingPool.removeItemAt(0);
+				startInstalling();
 			}
-			
-			installingPool.removeItemAt(0);
-			startInstalling();
 		}
 	}
 }
