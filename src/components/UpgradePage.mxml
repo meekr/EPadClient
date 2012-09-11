@@ -77,7 +77,7 @@
 				loader.addEventListener(Event.COMPLETE, completeHandler);
 				
 				var request:URLRequest = new URLRequest();
-				request.url = Constants.BUILT_INT_ZIP_URL;
+				request.url = Constants.UI_SYSTEM_URL_PREFIX + remoteVersion + ".zip";
 				loader.load(request);
 			}
 			
@@ -133,6 +133,8 @@
 			
 			private function FL_updateSetTransferInformation(args:String):void
 			{
+				if (args.indexOf(" ") > 1)
+					args = args.substr(0, args.lastIndexOf(" "));
 				updateText = "正在更新系统文件("+args+")...";
 			}
 			

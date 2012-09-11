@@ -44,7 +44,6 @@ package classes
 		private function resultListener(event:ResultEvent):void {
 			var json:String = String(event.result);
 			var obj:Object = JSON.parse(json);
-			classes.Utils.log2c(json);
 			var evt:LoginEvent = new LoginEvent();
 			if (obj.state == "valid") {
 				loggedIn = true;
