@@ -89,6 +89,7 @@
 						ExternalInterface.call("F2C_deleteDeviceApp", app.name);
 						var idx:int = ApplicationController.instance.deviceItems.getItemIndex(app);
 						ApplicationController.instance.deviceItems.removeItemAt(idx);
+						ExternalInterface.call("F2C_updateVolumnStatus", "");
 						
 						// reset downloaded app status
 						for each (var ai:AppItem in ApplicationController.instance.localItems)

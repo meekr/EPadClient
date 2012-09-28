@@ -13,6 +13,7 @@
 				ExternalInterface.addCallback("FL_updateSetTransferInformation", FL_updateSetTransferInformation);
 				ExternalInterface.addCallback("FL_updateCompleteTransfer", FL_updateCompleteTransfer);
 				ExternalInterface.addCallback("FL_applyUpdate", FL_applyUpdate);
+				ExternalInterface.addCallback("FL_failUpdate", FL_failUpdate);
 			}
 		]]>
 	</s:creationComplete>
@@ -45,7 +46,7 @@
 				status = "checking";
 				
 				var service:HTTPService = new HTTPService();
-				service.url = Constants.CHECK_UI_URL;
+				service.url = Constants.CHECK_UI_URL+"?rnd="+Math.floor(Math.random()*100000);
 				trace(service.url);
 				service.method = "GET";
 				service.resultFormat = "text";
@@ -135,7 +136,7 @@
 			{
 				if (args.indexOf(" ") > 1)
 					args = args.substr(0, args.lastIndexOf(" "));
-				updateText = "正在更新系统文件("+args+")...";
+				updateText = "正在更新系统文件"+args+"，请勿断开USB连接";
 			}
 			
 			private function FL_updateCompleteTransfer(args:String):void
@@ -146,7 +147,12 @@
 			
 			private function FL_applyUpdate(args:String):void
 			{
-				updateText = "正在应用系统更新，切勿断开USB连接";
+				updateText = "正在应用系统更新，请勿断开USB连接";
+			}
+			
+			private function FL_failUpdate(args:String):void
+			{
+				
 			}
 		]]>
 	</fx:Script>

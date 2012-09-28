@@ -6,10 +6,11 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.AppItem;
-			import classes.DataController;
 			import classes.ApplicationController;
+			import classes.DataController;
 			import classes.Download;
 			import classes.UIController;
+			import classes.Utils;
 			
 			import mx.events.FlexEvent;
 			
@@ -39,6 +40,7 @@
 			{
 				for each (var item:AppItem in ApplicationController.instance.localItems)
 				{
+					classes.Utils.log2c(item.name+" selected? "+item.selected);
 					if (item.selected)
 					{
 						ApplicationController.instance.installingPool.addItem(item);

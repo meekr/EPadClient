@@ -71,13 +71,14 @@
 			<s:VGroup top="95" width="100%" gap="17">
 				<s:HGroup width="100%" gap="5" verticalAlign="middle">
 					<s:Label text="设备ID：" fontSize="14" textAlign="right" width="31%"/>
-					<components:KPTextInput id="hcode"
+					<!--<components:KPTextInput id="hcode"
 											color="#ffffff"
 											text="{UIController.instance.user.hcode}"
 											skinClass="skins.KPTextInputSkin"
 											width="140" height="25"
 											contentBackgroundColor="#63e8fb"
-											/>
+											/>-->
+					<s:Label id="hcode" text="{UIController.instance.user.hcode}"/>
 				</s:HGroup>
 				<s:HGroup width="100%" gap="5" verticalAlign="middle">
 					<s:Label text="手机号：" fontSize="14" textAlign="right" width="31%"/>

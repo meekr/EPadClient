@@ -62,7 +62,7 @@ package classes
 			var obj:Object = JSON.parse(json);
 			if (obj.state == "ok") {
 				var request:URLRequest = new URLRequest();
-				request.url = Constants.getRealNpkLink(obj.link);
+				request.url = Constants.getRealNpkLink(obj.link+"?rnd="+Math.floor(Math.random()*100000));
 				npkLoader.load(request);
 				
 				request.url = iconUrl;

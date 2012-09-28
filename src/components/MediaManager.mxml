@@ -100,6 +100,7 @@
 					{
 						CONFIG::ON_PC {
 							ExternalInterface.call("F2C_deleteDeviceMedia", item.type + "," + item.fileUrl);
+							ExternalInterface.call("F2C_updateVolumnStatus", "");
 							MediaController.instance.deviceItems.removeItemAt(i);
 							i--;
 						}

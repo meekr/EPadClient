@@ -45,6 +45,8 @@ package classes
 				ExternalInterface.addCallback("FL_installCompleteExtract", FL_installCompleteExtract);
 				ExternalInterface.addCallback("FL_installSetTransferInformation", FL_installSetTransferInformation);
 				ExternalInterface.addCallback("FL_installCompleteTransfer", FL_installCompleteTransfer);
+				ExternalInterface.addCallback("FL_failInstall", FL_failInstall);
+				ExternalInterface.addCallback("FL_duplicateInstall", FL_duplicateInstall);
 			}
 		}
 		
@@ -213,7 +215,10 @@ package classes
 					item.name = str.split("#")[0];
 					item.iconUrl = UIController.instance.driveNANDName + "\\book\\" + icon;
 					item.location = LocationType.DEVICE;
-					item.iconBase64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.iconUrl);
+					CONFIG::ON_PC {
+						item.iconBase64Rep = ExternalInterface.call("F2C_getDeviceIconBase64", item.iconUrl);
+						ExternalInterface.call("F2C_updateVolumnStatus", "");
+					}
 					
 					deviceItems.addItem(item);
 				}
@@ -221,6 +226,34 @@ package classes
 				installingPool.removeItemAt(0);
 				startInstalling();
 			}
+		}
+		
+		private function FL_failInstall(args:String):void
+		{
+			if (installingPool.length > 0)
+			{
+				var app:AppItem = installingPool.getItemAt(0) as AppItem;
+				var evt:AppInstallEvent = new AppInstallEvent();
+				evt.status = AppItemTransitionStatus.DEFAULT;
+				evt.description = args;
+				app.dispatchEvent(evt);
+				
+				installingPool.removeAll();
+			}
+		}
+		
+		private function FL_duplicateInstall(args:String):void
+		{
+			for (var i:int=0; i<installingPool.length; i++)
+			{
+				var app:AppItem = AppItem(installingPool[i]);
+				if (app.name == args)
+				{
+					installingPool.removeItemAt(i);
+					break;
+				}
+			}
+			startInstalling();
 		}
 	}
 }

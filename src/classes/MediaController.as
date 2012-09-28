@@ -205,6 +205,7 @@ package classes
 					var s:String = item.fileUrl.substr(item.fileUrl.lastIndexOf("\\")+1);
 					s = s.substr(0, s.lastIndexOf("."));
 					str = ExternalInterface.call("F2C_insertMediaNode", item.type + "," + s);
+					ExternalInterface.call("F2C_updateVolumnStatus", "");
 				}
 				
 				// add item on device
