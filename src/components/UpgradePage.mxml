@@ -157,14 +157,14 @@
 		]]>
 	</fx:Script>
 	<fx:Binding source="downloadPercentage" destination="downloadBar.rcPercentage.percentWidth"/>
-	<s:Rect width="100%" height="100%" radiusX="8" topLeftRadiusX="0">
+	<s:Rect width="100%" height="100%" radiusX="8">
 		<s:fill>
 			<s:SolidColor color="#ffffff"/>
 		</s:fill>
 	</s:Rect>
 	<s:Rect left="10" top="10" right="10" bottom="10" radiusX="8">
 		<s:fill>
-			<s:SolidColor color="#efefef"/>
+			<s:SolidColor color="#f2f2f2"/>
 		</s:fill>
 	</s:Rect>
 	<s:VGroup left="30" top="50" right="30" bottom="30" horizontalAlign="center" gap="12" paddingTop="30">

@@ -7,6 +7,7 @@
 	src:url("../assets/Microsoft Yahei.ttf");
 	fontFamily: myFontFamily;
 	advancedAntiAliasing: true;
+	embedAsCFF:true;
 }
 
 @font-face {
@@ -38,6 +39,11 @@ mx|Text {
 	fontFamily:myFontFamily2;
 }
 */
+
+mx|PieChart {
+	fontFamily:myFontFamily2;
+	fontSize:15;
+}
 
 mx|Alert {
 	fontFamily:myFontFamily2;
