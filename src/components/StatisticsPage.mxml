@@ -18,6 +18,7 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.UIController;
+			import classes.DataController;
 			
 			import mx.collections.ArrayCollection;
 			
@@ -88,12 +89,26 @@
 				<s:Label text="按使用时间" color="#ff0000" fontSize="13" width="129" height="35" textAlign="center" verticalAlign="middle" click="changeTabIndex(0)"/>
 				<s:Label text="按使用次数" color="#ff0000" fontSize="13" width="129" height="35" textAlign="center" verticalAlign="middle" click="changeTabIndex(1)"/>
 			</s:HGroup>
-			<mx:ViewStack id="viewStack" left="10" top="41" right="10" bottom="10">
+			<mx:ViewStack id="viewStack" left="20" top="41" right="10" bottom="10">
 				<s:NavigatorContent width="100%" height="100%">
-					<s:Label text="aaaa" backgroundColor="#00ff00" width="100%" height="100%"/>
+					<s:List id="lstTiming" width="100%" height="100%"
+							skinClass="skins.MyListSkin" borderColor="#fff5e6"
+							dataProvider="{DataController.instance.statUsageTiming}"
+							itemRenderer="renderers.StatisticsListItemRenderer">
+						<s:layout>
+							<s:VerticalLayout paddingLeft="0" paddingTop="0" paddingRight="0" paddingBottom="0" gap="0"/>
+						</s:layout>
+					</s:List>
 				</s:NavigatorContent>
 				<s:NavigatorContent width="100%" height="100%">
-					<s:Label text="bbbb" backgroundColor="#00ffff" width="100%" height="100%"/>
+					<s:List id="lstCounting" width="100%" height="100%"
+							skinClass="skins.MyListSkin" borderColor="#fff5e6"
+							dataProvider="{DataController.instance.statUsageCounting}"
+							itemRenderer="renderers.StatisticsListItemRenderer">
+						<s:layout>
+							<s:VerticalLayout paddingLeft="0" paddingTop="0" paddingRight="0" paddingBottom="0" gap="0"/>
+						</s:layout>
+					</s:List>
 				</s:NavigatorContent>
 			</mx:ViewStack>
 		</s:Group>
