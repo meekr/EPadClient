@@ -32,13 +32,6 @@ package classes
 		{
 			statUsageTiming = new ArrayCollection();
 			statUsageCounting = new ArrayCollection();
-			
-			// test data
-			for (var i:int=0; i<8; i++)
-			{
-				statUsageTiming.addItem({name:(i+1)+". XXXXXX", val:"XXX 分钟"});
-				statUsageCounting.addItem({name:(i+1)+". XXXXXX", val:"XXX 次"});
-			}
 		}
 		
 		public static function get instance():DataController

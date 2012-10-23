@@ -11,14 +11,39 @@
 		<![CDATA[
 			container.setElementIndex(btn1bg, 2);
 		
-		CONFIG::ON_PC {
-		}
+			CONFIG::ON_PC {
+				var json:String = ExternalInterface.call("F2C_getCategoryStats", "");
+				var obj:Object = JSON.parse(json);
+				categories = new ArrayCollection([
+								{Category:"音乐", Number:obj["music"]},
+								{Category:"视频", Number:obj["video"]},
+								{Category:"游戏", Number:obj["game"]},
+								{Category:"绘本", Number:obj["book"]},
+								{Category:"应用", Number:obj["app"]}
+								]);
+		
+				var str:String = ExternalInterface.call("F2C_getAppStats", "");
+				var arr:Array = str.split(",");
+				for (var i:int=0; i<arr.length; i++)
+				{
+					var app:String = arr[i];
+					var name:String = app.split("#")[0];
+					var times:String = app.split("#")[1];
+					var duration:Number = parseInt(app.split("#")[2]);
+					DataController.instance.statUsageTiming.addItem({name:name, val:classes.Utils.getDuration(duration), num:duration});
+					DataController.instance.statUsageTiming.source.sortOn("num", Array.NUMERIC|Array.DESCENDING);
+		
+					DataController.instance.statUsageCounting.addItem({name:name, val:times+"次", num:times});
+					DataController.instance.statUsageCounting.source.sortOn("num", Array.NUMERIC|Array.DESCENDING);
+				}
+			}
 		]]>
 	</s:creationComplete>
 	<fx:Script>
 		<![CDATA[
-			import classes.UIController;
 			import classes.DataController;
+			import classes.UIController;
+			import classes.Utils;
 			
 			import mx.collections.ArrayCollection;
 			
@@ -51,13 +76,7 @@
 			}
 			
 			[Bindable]
-			private var categories:ArrayCollection = new ArrayCollection([
-				{Category:"音乐", Number:20},
-				{Category:"视频", Number:15},
-				{Category:"游戏", Number:67},
-				{Category:"绘本", Number:8},
-				{Category:"应用", Number:38}
-			]);
+			private var categories:ArrayCollection;
 			
 			private function displayCategory(data:Object, field:String, index:Number, percentValue:Number):String {
 				//var p:String = String(percentValue).substr(0, 4);

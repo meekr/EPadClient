@@ -3,8 +3,8 @@ package classes
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.external.*;
-	import flash.utils.ByteArray;
 	import flash.net.*;
+	import flash.utils.ByteArray;
 	
 	public class Utils
 	{
@@ -27,6 +27,29 @@ package classes
 			}
 			else
 				return Math.round(size/1024) + " KB";
+		}
+		
+		public static function getDuration(seconds:Number):String
+		{
+			var s:String;
+			if (seconds < 60) {
+				s = seconds + "秒";
+			}
+			else if (seconds < 60*60) {
+				s = Math.floor(seconds / 60) + "分";
+				if (seconds % 60 > 0)
+					s += seconds % 60 + "秒";
+			}
+			else {
+				s = Math.floor(seconds / 3600) + "小时";
+				seconds = seconds % 3600;
+				if (seconds > 0) {
+					s += Math.floor(seconds / 60) + "分";
+					if (seconds % 60 > 0)
+						s += seconds % 60 + "秒";
+				}
+			}
+			return s;
 		}
 		
 		public static function gotoUrl(url:String):void
