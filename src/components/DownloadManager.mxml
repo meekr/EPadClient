@@ -38,6 +38,7 @@
 			
 			protected function btnSync_clickHandler(event:MouseEvent):void
 			{
+				ApplicationController.instance.syncingToDevice = true;
 				for each (var item:AppItem in ApplicationController.instance.localItems)
 				{
 					classes.Utils.log2c(item.name+" selected? "+item.selected);
@@ -104,8 +105,9 @@
 			<components:KPButton id="btnSync"
 								 left="8" bottom="0"
 								 backgroundColor="#72af0a"
-								 text="同步到设备"
-								 enabled="{UIController.instance.deviceDisk.connected}" mouseEnabled="{UIController.instance.deviceDisk.connected}"
+								 text="{ApplicationController.instance.syncStatusText}"
+								 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; !ApplicationController.instance.syncingToDevice}"
+								 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; !ApplicationController.instance.syncingToDevice}"
 								 width="120" height="28"
 								 fontSize="13"
 								 click="btnSync_clickHandler(event)"/>

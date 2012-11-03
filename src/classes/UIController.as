@@ -30,7 +30,7 @@ package classes
 		[Bindable]
 		public var downloadingItems:ArrayCollection;
 		[Bindable]
-		public var version:String = "1.0.10.19";
+		public var version:String = "1.0.11.03";
 		
 		public function UIController()
 		{

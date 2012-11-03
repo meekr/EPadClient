@@ -2,6 +2,7 @@ package classes
 {
 	import events.AppInstallEvent;
 	import events.DeviceConnectionChangeEvent;
+	import events.SyncStatusChangeEvent;
 	
 	import flash.events.EventDispatcher;
 	import flash.external.*;
@@ -25,7 +26,7 @@ package classes
 		public var deviceItems:ArrayCollection;
 		[Bindable]
 		public var installingPool:ArrayCollection;
-
+		
 		public var boughtItems:ArrayCollection;
 		
 		public function ApplicationController()
@@ -115,6 +116,10 @@ package classes
 				CONFIG::ON_PC {
 					ExternalInterface.call("F2C_installApp", app.name);
 				}
+			}
+			else
+			{
+				this.syncingToDevice = false;
 			}
 		}
 		
@@ -239,6 +244,7 @@ package classes
 				app.dispatchEvent(evt);
 				
 				installingPool.removeAll();
+				this.syncingToDevice = false;
 			}
 		}
 		
@@ -254,6 +260,29 @@ package classes
 				}
 			}
 			startInstalling();
+		}
+		
+		private var _syncingToDevice:Boolean;
+		
+		[Bindable]
+		public function get syncingToDevice():Boolean
+		{
+			return _syncingToDevice;
+		}
+		
+		public function set syncingToDevice(value:Boolean):void
+		{
+			if (_syncingToDevice != value)
+			{
+				_syncingToDevice = value;
+				dispatchEvent(new SyncStatusChangeEvent());
+			}
+		}
+		
+		[Bindable(event="syncStatusChangeEvent")]
+		public function get syncStatusText():String
+		{
+			return this.syncingToDevice ? "正在同步中..." : "同步到设备";
 		}
 	}
 }

@@ -51,6 +51,7 @@ package classes
 		{
 			var service:HTTPService = new HTTPService();
 			service.url = npkUrl;
+			classes.Utils.log2c("url="+npkUrl);
 			service.method = "POST";
 			service.resultFormat = "text";
 			service.addEventListener(ResultEvent.RESULT, resultListener);
