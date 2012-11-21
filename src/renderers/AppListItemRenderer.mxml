@@ -108,6 +108,8 @@
 			
 			protected function btnDelete_clickHandler(event:MouseEvent):void
 			{
+				Alert.yesLabel = "是";
+				Alert.noLabel = "否";
 				Alert.show("您确定从设备移除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.NO);
 			}
 			

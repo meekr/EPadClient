@@ -24,10 +24,14 @@
 			
 			import mx.controls.Alert;
 			import mx.core.IVisualElementContainer;
+			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.events.ResizeEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.http.HTTPService;
+			
+			[Bindable]
+			private var remoteVersion:String;
 			
 			protected function loginHandler(event:LoginEvent):void
 			{
@@ -92,6 +96,31 @@
 					}
 				}
 			}
+			
+			private function clientCheckResultListener(event:ResultEvent):void {
+				var str:String = String(event.result);
+				var ver:String = str.substr(str.indexOf("<version>")+9);
+				ver = ver.substr(0, ver.indexOf("<"));
+				remoteVersion = ver;
+				if (remoteVersion > UIController.instance.version)
+				{
+					foundNew.visible = true;
+					Alert.yesLabel = "是";
+					Alert.noLabel = "否";
+					var message:String = "发些新版本E巧派助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
+					CONFIG::BYM
+					{
+						message = "发些新版本贝因美学习机助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
+					}
+					Alert.show(message, "您是否希望下载新版本助手？", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES);
+				}
+			}
+			
+			private function alertEventHandler(event:CloseEvent):void {
+				if (event.detail == Alert.YES) {
+					navigateToURL(new URLRequest('http://www.kizup.com/static/client.zip'))
+				}
+			}
 		]]>
 	</fx:Script>
 	<s:creationComplete>
@@ -100,13 +129,41 @@
 		UIController.instance.externalAddCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 		UIController.instance.user.addEventListener(LoginEvent.name, loginHandler);
 		UIController.instance.user.addEventListener(LogoutEvent.name, logoutHandler);
+		
+		// check client version
+		var service:HTTPService = new HTTPService();
+		service.url = Constants.CHECK_CLIENT_URL+"?rnd="+Math.floor(Math.random()*100000);
+		service.method = "GET";
+		service.resultFormat = "text";
+		service.addEventListener(ResultEvent.RESULT, clientCheckResultListener);
+		service.send();
+		
+		brand_logo.source = UIController.instance.BRAND_LOGO;
+		CONFIG::BYM {
+			brand_logo.source = UIController.instance.BRAND_LOGO_BYM;
+		}
 		]]>
 	</s:creationComplete>
 	<fx:Style source="css/global.css"/>
 	<s:Group width="100%" height="100%">
-		<s:Label left="0" right="10" top="10" height="30" textAlign="right" text="Welcome, {UIController.instance.user.username}"/>
-		<s:Image left="51" top="15" source="@Embed(source='assets/logo.png')" width="193" height="71"/>
-		<s:Label left="10" bottom="8" text="version: {UIController.instance.version}" fontSize="10" color="#333333"/>
+		<s:HGroup gap="10" height="30" left="0" right="10" top="10" horizontalAlign="right" verticalAlign="middle">
+			<s:Label text="Welcome, {UIController.instance.user.username}"/>
+			<s:Group width="74" height="20">
+				<s:Rect width="100%" height="100%" radiusX="10">
+					<s:fill>
+						<s:SolidColor color="{UIController.instance.deviceDisk.volumeStatusColor}"/>
+					</s:fill>
+				</s:Rect>
+				<s:Label width="100%" height="100%" color="#FFFFFF" textAlign="center" verticalAlign="middle" verticalCenter="1" text="{UIController.instance.deviceDisk.volumeStatusDescription}"/>
+			</s:Group>
+		</s:HGroup>
+		<s:Image left="51" top="15" id="brand_logo" width="193" height="71"/>
+		<s:HGroup left="10" bottom="8" height="20">
+			<s:Label text="version: {UIController.instance.version}" fontSize="11" color="#333333" height="100%" verticalAlign="middle"/>
+			<s:Label id="foundNew" visible="false" text="发现新版本助手{remoteVersion}，前往下载" color="#ff0000" fontSize="11"
+					 height="100%" verticalAlign="middle" buttonMode="true"
+					 textDecoration="underline" click="navigateToURL(new URLRequest('http://www.kizup.com/static/client.zip'))"/>
+		</s:HGroup>
 		<components:MenuBar id="menuBar" right="20" top="21" menuBarSelectedIndexChangedEvent="menuBar_menuBarSelectedIndexChangedEventHandler(event)"/>
 		<!--<s:TextArea left="0" top="0" width="400" height="20" text="{UIController.instance.user.token}"/>-->
 		

@@ -45,6 +45,11 @@
 		username.text = account.data.username;
 		password.text = account.data.password;
 		chkRemember.selected = account.data.rememberMe;
+		
+		home_bg.source = UIController.instance.HOME_BG;
+		CONFIG::BYM {
+			home_bg.source = UIController.instance.HOME_BG_BYM;
+		}
 		]]>
 	</s:creationComplete>
 	<s:states>
@@ -53,7 +58,7 @@
 	</s:states>
 	<s:Rect left="115" top="55" width="808" height="408">
 		<s:fill>
-			<s:BitmapFill source="@Embed(source='assets/home-bg.png')" fillMode="scale"/>
+			<s:BitmapFill id="home_bg" fillMode="scale"/>
 		</s:fill>
 	</s:Rect>
 	<s:VGroup left="155" top="135" width="380" height="180" gap="10">

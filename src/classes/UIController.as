@@ -30,7 +30,20 @@ package classes
 		[Bindable]
 		public var downloadingItems:ArrayCollection;
 		[Bindable]
-		public var version:String = "1.0.11.03";
+		public var version:String = "1.0.11.21";
+		
+		[Embed(source="assets/logo.png")]
+		public var BRAND_LOGO:Class;
+		[Embed(source="assets/logo-bym.png")]
+		public var BRAND_LOGO_BYM:Class;
+		[Embed(source="assets/brand-pic-talentech.png")]
+		public var BRAND_PIC:Class;
+		[Embed(source="assets/brand-pic-bym.png")]
+		public var BRAND_PIC_BYM:Class;
+		[Embed(source="assets/home-bg.png")]
+		public var HOME_BG:Class;
+		[Embed(source="assets/home-bg-bym.png")]
+		public var HOME_BG_BYM:Class;
 		
 		public function UIController()
 		{

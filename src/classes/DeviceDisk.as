@@ -3,8 +3,8 @@ package classes
 	import events.DeviceConnectionChangeEvent;
 	
 	import flash.events.Event;
-	import flash.external.*;
 	import flash.events.EventDispatcher;
+	import flash.external.*;
 	
 	import flashx.textLayout.formats.Float;
 	
@@ -26,6 +26,24 @@ package classes
 		{
 			if (_connected)
 				return "剩余空间："+(total-used)+"M";
+			else
+				return "设备未连接";
+		}
+		
+		[Bindable("volumeStatusChanged")]
+		public function get volumeStatusColor():uint
+		{
+			if (_connected)
+				return 0x46a705;
+			else
+				return 0x999999;
+		}
+		
+		[Bindable("volumeStatusChanged")]
+		public function get volumeStatusDescription():String
+		{
+			if (_connected)
+				return "设备已连接";
 			else
 				return "设备未连接";
 		}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%"
+		 xmlns:components="components.*">
+	<fx:Script>
+		<![CDATA[
+			import classes.UIController;
+			import classes.Utils;
+			
+			[Bindable]
+			private var label:String = "前往淘宝旗舰店";
+			
+			
+			private function navigate(event:MouseEvent):void
+			{
+				var url:String = "http://tongmeng100.taobao.com/";
+				CONFIG::BYM {
+					url = "http://beingmate.msnmedia.com.cn/";
+				}
+				Utils.gotoUrl(url);
+			}
+		]]>
+	</fx:Script>
+	<s:creationComplete>
+		<![CDATA[
+			brand_pic.source = UIController.instance.BRAND_PIC;
+			CONFIG::BYM {
+				label = "冠军宝贝训练营";
+				brand_pic.source = UIController.instance.BRAND_PIC_BYM;
+		
+				btnGoshop.addEventListener(MouseEvent.CLICK, navigate); 
+			}
+		]]>
+	</s:creationComplete>
+	<s:Image id="brand_pic" left="3" bottom="35" width="130" height="160"/>
+	<components:KPButton id="btnGoshop"
+						 left="8" bottom="0"
+						 backgroundColor="#07b1dc"
+						 text="{label}" width="120" height="25" fontSize="14"/>
+</s:Group>

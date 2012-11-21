@@ -14,6 +14,8 @@
 				ExternalInterface.addCallback("FL_updateCompleteTransfer", FL_updateCompleteTransfer);
 				ExternalInterface.addCallback("FL_applyUpdate", FL_applyUpdate);
 				ExternalInterface.addCallback("FL_failUpdate", FL_failUpdate);
+				ExternalInterface.addCallback("FL_reportDiagnosis", FL_reportDiagnosis);
+				ExternalInterface.addCallback("FL_completeDiagnose", FL_completeDiagnose);
 			}
 		]]>
 	</s:creationComplete>
@@ -38,6 +40,8 @@
 			private var remoteVersion:String;
 			[Bindable]
 			private var downloadPercentage:Number = 0;
+			[Bindable]
+			private var diagnosing:Boolean;
 			
 			private var loader:URLLoader;
 			
@@ -154,6 +158,39 @@
 			{
 				
 			}
+			
+			private function FL_reportDiagnosis(args:String):void
+			{
+				var label:Label = new Label();
+				label.text = args;
+				diagnoseSummary.addElement(label);
+				dispatchEvent(new Event("diagnosisVisibilityChanged"));
+			}
+			
+			private function FL_completeDiagnose(args:String):void
+			{
+				diagnosing = false;
+				
+				var label:Label = new Label();
+				label.text = args;
+				diagnoseSummary.addElement(label);
+				dispatchEvent(new Event("diagnosisVisibilityChanged"));
+			}
+			
+			protected function btnDiagnose_clickHandler(event:MouseEvent):void
+			{
+				CONFIG::ON_PC {
+					diagnoseSummary.removeAllElements();
+					diagnosing = true;
+					ExternalInterface.call("F2C_diagnose", "");
+				}
+			}
+			
+			[Bindable(event="diagnosisVisibilityChanged")]
+			private function get diagnosisVisible():Boolean
+			{
+				return diagnoseSummary.numElements > 0;
+			}
 		]]>
 	</fx:Script>
 	<fx:Binding source="downloadPercentage" destination="downloadBar.rcPercentage.percentWidth"/>
@@ -167,7 +204,7 @@
 			<s:SolidColor color="#f2f2f2"/>
 		</s:fill>
 	</s:Rect>
-	<s:VGroup left="30" top="50" right="30" bottom="30" horizontalAlign="center" gap="12" paddingTop="30">
+	<s:VGroup left="30" top="30" right="30" bottom="10" horizontalAlign="center" gap="12" paddingTop="30">
 		<s:HGroup width="90%" verticalAlign="baseline">
 			<s:Label text="系统升级" fontSize="18"/>
 			<s:Spacer width="100%"/>
@@ -177,18 +214,18 @@
 								 click="btnCheck_clickHandler(event)"
 								 />
 		</s:HGroup>
-		<s:BorderContainer width="85%" height="60"
+		<s:BorderContainer width="85%" height="40"
 						   borderColor="#cccccc" borderWeight="1">
 			<s:Label width="100%" height="100%" textAlign="center" verticalAlign="middle" text="当前系统版本：{UIController.instance.firmwareVersion}"/>
 		</s:BorderContainer>
-		<s:BorderContainer id="panel" width="85%" height="150" visible="{status != 'none'}"
+		<s:BorderContainer id="panel" width="85%" height="90" visible="{status != 'none'}"
 						   backgroundColor="#efefef" borderColor="#efefef" borderWeight="0">
-			<s:HGroup horizontalAlign="center" paddingTop="60" paddingBottom="40" gap="8" width="100%"
+			<s:HGroup horizontalAlign="center" paddingTop="15" paddingBottom="15" gap="8" width="100%"
 					  visible="{status == 'checking'}" includeInLayout="{status == 'checking'}">
 				<components:AnimatedGifImage source="assets/loading.gif"/>
 				<s:Label text="连线检查中..." height="32" verticalAlign="middle"/>
 			</s:HGroup>
-			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"
+			<s:Label width="100%" top="20" textAlign="center" verticalAlign="top"
 					 text="您的设备已经是最新的系统版本^_^"
 					 visible="{status == 'no_update'}" includeInLayout="{status == 'no_update'}"/>
 			<s:VGroup width="100%" gap="12" paddingTop="20" paddingRight="0" paddingBottom="20" paddingLeft="0"
@@ -199,7 +236,6 @@
 					<components:KPButton id="btnUpdate" text="开始更新" width="80" height="25" click="btnUpdate_clickHandler(event)"/>
 					<components:KPButton id="btnCancel" text="取消更新" width="80" height="25" backgroundColor="#ee7119" click="btnCancel_clickHandler(event)"/>
 				</s:HGroup>
-				<s:Spacer height="1"/>
 				<components:ProgressBar id="downloadBar" width="100%" height="22" progressText="下载系统文件：{downloadPercentage}%"
 										visible="{status == 'downloading'}" includeInLayout="{status == 'downloading'}"/>
 				<s:HGroup horizontalAlign="center" width="100%"
@@ -211,6 +247,26 @@
 			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"
 					 text="更新已完成，请重新启动E巧派"
 					 visible="{status == 'updated'}" includeInLayout="{status == 'updated'}"/>
+		</s:BorderContainer>
+		
+		<!-- diagnose -->
+		<s:HGroup width="90%" verticalAlign="baseline">
+			<s:Label text="内容诊断" fontSize="18"/>
+			<s:Spacer width="100%"/>
+			<components:KPButton id="btnDiagnose"
+								 text="开始诊断"
+								 enabled="{!diagnosing}" mouseEnabled="{!diagnosing}"
+								 width="80" height="25"
+								 click="btnDiagnose_clickHandler(event)"
+								 />
+		</s:HGroup>
+		<s:BorderContainer width="85%"
+						   borderColor="#cccccc" borderWeight="1" visible="{diagnosisVisible}" maxHeight="120">
+			<s:Scroller width="100%" height="100%">
+				<s:VGroup id="diagnoseSummary" width="100%" paddingLeft="20" paddingTop="10" paddingRight="20" paddingBottom="10" gap="10">
+					
+				</s:VGroup>
+			</s:Scroller>
 		</s:BorderContainer>
 	</s:VGroup>
 </s:Group>
