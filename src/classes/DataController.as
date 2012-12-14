@@ -63,9 +63,10 @@ package classes
 				params.push("size=12");
 			else
 				params.push("size=6");
+			params.push("clientos="+UIController.instance.CLIENTOS);
 			
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
-			
+			trace(url);
 			var service:HTTPService = new HTTPService();
 			service.url = url;
 			service.method = "POST";
@@ -77,6 +78,7 @@ package classes
 		
 		private function storeResultListener(event:ResultEvent):void {
 			var json:String = String(event.result);
+			trace(json);
 			var obj:Object = JSON.parse(json);
 			var items:ArrayCollection = new ArrayCollection();
 			for (var i:int=0; i<obj.products.length; i++) {

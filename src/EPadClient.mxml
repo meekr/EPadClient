@@ -142,6 +142,9 @@
 		CONFIG::BYM {
 			brand_logo.source = UIController.instance.BRAND_LOGO_BYM;
 		}
+		CONFIG::XBW {
+			brand_logo.source = UIController.instance.BRAND_LOGO_XBW;
+		}
 		]]>
 	</s:creationComplete>
 	<fx:Style source="css/global.css"/>

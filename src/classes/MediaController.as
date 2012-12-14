@@ -76,6 +76,12 @@ package classes
 							item.name = name;
 							item.location = LocationType.DEVICE;
 							item.fileSizeInBytes = parseInt(str.split("#")[1]);
+							
+							if (str.split("#").length == 3)
+							{
+								item.deviceConfigXmlFile = str.split("#")[2];
+							}
+							
 							/*
 							if (item.type == MediaItemType.PICTURE)
 							{

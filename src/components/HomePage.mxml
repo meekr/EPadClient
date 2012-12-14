@@ -50,6 +50,9 @@
 		CONFIG::BYM {
 			home_bg.source = UIController.instance.HOME_BG_BYM;
 		}
+		CONFIG::XBW {
+		home_bg.source = UIController.instance.HOME_BG_XBW;
+		}
 		]]>
 	</s:creationComplete>
 	<s:states>

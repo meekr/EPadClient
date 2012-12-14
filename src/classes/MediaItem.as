@@ -1,7 +1,9 @@
 package classes
 {
 	import classes.MediaItemTransitionStatus;
+	
 	import flash.utils.ByteArray;
+	
 	import mx.utils.Base64Decoder;
 
 	[Bindable]
@@ -14,6 +16,8 @@ package classes
 		public var fileSizeInBytes:Number;
 		public var selected:Boolean;
 		public var base64Rep:String;
+		
+		public var deviceConfigXmlFile:String;
 		
 		public var status:String;
 		

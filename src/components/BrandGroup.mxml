@@ -32,6 +32,9 @@
 		
 				btnGoshop.addEventListener(MouseEvent.CLICK, navigate); 
 			}
+			CONFIG::XBW {
+				visible = false;
+			}
 		]]>
 	</s:creationComplete>
 	<s:Image id="brand_pic" left="3" bottom="35" width="130" height="160"/>

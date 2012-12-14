@@ -99,7 +99,10 @@
 					if (item.selected)
 					{
 						CONFIG::ON_PC {
-							ExternalInterface.call("F2C_deleteDeviceMedia", item.type + "," + item.fileUrl);
+							var param:String = item.type + "," + item.fileUrl;
+							if (item.deviceConfigXmlFile)
+								param += "," + item.deviceConfigXmlFile;
+							ExternalInterface.call("F2C_deleteDeviceMedia", param);
 							ExternalInterface.call("F2C_updateVolumnStatus", "");
 							MediaController.instance.deviceItems.removeItemAt(i);
 							i--;

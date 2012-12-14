@@ -11,7 +11,6 @@ package classes
 		public static var LEFT_BANNER_URL:String = DOMAIN + "client/site/clientleft";
 		public static var RIGHT_BANNER_URL:String = DOMAIN + "client/site/clientright";
 		public static var SIGNUP_URL:String = DOMAIN + "signup";
-		public static var CHECK_UI_URL:String = DOMAIN + "client/ui.xml";
 		public static var CHECK_CLIENT_URL:String = DOMAIN + "client/client-version.xml";
 		public static var UI_SYSTEM_URL_PREFIX:String = DOMAIN + "client/UI_";
 		public static var CHANGE_PROFILE_URL:String = DOMAIN + "client/user/edit_profile";

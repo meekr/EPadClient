@@ -49,8 +49,16 @@
 			{
 				status = "checking";
 				
+				var path:String = "http://www.kizup.com/client/ui.xml";
+				CONFIG::BYM {
+					path = "http://www.kizup.com/client/bym_ui.xml";
+				}
+				CONFIG::XBW {
+					path = "http://www.kizup.com/client/xbw_ui.xml";
+				}
+				
 				var service:HTTPService = new HTTPService();
-				service.url = Constants.CHECK_UI_URL+"?rnd="+Math.floor(Math.random()*100000);
+				service.url = path+"?rnd="+Math.floor(Math.random()*100000);
 				trace(service.url);
 				service.method = "GET";
 				service.resultFormat = "text";
@@ -81,8 +89,16 @@
 				loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 				loader.addEventListener(Event.COMPLETE, completeHandler);
 				
+				var zip:String = Constants.UI_SYSTEM_URL_PREFIX + remoteVersion + ".zip";
+				CONFIG::BYM {
+					zip = Constants.UI_SYSTEM_URL_PREFIX + "BYM_" + remoteVersion + ".zip";
+				}
+				CONFIG::XBW {
+					zip = Constants.UI_SYSTEM_URL_PREFIX + "XBW_" + remoteVersion + ".zip";
+				}
+				classes.Utils.log2c("zip file: "+zip);
 				var request:URLRequest = new URLRequest();
-				request.url = Constants.UI_SYSTEM_URL_PREFIX + remoteVersion + ".zip";
+				request.url = zip;
 				loader.load(request);
 			}
 			

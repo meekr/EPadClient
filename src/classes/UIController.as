@@ -30,12 +30,14 @@ package classes
 		[Bindable]
 		public var downloadingItems:ArrayCollection;
 		[Bindable]
-		public var version:String = "1.0.11.21";
+		public var version:String = "1.0.12.14";
 		
 		[Embed(source="assets/logo.png")]
 		public var BRAND_LOGO:Class;
 		[Embed(source="assets/logo-bym.png")]
 		public var BRAND_LOGO_BYM:Class;
+		[Embed(source="assets/logo-xbw.png")]
+		public var BRAND_LOGO_XBW:Class;
 		[Embed(source="assets/brand-pic-talentech.png")]
 		public var BRAND_PIC:Class;
 		[Embed(source="assets/brand-pic-bym.png")]
@@ -44,6 +46,12 @@ package classes
 		public var HOME_BG:Class;
 		[Embed(source="assets/home-bg-bym.png")]
 		public var HOME_BG_BYM:Class;
+		[Embed(source="assets/home-bg-xbw.png")]
+		public var HOME_BG_XBW:Class;
+		
+		// "epad","bym","5inc","7inc","xbw" 分别对应 "e巧派客户端","贝因美客户端","新5寸客户端","新7寸客户端","小霸王客户端"
+		[Bindable]
+		public var CLIENTOS:String = "epad";
 		
 		public function UIController()
 		{
@@ -55,6 +63,13 @@ package classes
 				ExternalInterface.addCallback("FL_setDiskVolumnStatus", FL_setDiskVolumnStatus);
 				
 				firmwareVersion = ExternalInterface.call("F2C_getFirmwareVersion", "");
+			}
+			
+			CONFIG::BYM {
+				CLIENTOS = "bym";
+			}
+			CONFIG::XBW {
+				CLIENTOS = "xbw";
 			}
 			
 			user = new User();
