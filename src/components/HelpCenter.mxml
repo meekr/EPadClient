@@ -8,6 +8,25 @@
 			import classes.Utils;
 		]]>
 	</fx:Script>
+	<fx:Declarations>
+		<s:VGroup id="bym_group" width="100%" gap="0">
+			<s:Image source="@Embed(source='assets/manual_bym_01.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_bym_02.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_bym_03.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_bym_04.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_bym_05.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_bym_06.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_bym_07.jpg')" width="100%" scaleMode="letterbox"/>
+		</s:VGroup>
+	</fx:Declarations>
+	<s:creationComplete>
+		<![CDATA[
+		CONFIG::BYM {
+			group.removeAllElements();
+			group.addElement(bym_group);
+		}
+		]]>
+	</s:creationComplete>
 	<s:Rect left="144" top="0" right="0" bottom="0" radiusX="8">
 		<s:fill>
 			<s:SolidColor color="#fb8941"/>
@@ -22,8 +41,8 @@
 			</s:fill>
 		</s:Rect>
 		
-		<s:Scroller width="100%" height="100%" horizontalScrollPolicy="off">
-			<s:VGroup width="100%" gap="0">
+		<s:Scroller id="scroller" width="100%" height="100%" horizontalScrollPolicy="off">
+			<s:VGroup id="group" width="100%" gap="0">
 				<s:Image source="@Embed(source='assets/manual_01.jpg')" width="100%" scaleMode="zoom"/>
 				<s:Image source="@Embed(source='assets/manual_02.jpg')" width="100%" scaleMode="zoom"/>
 				<s:Image source="@Embed(source='assets/manual_03.jpg')" width="100%" scaleMode="zoom"/>

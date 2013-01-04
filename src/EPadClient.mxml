@@ -107,10 +107,10 @@
 					foundNew.visible = true;
 					Alert.yesLabel = "是";
 					Alert.noLabel = "否";
-					var message:String = "发些新版本E巧派助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
+					var message:String = "发现新版本E巧派助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
 					CONFIG::BYM
 					{
-						message = "发些新版本贝因美学习机助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
+						message = "发现新版本儿童学习机助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
 					}
 					Alert.show(message, "您是否希望下载新版本助手？", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES);
 				}
@@ -118,7 +118,14 @@
 			
 			private function alertEventHandler(event:CloseEvent):void {
 				if (event.detail == Alert.YES) {
-					navigateToURL(new URLRequest('http://www.kizup.com/static/client.zip'))
+					var url:String = 'http://www.kizup.com/static/client.zip';
+					CONFIG::BYM {
+						url = 'http://www.kizup.com/static/client-bym.zip';
+					}
+					CONFIG::XBW {
+						url = 'http://www.kizup.com/static/client-xbw.zip';
+					}
+					navigateToURL(new URLRequest(url));
 				}
 			}
 		]]>
@@ -133,6 +140,12 @@
 		// check client version
 		var service:HTTPService = new HTTPService();
 		service.url = Constants.CHECK_CLIENT_URL+"?rnd="+Math.floor(Math.random()*100000);
+		CONFIG::BYM {
+		service.url = "http://www.kizup.com/client/bym-client-version.xml"+"?rnd="+Math.floor(Math.random()*100000);
+		}
+		CONFIG::XBW {
+		service.url = "http://www.kizup.com/client/xbw-client-version.xml"+"?rnd="+Math.floor(Math.random()*100000);
+		}
 		service.method = "GET";
 		service.resultFormat = "text";
 		service.addEventListener(ResultEvent.RESULT, clientCheckResultListener);

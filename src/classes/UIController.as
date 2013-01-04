@@ -30,7 +30,7 @@ package classes
 		[Bindable]
 		public var downloadingItems:ArrayCollection;
 		[Bindable]
-		public var version:String = "1.0.12.14";
+		public var version:String = "1.1.01.04";
 		
 		[Embed(source="assets/logo.png")]
 		public var BRAND_LOGO:Class;
