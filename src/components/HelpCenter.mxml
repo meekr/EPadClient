@@ -18,12 +18,25 @@
 			<s:Image source="@Embed(source='assets/manual_bym_06.jpg')" width="100%" scaleMode="letterbox"/>
 			<s:Image source="@Embed(source='assets/manual_bym_07.jpg')" width="100%" scaleMode="letterbox"/>
 		</s:VGroup>
+		<s:VGroup id="xbw_group" width="100%" gap="0">
+			<s:Image source="@Embed(source='assets/manual_xbw_01.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_xbw_02.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_xbw_03.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_xbw_04.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_xbw_05.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_xbw_06.jpg')" width="100%" scaleMode="letterbox"/>
+			<s:Image source="@Embed(source='assets/manual_xbw_07.jpg')" width="100%" scaleMode="letterbox"/>
+		</s:VGroup>
 	</fx:Declarations>
 	<s:creationComplete>
 		<![CDATA[
 		CONFIG::BYM {
 			group.removeAllElements();
 			group.addElement(bym_group);
+		}
+		CONFIG::XBW {
+			group.removeAllElements();
+			group.addElement(xbw_group);
 		}
 		]]>
 	</s:creationComplete>

@@ -14,6 +14,9 @@
 			
 			import mx.events.FlexEvent;
 			
+			[Embed(source='assets/device-title-studypad.png')]
+			private var devTitleImage:Class;
+			
 			[Bindable]
 			private var selectedLocalIndex:Number = 0;
 			
@@ -55,6 +58,12 @@
 		<![CDATA[
 		CONFIG::ON_PC {
 		ExternalInterface.call("F2C_getDownloadedApps", "");
+		}
+		CONFIG::BYM {
+		deviceTitle.source = devTitleImage;
+		}
+		CONFIG::XBW {
+		deviceTitle.source = devTitleImage;
 		}
 		]]>
 	</s:creationComplete>
@@ -130,7 +139,7 @@
 				<s:DropShadowFilter distance="1" angle="270" blurY="1" alpha="0.02"/>
 			</s:filters>
 		</s:Image>
-		<s:Image right="206" top="10" source="@Embed(source='assets/device-title-pad.png')" width="68" height="40" click="changeDeviceIndex(0)"/>
+		<s:Image id="deviceTitle" right="202" top="10" source="@Embed(source='assets/device-title-pad.png')" width="75" height="40" click="changeDeviceIndex(0)"/>
 		<s:Image right="83" top="10" source="@Embed(source='assets/device-title-card.png')" width="74" height="40" click="changeDeviceIndex(1)"
 				 enabled="false" mouseEnabled="false" alpha="0.5"/>
 		<s:Rect top="43" right="21" bottom="42" radiusX="8" width="316">

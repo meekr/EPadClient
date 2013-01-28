@@ -7,6 +7,7 @@ package classes
 		private static var DOMAIN:String = "http://www.kizup.com/";
 		
 		public static var LOGIN_URL:String = DOMAIN + "client/user/login";
+		public static var REGISTER_URL:String = DOMAIN + "client/user/sign";
 		public static var PRODUCT_URL:String = DOMAIN + "client/product/list";
 		public static var LEFT_BANNER_URL:String = DOMAIN + "client/site/clientleft";
 		public static var RIGHT_BANNER_URL:String = DOMAIN + "client/site/clientright";

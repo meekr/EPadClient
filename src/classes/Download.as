@@ -104,7 +104,8 @@ package classes
 		{
 			status = DownloadStatus.DOWNLOADING;
 			percentage = event.bytesLoaded*100 / event.bytesTotal;
-			trace(event.bytesLoaded, event.bytesTotal, percentage);
+			//trace(event.bytesLoaded, event.bytesTotal, percentage);
+			//Utils.log2c(event.bytesLoaded+' of '+event.bytesTotal);
 		}
 		
 		private function npkCompleteHandler(event:Event):void
@@ -117,7 +118,7 @@ package classes
 			base64Enc.encodeBytes(buf, 0, buf.length);
 			var str:String = base64Enc.toString();
 			str = str.split("\n").join("");
-			trace(str.length+": "+str.substr(0, 1000));
+			Utils.log2c(str.length+": "+str.substr(0, 1000));
 			CONFIG::ON_PC {
 				ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+appName+".npk,"+str);
 			}
