@@ -65,6 +65,9 @@
 		CONFIG::XBW {
 		deviceTitle.source = devTitleImage;
 		}
+		CONFIG::XXM {
+		deviceTitle.source = devTitleImage;
+		}
 		]]>
 	</s:creationComplete>
 	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="deviceProgressBar.rcPercentage.percentWidth"/>

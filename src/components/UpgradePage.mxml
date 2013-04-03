@@ -56,6 +56,9 @@
 				CONFIG::XBW {
 					path = "http://www.kizup.com/client/xbw_ui.xml";
 				}
+				CONFIG::XXM {
+					path = "http://www.kizup.com/client/xxm_ui.xml";
+				}
 				
 				var service:HTTPService = new HTTPService();
 				service.url = path+"?rnd="+Math.floor(Math.random()*100000);
@@ -95,6 +98,9 @@
 				}
 				CONFIG::XBW {
 					zip = Constants.UI_SYSTEM_URL_PREFIX + "XBW_" + remoteVersion + ".zip";
+				}
+				CONFIG::XXM {
+					zip = Constants.UI_SYSTEM_URL_PREFIX + "XXM_" + remoteVersion + ".zip";
 				}
 				classes.Utils.log2c("zip file: "+zip);
 				var request:URLRequest = new URLRequest();
@@ -261,7 +267,7 @@
 				</s:HGroup>
 			</s:VGroup>
 			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"
-					 text="更新已完成，请重新启动E巧派"
+					 text="更新已完成，请重新启动{UIController.instance.PRODUCT_NAME}"
 					 visible="{status == 'updated'}" includeInLayout="{status == 'updated'}"/>
 		</s:BorderContainer>
 		

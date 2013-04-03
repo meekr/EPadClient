@@ -108,9 +108,14 @@
 					Alert.yesLabel = "是";
 					Alert.noLabel = "否";
 					var message:String = "发现新版本E巧派助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
-					CONFIG::BYM
-					{
+					CONFIG::BYM {
 						message = "发现新版本儿童学习机助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
+					}
+					CONFIG::XBW {
+						message = "发现新版本儿童学习机助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
+					}
+					CONFIG::XXM {
+						message = "发现新版本童伴熊小米助手，点击“是”将开始下载。安装新版本前请卸载现在运行的版本。";
 					}
 					Alert.show(message, "您是否希望下载新版本助手？", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES);
 				}
@@ -124,6 +129,9 @@
 					}
 					CONFIG::XBW {
 						url = 'http://www.kizup.com/static/client-xbw.zip';
+					}
+					CONFIG::XXM {
+						url = 'http://www.kizup.com/static/client-xxm.zip';
 					}
 					navigateToURL(new URLRequest(url));
 				}
@@ -154,6 +162,9 @@
 		CONFIG::XBW {
 		service.url = "http://www.kizup.com/client/xbw-client-version.xml"+"?rnd="+Math.floor(Math.random()*100000);
 		}
+		CONFIG::XXM {
+		service.url = "http://www.kizup.com/client/xxm-client-version.xml"+"?rnd="+Math.floor(Math.random()*100000);
+		}
 		service.method = "GET";
 		service.resultFormat = "text";
 		service.addEventListener(ResultEvent.RESULT, clientCheckResultListener);
@@ -165,6 +176,9 @@
 		}
 		CONFIG::XBW {
 			brand_logo.source = UIController.instance.BRAND_LOGO_XBW;
+		}
+		CONFIG::XXM {
+			brand_logo.source = UIController.instance.BRAND_LOGO_XXM;
 		}
 		]]>
 	</s:creationComplete>
@@ -181,7 +195,7 @@
 				<s:Label width="100%" height="100%" color="#FFFFFF" textAlign="center" verticalAlign="middle" verticalCenter="1" text="{UIController.instance.deviceDisk.volumeStatusDescription}"/>
 			</s:Group>
 		</s:HGroup>
-		<s:Image left="51" top="15" id="brand_logo" width="193" height="71"/>
+		<s:Image left="18" top="15" id="brand_logo" width="257" height="71"/>
 		<s:HGroup left="10" bottom="8" height="20">
 			<s:Label text="version: {UIController.instance.version}" fontSize="11" color="#333333" height="100%" verticalAlign="middle"/>
 			<s:Label id="foundNew" visible="false" text="发现新版本助手{remoteVersion}，前往下载" color="#ff0000" fontSize="11"

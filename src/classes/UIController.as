@@ -30,7 +30,7 @@ package classes
 		[Bindable]
 		public var downloadingItems:ArrayCollection;
 		[Bindable]
-		public var version:String = "1.1.01.28";
+		public var version:String = "1.1.04.03";
 		
 		[Embed(source="assets/logo.png")]
 		public var BRAND_LOGO:Class;
@@ -38,6 +38,8 @@ package classes
 		public var BRAND_LOGO_BYM:Class;
 		[Embed(source="assets/logo-xbw.png")]
 		public var BRAND_LOGO_XBW:Class;
+		[Embed(source="assets/logo-xxm.png")]
+		public var BRAND_LOGO_XXM:Class;
 		[Embed(source="assets/brand-pic-talentech.png")]
 		public var BRAND_PIC:Class;
 		[Embed(source="assets/brand-pic-bym.png")]
@@ -48,6 +50,9 @@ package classes
 		public var HOME_BG_BYM:Class;
 		[Embed(source="assets/home-bg-xbw.png")]
 		public var HOME_BG_XBW:Class;
+		[Embed(source="assets/home-bg-xxm.png")]
+		public var HOME_BG_XXM:Class;
+		public var PRODUCT_NAME:String = "E巧派";
 		
 		// "epad","bym","5inc","7inc","xbw" 分别对应 "e巧派客户端","贝因美客户端","新5寸客户端","新7寸客户端","小霸王客户端"
 		[Bindable]
@@ -67,9 +72,14 @@ package classes
 			
 			CONFIG::BYM {
 				CLIENTOS = "bym";
+				PRODUCT_NAME = "儿童学习机";
 			}
 			CONFIG::XBW {
 				CLIENTOS = "xbw";
+				PRODUCT_NAME = "小霸王学习机";
+			}
+			CONFIG::XXM {
+				CLIENTOS = "xxm";
 			}
 			
 			user = new User();

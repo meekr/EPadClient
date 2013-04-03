@@ -47,6 +47,10 @@
 					url = '';
 					currentState = 'register';
 				}
+				CONFIG::XXM {
+					url = '';
+					currentState = 'register';
+				}
 				
 				if (url)
 					classes.Utils.gotoUrl(url);
@@ -133,6 +137,9 @@
 		}
 		CONFIG::XBW {
 			home_bg.source = UIController.instance.HOME_BG_XBW;
+		}
+		CONFIG::XXM {
+			home_bg.source = UIController.instance.HOME_BG_XXM;
 		}
 		]]>
 	</s:creationComplete>
